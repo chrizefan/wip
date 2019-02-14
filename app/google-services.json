@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "700709622701",
+    "firebase_url": "https://wip-app-231418.firebaseio.com",
+    "project_id": "wip-app-231418",
+    "storage_bucket": "wip-app-231418.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:700709622701:android:d3b729acd5df16fc",
+        "android_client_info": {
+          "package_name": "com.codineasy.wip"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "700709622701-b7gmbhsd1cha522ra4ks8eruj4sc6mfo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCktUTFsRdPqpYLwpt_fOPmTtHbXVWo3AM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
