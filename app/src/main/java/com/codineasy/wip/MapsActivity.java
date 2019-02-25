@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    static final int GOOGLE_PLAY_SERVICE_UPDATED_ERROR_REQUEST = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         else{
             //An error occurred or Google Play Services is not up to date
             Log.d("Update", "isGoogleServicesUpdated: an error occurred");
-            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MapsActivity.this, available);
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MapsActivity.this, available, GOOGLE_PLAY_SERVICE_UPDATED_ERROR_REQUEST);
             dialog.show();
             return false;
         }
@@ -66,8 +67,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng montreal = new LatLng(45, 73);
+        mMap.addMarker(new MarkerOptions().position(montreal).title("Marker in Montreal"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(montreal));
     }
 }
