@@ -2,6 +2,7 @@ package com.codineasy.wip;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -12,9 +13,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -79,14 +83,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void init() {
         Log.d(TAG, "init: initializing");
 
+        mAutocomplete.setHistoryManager(null);
+        mAutocomplete.showClearButton(true);
         mAutocomplete.setOnPlaceSelectedListener(
                 new OnPlaceSelectedListener() {
                     @Override
                     public void onPlaceSelected(final Place place) {
                         geoLocate();
                     }
-                }
-        );
+                });
+        mAutocomplete.setOnEditorActionListener(
+                new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if(actionId == EditorInfo.IME_ACTION_SEARCH
+                                || actionId == EditorInfo.IME_ACTION_DONE
+                                || event.getAction() == KeyEvent.ACTION_DOWN
+                                || event.getAction() == KeyEvent.KEYCODE_ENTER) {
+
+                            geoLocate();
+                        }
+                        return false;
+                    }
+                });
 
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,6 +138,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             moveCamera(new LatLng(address.getLatitude(), address.getLongitude()),
                     DEFAULT_ZOOM, address.getAddressLine(0));
         }
+        hideSoftKeyboard();
     }
 
     private void initMap() {
@@ -250,7 +270,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void hideSoftKeyboard(){
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @Override
