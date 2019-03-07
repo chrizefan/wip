@@ -12,13 +12,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -31,9 +27,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
+import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
+import com.seatgeek.placesautocomplete.model.Place;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,23 +41,20 @@ import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
 
-    private AutoCompleteTextView mSearchText;
     private ImageView mGps;
-
     private GoogleMap mMap;
     private Boolean mLocationPermissionGranted;
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
-    private GoogleApiClient mGoogleApiClient;
+    private PlacesAutocompleteTextView mAutocomplete;
 
     private static final String TAG = "MapsActivity";
     private static final float DEFAULT_ZOOM = 15f;
-
-    static final int GOOGLE_PLAY_SERVICE_UPDATED_ERROR_REQUEST = 0;
-    static final int LOCATION_PERMISSION_REQUEST = 1;
-
+    private static final int GOOGLE_PLAY_SERVICE_UPDATED_ERROR_REQUEST = 0;
+    private static final int LOCATION_PERMISSION_REQUEST = 1;
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
+            new LatLng(-40, -168), new LatLng(71, 136));
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -70,40 +67,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (isGoogleServicesUpdated()) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_maps);
-            mSearchText = findViewById(R.id.input_search);
             mGps = findViewById(R.id.ic_gps);
+            mAutocomplete = findViewById(R.id.autocomplete);
 
             getLocationPermission();
-
             init();
+
         }
     }
 
     private void init() {
         Log.d(TAG, "init: initializing");
 
-        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */,
-                        this /* OnConnectionFailedListener */)
-                .addApi(Drive.API)
-                .addScope(Drive.SCOPE_FILE)
-                .build();
-
-        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH
-                        || actionId == EditorInfo.IME_ACTION_DONE
-                        || event.getAction() == KeyEvent.ACTION_DOWN
-                        || event.getAction() == KeyEvent.KEYCODE_ENTER) {
-
-                    //execute search method
-                    geoLocate();
+        mAutocomplete.setOnPlaceSelectedListener(
+                new OnPlaceSelectedListener() {
+                    @Override
+                    public void onPlaceSelected(final Place place) {
+                        geoLocate();
+                    }
                 }
-
-                return false;
-            }
-        });
+        );
 
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,7 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void geoLocate(){
         Log.d(TAG, "geoLocate: geolocating");
 
-        String searchString = mSearchText.getText().toString();
+        String searchString = mAutocomplete.getText().toString();
 
         Geocoder geocoder = new Geocoder(MapsActivity.this);
         List<Address> list = new ArrayList<>();
