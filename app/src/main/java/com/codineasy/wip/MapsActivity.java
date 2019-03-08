@@ -32,6 +32,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -50,6 +51,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Boolean mLocationPermissionGranted;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private PlacesAutocompleteTextView mAutocomplete;
+    private Marker mMarker;
 
     private static final String TAG = "MapsActivity";
     private static final float DEFAULT_ZOOM = 15f;
@@ -189,11 +191,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d(TAG, "moveCamera: moving camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
 
-        if(!title.equals("My Location")){
-            MarkerOptions options = new MarkerOptions()
+        if(!title.equals("My Location") && mMarker == null){
+            mMarker = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
-                    .title(title);
-            mMap.addMarker(options);
+                    .title(title));
+        } else{
+            mMarker.setPosition(latLng);
         }
 
         hideSoftKeyboard();
@@ -295,6 +298,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
         }
+
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick (LatLng latLng){
+                Geocoder geocoder =
+                        new Geocoder(MapsActivity.this);
+                List<Address> list;
+                try {
+                    list = geocoder.getFromLocation(latLng.latitude,
+                            latLng.longitude, 1);
+                } catch (IOException e) {
+                    return;
+                }
+                String title = list.get(0).getAddressLine(0);
+                if(!title.equals("My Location") && mMarker == null){
+                    mMarker = mMap.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .title(title));
+                } else{
+                    mMarker.hideInfoWindow();
+                    mMarker.setPosition(latLng);
+                    mMarker.setTitle(title);
+                }
+            }
+        });
 
     }
 
