@@ -2,6 +2,7 @@ package com.codineasy.wip;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -77,6 +78,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             init();
         }
+    }
+
+    public void createWeatherLogsActivity(View view) {
+        Intent intent = new Intent(this, WeatherLogs.class);
+        startActivity(intent);
     }
 
     private void init() {
