@@ -82,12 +82,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void init() {
         Log.d(TAG, "init: initializing");
 
-        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */,
-                        this /* OnConnectionFailedListener */)
-                .addApi(Drive.API)
-                .addScope(Drive.SCOPE_FILE)
-                .build();
+//        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .enableAutoManage(this /* FragmentActivity */,
+//                        this /* OnConnectionFailedListener */)
+//                .addApi(Drive.API)
+//                .addScope(Drive.SCOPE_FILE)
+//                .build();
 
         mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
