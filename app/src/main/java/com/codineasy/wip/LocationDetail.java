@@ -41,4 +41,13 @@ public class LocationDetail {
     public void setRelevantWeatherInfos(LinkedList<String> relevantWeatherInfos) {
         this.relevantWeatherInfos = relevantWeatherInfos;
     }
+
+    @Override
+    public String toString() {
+        return "LocationDetail{" +
+                weatherInfo + '\n' +
+                "location:" + location + + '\n' +
+                relevantWeatherInfos +
+                '}';
+    }
 }
