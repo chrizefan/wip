@@ -7,15 +7,15 @@ import android.support.v7.widget.RecyclerView;
 
 import java.util.LinkedList;
 
-public class WeatherLogs extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity {
     LinkedList<String> weatherLogs;
     private RecyclerView recyclerView;
-    private WeatherLogsAdapter adapter;
+    private LocationDetailListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_weather_logs);
+        setContentView(R.layout.activity_details);
 
         this.weatherLogs = new LinkedList();
         for (int i = 0; i < 10; ++i) {
@@ -26,7 +26,7 @@ public class WeatherLogs extends AppCompatActivity {
         // Get a handle to the RecyclerView.
         this.recyclerView = findViewById(R.id.recyclerview);
         // Create an adapter and supply the data to be displayed.
-        this.adapter = new WeatherLogsAdapter(this, this.weatherLogs);
+        this.adapter = new LocationDetailListAdapter(this, this.weatherLogs);
         // Connect the adapter with the RecyclerView.
         this.recyclerView.setAdapter(this.adapter);
         // Give the RecyclerView a default layout manager.

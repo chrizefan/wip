@@ -3,38 +3,35 @@ package com.codineasy.wip;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.LinkedList;
 
-public class WeatherLogsAdapter extends RecyclerView.Adapter<WeatherLogsAdapter.WeatherLogViewHolder> {
+public class LocationDetailListAdapter extends RecyclerView.Adapter<LocationDetailListAdapter.LocationDetailViewHolder> {
     private final LinkedList<String> weatherLogs;
     private LayoutInflater layoutInflater;
 
-    public WeatherLogsAdapter(Context context, LinkedList<String> weatherLogs) {
+    public LocationDetailListAdapter(Context context, LinkedList<String> weatherLogs) {
         this.layoutInflater = LayoutInflater.from(context);
         this.weatherLogs = weatherLogs;
     }
 
     @NonNull
     @Override
-    public WeatherLogsAdapter.WeatherLogViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public LocationDetailViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
         View itemView = this.layoutInflater.inflate(R.layout.recycler_view_item, viewGroup, false);
 
-        return new WeatherLogViewHolder(itemView, this);
+        return new LocationDetailViewHolder(itemView, this);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WeatherLogsAdapter.WeatherLogViewHolder weatherLogViewHolder, int i) {
+    public void onBindViewHolder(@NonNull LocationDetailViewHolder locationDetailViewHolder, int i) {
         String current = this.weatherLogs.get(i);
-        weatherLogViewHolder.weatherItemView.setText(current);
+        locationDetailViewHolder.weatherItemView.setText(current);
     }
 
     @Override
@@ -42,11 +39,11 @@ public class WeatherLogsAdapter extends RecyclerView.Adapter<WeatherLogsAdapter.
         return weatherLogs.size();
     }
 
-    public class WeatherLogViewHolder extends RecyclerView.ViewHolder {
+    public class LocationDetailViewHolder extends RecyclerView.ViewHolder {
         public final TextView weatherItemView;
-        final WeatherLogsAdapter adapter;
+        final LocationDetailListAdapter adapter;
 
-        public WeatherLogViewHolder(View itemView, WeatherLogsAdapter adapter) {
+        public LocationDetailViewHolder(View itemView, LocationDetailListAdapter adapter) {
             super(itemView);
             this.weatherItemView = itemView.findViewById(R.id.textView);
             this.adapter = adapter;
