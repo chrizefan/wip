@@ -3,7 +3,7 @@ package com.codineasy.wip;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class Details extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
