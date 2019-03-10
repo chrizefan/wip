@@ -11,12 +11,12 @@ import android.widget.TextView;
 import java.util.LinkedList;
 
 public class LocationDetailListAdapter extends RecyclerView.Adapter<LocationDetailListAdapter.LocationDetailViewHolder> {
-    private final LinkedList<String> weatherLogs;
+    private final LinkedList<LocationDetail> locationDetails;
     private LayoutInflater layoutInflater;
 
-    public LocationDetailListAdapter(Context context, LinkedList<String> weatherLogs) {
+    public LocationDetailListAdapter(Context context, LinkedList<LocationDetail> locationDetails) {
         this.layoutInflater = LayoutInflater.from(context);
-        this.weatherLogs = weatherLogs;
+        this.locationDetails = locationDetails;
     }
 
     @NonNull
@@ -30,13 +30,13 @@ public class LocationDetailListAdapter extends RecyclerView.Adapter<LocationDeta
 
     @Override
     public void onBindViewHolder(@NonNull LocationDetailViewHolder locationDetailViewHolder, int i) {
-        String current = this.weatherLogs.get(i);
-        locationDetailViewHolder.weatherItemView.setText(current);
+        LocationDetail current = this.locationDetails.get(i);
+        locationDetailViewHolder.weatherItemView.setText(current.toString());
     }
 
     @Override
     public int getItemCount() {
-        return weatherLogs.size();
+        return locationDetails.size();
     }
 
     public class LocationDetailViewHolder extends RecyclerView.ViewHolder {
