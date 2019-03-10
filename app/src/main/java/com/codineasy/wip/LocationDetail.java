@@ -13,6 +13,7 @@ public class LocationDetail {
     private LinkedList<String> relevantWeatherInfos;
 
     public LocationDetail(String weatherInfo, Address location, LinkedList<String> relevantWeatherInfos) {
+        this.weatherInfo = null;
         this.weatherInfo = weatherInfo;
         this.location = location;
         this.relevantWeatherInfos = relevantWeatherInfos;
@@ -45,9 +46,10 @@ public class LocationDetail {
     @Override
     public String toString() {
         return "LocationDetail{" +
-                weatherInfo + '\n' +
-                "location:" + location + + '\n' +
-                relevantWeatherInfos +
+                "weatherIcon=" + weatherIcon +
+                ", weatherInfo='" + weatherInfo + '\'' +
+                ", location=" + location +
+                ", relevantWeatherInfos=" + relevantWeatherInfos +
                 '}';
     }
 }
