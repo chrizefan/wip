@@ -80,7 +80,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    // a function used as onClick value for the "Details" button
     public void createWeatherLogsActivity(View view) {
+        // Simply creates the activity which can be returned using the back button
         Intent intent = new Intent(this, WeatherLogs.class);
         startActivity(intent);
     }
