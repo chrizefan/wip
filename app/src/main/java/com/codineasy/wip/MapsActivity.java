@@ -44,6 +44,7 @@ import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
 
@@ -109,12 +110,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             getDeviceLocation();
         });
 
-        if(mGeoApiContext == null){
-            mGeoApiContext = new GeoApiContext.Builder()
-                    .apiKey("AIzaSyCR4hH8CAkg5bwM0mcyMEl_KsZX8VRrscg")
-                    .build();
-        }
         hideSoftKeyboard();
+    }
+
+    private GeoApiContext getGeoApiContext(){
+        mGeoApiContext = new GeoApiContext.Builder()
+                .queryRateLimit(3)
+                .apiKey("AIzaSyCR4hH8CAkg5bwM0mcyMEl_KsZX8VRrscg")
+                .connectTimeout(1, TimeUnit.SECONDS)
+                .readTimeout(1, TimeUnit.SECONDS)
+                .writeTimeout(1, TimeUnit.SECONDS)
+                .build();
+        return mGeoApiContext;
     }
 
     private void calculateDirections(Marker marker){
@@ -124,17 +131,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 marker.getPosition().latitude,
                 marker.getPosition().longitude
         );
-        DirectionsApiRequest directions = new DirectionsApiRequest(mGeoApiContext);
+        DirectionsApiRequest directions = new DirectionsApiRequest(getGeoApiContext());
 
-        directions.alternatives(true);
-        directions.origin(
-                new com.google.maps.model.LatLng(
-                        mDeviceLocation.latitude,
-                        mDeviceLocation.longitude
-                )
-        );
+        Log.d(TAG, "calculateDirections: origin: " + mDeviceLocation.toString());
         Log.d(TAG, "calculateDirections: destination: " + destination.toString());
-        directions.destination(String.valueOf(destination)).setCallback(new PendingResult.Callback<DirectionsResult>() {
+
+        directions.destination(destination.toString())
+                .origin(new LatLng(mDeviceLocation.latitude, mDeviceLocation.longitude).toString())
+                .setCallback(new PendingResult.Callback<DirectionsResult>() {
             @Override
             public void onResult(DirectionsResult result) {
                 Log.d(TAG, "calculateDirections: routes: " + result.routes[0].toString());
@@ -350,10 +354,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMarker = mMap.addMarker(new MarkerOptions()
                         .position(latLng)
                         .title(title));
+                calculateDirections(mMarker);
             } else if(!title.equals("My Location")){
                 mMarker.hideInfoWindow();
                 mMarker.setPosition(latLng);
                 mMarker.setTitle(title);
+                calculateDirections(mMarker);
             }
         });
 
