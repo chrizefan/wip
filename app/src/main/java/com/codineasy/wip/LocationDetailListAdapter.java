@@ -48,7 +48,7 @@ public class LocationDetailListAdapter extends RecyclerView.Adapter<LocationDeta
 
         public LocationDetailViewHolder(View itemView, LocationDetailListAdapter adapter) {
             super(itemView);
-            this.weatherTextView = itemView.findViewById(R.id.textView);
+            this.weatherTextView = itemView.findViewById(R.id.textView2);
             this.weatherIconView = itemView.findViewById(R.id.imageView2);
             this.adapter = adapter;
         }

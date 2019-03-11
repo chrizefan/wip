@@ -43,13 +43,18 @@ public class LocationDetail {
         this.relevantWeatherInfos = relevantWeatherInfos;
     }
 
+    public double distanceFrom(Address address) {
+        return Math.random()*100;
+    }
+
     @Override
     public String toString() {
         return "LocationDetail{" +
                 "weatherIcon=" + weatherIcon +
-                ", weatherInfo='" + weatherInfo + '\'' +
+                ", weatherInfo='" + weatherInfo +
                 ", location=" + location +
                 ", relevantWeatherInfos=" + relevantWeatherInfos +
+                ", distanceFrom=" + distanceFrom(null) +
                 '}';
     }
 }
