@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -36,9 +35,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.PendingResult;
+import com.google.maps.model.DirectionsResult;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
-import com.seatgeek.placesautocomplete.model.Place;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,6 +53,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private PlacesAutocompleteTextView mAutocomplete;
     private Marker mMarker;
+    private GeoApiContext mGeoApiContext = null;
+    private LatLng mDeviceLocation;
 
     private static final String TAG = "MapsActivity";
     private static final float DEFAULT_ZOOM = 15f;
@@ -88,36 +91,64 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mAutocomplete.setHistoryManager(null);
         mAutocomplete.showClearButton(true);
         mAutocomplete.setOnPlaceSelectedListener(
-                new OnPlaceSelectedListener() {
-                    @Override
-                    public void onPlaceSelected(final Place place) {
+                place -> geoLocate());
+        mAutocomplete.setOnEditorActionListener(
+                (v, actionId, event) -> {
+                    if(actionId == EditorInfo.IME_ACTION_SEARCH
+                            || actionId == EditorInfo.IME_ACTION_DONE
+                            || event.getAction() == KeyEvent.ACTION_DOWN
+                            || event.getAction() == KeyEvent.KEYCODE_ENTER) {
+
                         geoLocate();
                     }
-                });
-        mAutocomplete.setOnEditorActionListener(
-                new TextView.OnEditorActionListener() {
-                    @Override
-                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        if(actionId == EditorInfo.IME_ACTION_SEARCH
-                                || actionId == EditorInfo.IME_ACTION_DONE
-                                || event.getAction() == KeyEvent.ACTION_DOWN
-                                || event.getAction() == KeyEvent.KEYCODE_ENTER) {
-
-                            geoLocate();
-                        }
-                        return false;
-                    }
+                    return false;
                 });
 
-        mGps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: gps icon clicked");
-                getDeviceLocation();
-            }
+        mGps.setOnClickListener(v -> {
+            Log.d(TAG, "onClick: gps icon clicked");
+            getDeviceLocation();
         });
 
+        if(mGeoApiContext == null){
+            mGeoApiContext = new GeoApiContext.Builder()
+                    .apiKey("AIzaSyCR4hH8CAkg5bwM0mcyMEl_KsZX8VRrscg")
+                    .build();
+        }
         hideSoftKeyboard();
+    }
+
+    private void calculateDirections(Marker marker){
+        Log.d(TAG, "calculateDirections: calculating directions.");
+
+        LatLng destination = new LatLng(
+                marker.getPosition().latitude,
+                marker.getPosition().longitude
+        );
+        DirectionsApiRequest directions = new DirectionsApiRequest(mGeoApiContext);
+
+        directions.alternatives(true);
+        directions.origin(
+                new com.google.maps.model.LatLng(
+                        mDeviceLocation.latitude,
+                        mDeviceLocation.longitude
+                )
+        );
+        Log.d(TAG, "calculateDirections: destination: " + destination.toString());
+        directions.destination(String.valueOf(destination)).setCallback(new PendingResult.Callback<DirectionsResult>() {
+            @Override
+            public void onResult(DirectionsResult result) {
+                Log.d(TAG, "calculateDirections: routes: " + result.routes[0].toString());
+                Log.d(TAG, "calculateDirections: duration: " + result.routes[0].legs[0].duration);
+                Log.d(TAG, "calculateDirections: distance: " + result.routes[0].legs[0].distance);
+                Log.d(TAG, "calculateDirections: geocodedWayPoints: " + result.geocodedWaypoints[0].toString());
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                Log.e(TAG, "calculateDirections: Failed to get directions: " + e.getMessage() );
+
+            }
+        });
     }
 
     private void geoLocate(){
@@ -153,6 +184,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         hideSoftKeyboard();
     }
 
+
+
     private void getDeviceLocation() {
         Log.d(TAG, "getDeviceLocation: get device location");
 
@@ -168,6 +201,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             if (task.isSuccessful()) {
                                 Log.d(TAG, "onComplete: location found");
                                 Location currentLocation = (Location) task.getResult();
+                                mDeviceLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
 
                                 moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                         DEFAULT_ZOOM, "My Location");
@@ -195,10 +229,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMarker = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .title(title));
-        } else{
+        } else if(!title.equals("My Location")){
+            mMarker.hideInfoWindow();
             mMarker.setPosition(latLng);
+            mMarker.setTitle(title);
         }
-
+        calculateDirections(mMarker);
         hideSoftKeyboard();
 
     }
@@ -299,28 +335,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
         }
 
-        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick (LatLng latLng){
-                Geocoder geocoder =
-                        new Geocoder(MapsActivity.this);
-                List<Address> list;
-                try {
-                    list = geocoder.getFromLocation(latLng.latitude,
-                            latLng.longitude, 1);
-                } catch (IOException e) {
-                    return;
-                }
-                String title = list.get(0).getAddressLine(0);
-                if(!title.equals("My Location") && mMarker == null){
-                    mMarker = mMap.addMarker(new MarkerOptions()
-                            .position(latLng)
-                            .title(title));
-                } else{
-                    mMarker.hideInfoWindow();
-                    mMarker.setPosition(latLng);
-                    mMarker.setTitle(title);
-                }
+        mMap.setOnMapLongClickListener(latLng -> {
+            Geocoder geocoder =
+                    new Geocoder(MapsActivity.this);
+            List<Address> list;
+            try {
+                list = geocoder.getFromLocation(latLng.latitude,
+                        latLng.longitude, 1);
+            } catch (IOException e) {
+                return;
+            }
+            String title = list.get(0).getAddressLine(0);
+            if(!title.equals("My Location") && mMarker == null){
+                mMarker = mMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title(title));
+            } else if(!title.equals("My Location")){
+                mMarker.hideInfoWindow();
+                mMarker.setPosition(latLng);
+                mMarker.setTitle(title);
             }
         });
 
