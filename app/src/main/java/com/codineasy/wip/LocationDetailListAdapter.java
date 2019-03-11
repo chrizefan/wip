@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.LinkedList;
@@ -31,7 +32,8 @@ public class LocationDetailListAdapter extends RecyclerView.Adapter<LocationDeta
     @Override
     public void onBindViewHolder(@NonNull LocationDetailViewHolder locationDetailViewHolder, int i) {
         LocationDetail current = this.locationDetails.get(i);
-        locationDetailViewHolder.weatherItemView.setText(current.toString());
+        locationDetailViewHolder.weatherTextView.setText(current.toString());
+        locationDetailViewHolder.weatherIconView.setBackgroundResource(R.drawable.powered_by_google_light);
     }
 
     @Override
@@ -40,12 +42,14 @@ public class LocationDetailListAdapter extends RecyclerView.Adapter<LocationDeta
     }
 
     public class LocationDetailViewHolder extends RecyclerView.ViewHolder {
-        public final TextView weatherItemView;
+        public final TextView weatherTextView;
+        public final ImageView weatherIconView;
         final LocationDetailListAdapter adapter;
 
         public LocationDetailViewHolder(View itemView, LocationDetailListAdapter adapter) {
             super(itemView);
-            this.weatherItemView = itemView.findViewById(R.id.textView);
+            this.weatherTextView = itemView.findViewById(R.id.textView);
+            this.weatherIconView = itemView.findViewById(R.id.imageView2);
             this.adapter = adapter;
         }
     }
