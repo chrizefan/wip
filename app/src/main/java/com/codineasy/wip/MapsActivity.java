@@ -39,6 +39,8 @@ import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PendingResult;
 import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
+import com.google.maps.model.GeocodedWaypoint;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 
 import java.io.IOException;
@@ -56,6 +58,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker mMarker;
     private GeoApiContext mGeoApiContext = null;
     private LatLng mDeviceLocation;
+    public GeocodedWaypoint[] mGeocodedWaypoints;
+    public DirectionsRoute[] mRoutes;
 
     private static final String TAG = "MapsActivity";
     private static final float DEFAULT_ZOOM = 15f;
@@ -110,18 +114,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             getDeviceLocation();
         });
 
+        buildGeoApiContext();
         hideSoftKeyboard();
     }
 
-    private GeoApiContext getGeoApiContext(){
+    private void buildGeoApiContext(){
         mGeoApiContext = new GeoApiContext.Builder()
                 .queryRateLimit(3)
-                .apiKey("AIzaSyCR4hH8CAkg5bwM0mcyMEl_KsZX8VRrscg")
+                .apiKey(getString(R.string.google_maps_key2))
                 .connectTimeout(1, TimeUnit.SECONDS)
                 .readTimeout(1, TimeUnit.SECONDS)
                 .writeTimeout(1, TimeUnit.SECONDS)
                 .build();
-        return mGeoApiContext;
     }
 
     private void calculateDirections(Marker marker){
@@ -131,7 +135,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 marker.getPosition().latitude,
                 marker.getPosition().longitude
         );
-        DirectionsApiRequest directions = new DirectionsApiRequest(getGeoApiContext());
+        DirectionsApiRequest directions = new DirectionsApiRequest(mGeoApiContext);
 
         Log.d(TAG, "calculateDirections: origin: " + mDeviceLocation.toString());
         Log.d(TAG, "calculateDirections: destination: " + destination.toString());
