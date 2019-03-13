@@ -75,6 +75,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mGps = findViewById(R.id.ic_gps);
 
             getLocationPermission();
+
+            init();
         }
     }
 
