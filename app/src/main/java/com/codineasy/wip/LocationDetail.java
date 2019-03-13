@@ -4,43 +4,35 @@ import android.location.Address;
 import android.view.View;
 import android.widget.ImageView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class LocationDetail {
-    private ImageView weatherIcon;
-    private String weatherInfo;
+    private JSONObject weather;
     private Address location;
-    private LinkedList<String> relevantWeatherInfos;
 
-    public LocationDetail(String weatherInfo, Address location, LinkedList<String> relevantWeatherInfos) {
-        this.weatherInfo = null;
-        this.weatherInfo = weatherInfo;
+    public LocationDetail(JSONObject weather, Address location) {
+        this.weather = weather;
         this.location = location;
-        this.relevantWeatherInfos = relevantWeatherInfos;
-    }
-
-    public String getWeatherInfo() {
-        return weatherInfo;
     }
 
     public Address getLocation() {
         return location;
     }
 
-    public LinkedList<String> getRelevantWeatherInfos() {
-        return relevantWeatherInfos;
+    public JSONObject getWeather() throws JSONException {
+        return weather;
     }
 
-    public void setWeatherInfo(String weatherInfo) {
-        this.weatherInfo = weatherInfo;
+    public void setWeather(JSONObject weather) {
+        this.weather = weather;
     }
 
     public void setLocation(Address location) {
         this.location = location;
-    }
-
-    public void setRelevantWeatherInfos(LinkedList<String> relevantWeatherInfos) {
-        this.relevantWeatherInfos = relevantWeatherInfos;
     }
 
     public double distanceFrom(Address address) {
@@ -50,11 +42,8 @@ public class LocationDetail {
     @Override
     public String toString() {
         return "LocationDetail{" +
-                "weatherIcon=" + weatherIcon +
-                ", weatherInfo='" + weatherInfo +
+                "weather=" + weather +
                 ", location=" + location +
-                ", relevantWeatherInfos=" + relevantWeatherInfos +
-                ", distanceFrom=" + distanceFrom(null) +
                 '}';
     }
 }
