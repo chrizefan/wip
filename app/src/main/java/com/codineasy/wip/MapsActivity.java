@@ -87,43 +87,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startActivity(intent);
     }
 
-    private void init() {
-        Log.d(TAG, "init: initializing");
-
-//        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .enableAutoManage(this /* FragmentActivity */,
-//                        this /* OnConnectionFailedListener */)
-//                .addApi(Drive.API)
-//                .addScope(Drive.SCOPE_FILE)
-//                .build();
-
-        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH
-                        || actionId == EditorInfo.IME_ACTION_DONE
-                        || event.getAction() == KeyEvent.ACTION_DOWN
-                        || event.getAction() == KeyEvent.KEYCODE_ENTER) {
-
-                    //execute search method
-                    geoLocate();
-                }
-
-                return false;
-            }
-        });
-
-        mGps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: gps icon clicked");
-                getDeviceLocation();
-            }
-        });
-
-        hideSoftKeyboard();
-    }
-
     private void geoLocate(){
         Log.d(TAG, "geoLocate: geolocating");
 
