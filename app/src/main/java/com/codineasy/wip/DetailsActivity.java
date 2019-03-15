@@ -55,7 +55,7 @@ public class DetailsActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 Log.e("JSON Error: ", e.getMessage());
             }
-            locationDetails.add(new LocationDetail(json, null));
+            locationDetails.add(new LocationDetail(null, json));
         }
 
         // https://codelabs.developers.google.com/codelabs/android-training-create-recycler-view/index.html#3
