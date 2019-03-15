@@ -4,46 +4,46 @@ import android.location.Address;
 import android.view.View;
 import android.widget.ImageView;
 
-import org.json.JSONException;
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONObject;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 
 public class LocationDetail {
+    private LatLng location;
     private JSONObject weather;
-    private Address location;
 
-    public LocationDetail(JSONObject weather, Address location) {
-        this.weather = weather;
+    public LocationDetail(LatLng location, JSONObject weather) {
         this.location = location;
+        this.weather = weather;
     }
 
-    public Address getLocation() {
+    public LatLng getLocation() {
         return location;
     }
 
-    public JSONObject getWeather() throws JSONException {
+    public JSONObject getWeather() {
         return weather;
+    }
+
+    public void setLocation(LatLng location) {
+        this.location = location;
     }
 
     public void setWeather(JSONObject weather) {
         this.weather = weather;
     }
 
-    public void setLocation(Address location) {
-        this.location = location;
-    }
-
-    public double distanceFrom(Address address) {
-        return Math.random()*100;
+    public double distanceFrom(LatLng location) {
+        return -1;
     }
 
     @Override
     public String toString() {
         return "LocationDetail{" +
-                "weather=" + weather +
-                ", location=" + location +
+                "location=" + location +
+                ", weather=" + weather +
                 '}';
     }
 }
