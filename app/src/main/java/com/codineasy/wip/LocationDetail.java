@@ -4,52 +4,46 @@ import android.location.Address;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONObject;
+
 import java.util.LinkedList;
 
 public class LocationDetail {
-    private ImageView weatherIcon;
-    private String weatherInfo;
-    private Address location;
-    private LinkedList<String> relevantWeatherInfos;
+    private LatLng location;
+    private JSONObject weather;
 
-    public LocationDetail(String weatherInfo, Address location, LinkedList<String> relevantWeatherInfos) {
-        this.weatherInfo = null;
-        this.weatherInfo = weatherInfo;
+    public LocationDetail(LatLng location, JSONObject weather) {
         this.location = location;
-        this.relevantWeatherInfos = relevantWeatherInfos;
+        this.weather = weather;
     }
 
-    public String getWeatherInfo() {
-        return weatherInfo;
-    }
-
-    public Address getLocation() {
+    public LatLng getLocation() {
         return location;
     }
 
-    public LinkedList<String> getRelevantWeatherInfos() {
-        return relevantWeatherInfos;
+    public JSONObject getWeather() {
+        return weather;
     }
 
-    public void setWeatherInfo(String weatherInfo) {
-        this.weatherInfo = weatherInfo;
-    }
-
-    public void setLocation(Address location) {
+    public void setLocation(LatLng location) {
         this.location = location;
     }
 
-    public void setRelevantWeatherInfos(LinkedList<String> relevantWeatherInfos) {
-        this.relevantWeatherInfos = relevantWeatherInfos;
+    public void setWeather(JSONObject weather) {
+        this.weather = weather;
+    }
+
+    public double distanceFrom(LatLng location) {
+        return -1;
     }
 
     @Override
     public String toString() {
         return "LocationDetail{" +
-                "weatherIcon=" + weatherIcon +
-                ", weatherInfo='" + weatherInfo + '\'' +
-                ", location=" + location +
-                ", relevantWeatherInfos=" + relevantWeatherInfos +
+                "location=" + location +
+                ", weather=" + weather +
                 '}';
     }
 }
