@@ -35,7 +35,7 @@
             android:inputType="text"
             android:textColor="#000"
             android:textSize="15sp"
-            app:pacv_googleMapsApiKey="AIzaSyCR4hH8CAkg5bwM0mcyMEl_KsZX8VRrscg" />
+            app:pacv_googleMapsApiKey="@string/google_maps_key2" />
 
         <ImageView
             android:id="@+id/ic_magnify"
