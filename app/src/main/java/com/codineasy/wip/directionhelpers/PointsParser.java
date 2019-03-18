@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.codineasy.wip.R;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -21,7 +20,7 @@ import java.util.List;
 
 public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
     TaskLoadedCallback taskCallback;
-    String directionMode = "driving";
+    String directionMode;
 
     public PointsParser(Context mContext, String directionMode) {
         this.taskCallback = (TaskLoadedCallback) mContext;
@@ -37,7 +36,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
 
         try {
             jObject = new JSONObject(jsonData[0]);
-            Log.d("mylog", jsonData[0].toString());
+            Log.d("mylog", jsonData[0]);
             DataParser parser = new DataParser();
             Log.d("mylog", parser.toString());
 
@@ -57,11 +56,11 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
     @Override
     protected void onPostExecute(List<List<HashMap<String, String>>> result) {
         ArrayList<LatLng> points;
-        PolylineOptions lineOptions = null;
+        PolylineOptions[] lineOptions = new PolylineOptions[result.size()];
         // Traversing through all the routes
-        for (int i = 0; i < result.size(); i++) {
+        for (int i = 0; i < lineOptions.length; i++) {
             points = new ArrayList<>();
-            lineOptions = new PolylineOptions();
+            lineOptions[i] = new PolylineOptions();
             // Fetching i-th route
             List<HashMap<String, String>> path = result.get(i);
             // Fetching all the points in i-th route
@@ -73,13 +72,14 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
                 points.add(position);
             }
             // Adding all the points in the route to LineOptions
-            lineOptions.addAll(points);
+            lineOptions[i].addAll(points);
             if (directionMode.equalsIgnoreCase("walking")) {
-                lineOptions.width(10);
-                lineOptions.color(Color.MAGENTA);
+                lineOptions[i].width(10);
+                lineOptions[i].color(Color.MAGENTA);
             } else {
-                lineOptions.width(20);
-                lineOptions.color(R.color.cornflower_blue);
+                lineOptions[i].width(20);
+                lineOptions[i].clickable(true);
+
             }
             Log.d("mylog", "onPostExecute lineoptions decoded");
         }
@@ -87,7 +87,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
         // Drawing polyline in the Google Map for the i-th route
         if (lineOptions != null) {
             //mMap.addPolyline(lineOptions);
-            taskCallback.onTaskDone(lineOptions);
+            taskCallback.onTaskDone((Object[]) lineOptions);
 
         } else {
             Log.d("mylog", "without Polylines drawn");

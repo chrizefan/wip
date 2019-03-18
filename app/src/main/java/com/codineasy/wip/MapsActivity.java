@@ -98,7 +98,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 place -> geoLocate());
         mAutocomplete.setOnEditorActionListener(
                 (v, actionId, event) -> {
-                    if(actionId == EditorInfo.IME_ACTION_SEARCH
+                    if (actionId == EditorInfo.IME_ACTION_SEARCH
                             || actionId == EditorInfo.IME_ACTION_DONE
                             || event.getAction() == KeyEvent.ACTION_DOWN
                             || event.getAction() == KeyEvent.KEYCODE_ENTER) {
@@ -117,18 +117,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    private void calculateDirections(){
-        if(mMarker != null) {
-            for (int i = 0; i < mPolyline.length; i++) {
-                if (mPolyline[i] != null)
-                    mPolyline[i].remove();
+    private void calculateDirections() {
+        if (mMarker != null && mPolyline != null) {
+            for (Polyline aMPolyline : mPolyline) {
+                aMPolyline.remove();
             }
-            mGetDirections.setVisibility(View.VISIBLE);
-            mGetDirections.setOnClickListener(v -> {
-                new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving");
-            });
         }
+        mGetDirections.setVisibility(View.VISIBLE);
+        mGetDirections.setOnClickListener(v -> {
+            new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving");
+        });
     }
+
 
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
         // Origin of route
@@ -138,22 +138,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Mode
         String mode = "mode=" + directionMode;
         // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + mode;
+        String parameters = str_origin + "&" + str_dest + "&" + mode ;
         // Output format
         String output = "json";
         // Building the url to the web service
-        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key2);
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&alternatives=true" + "&key=" + getString(R.string.google_maps_key2);
     }
 
     @Override
     public void onTaskDone(Object... values) {
-        if (mPolyline[] != null)
-            mPolyline.remove();
-        for (int i = 0; i < values.length; i++) {
-            if (i == 0)
-                mPolyline = mMap.addPolyline((PolylineOptions) values[i]);
-            else
-                mPolyline = mMap.addPolyline((PolylineOptions) values[i]);
+        if (mPolyline != null) {
+            for (Polyline aMPolyline : mPolyline) {
+                aMPolyline.remove();
+            }
+        }
+        mPolyline = new Polyline[values.length];
+        for (int i = 0; i < mPolyline.length; i++) {
+            Log.d(TAG, "onTaskDone: adding polyline " + i);
+            mPolyline[i] = mMap.addPolyline((PolylineOptions) values[i]);
         }
     }
 
