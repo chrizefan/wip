@@ -37,6 +37,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.7'
     implementation 'com.seatgeek:placesautocomplete:0.3-SNAPSHOT'
     testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.google.maps:google-maps-services:0.9.2'
     implementation 'org.slf4j:slf4j-simple:1.8.0-beta4'

@@ -17,6 +17,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -44,11 +45,11 @@ import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, TaskLoadedCallback, GoogleApiClient.OnConnectionFailedListener {
 
     private ImageView mGps;
+    private Button mGetDirections;
     private GoogleMap mMap;
     private Boolean mLocationPermissionGranted;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -80,6 +81,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setContentView(R.layout.activity_maps);
             mGps = findViewById(R.id.ic_gps);
             mAutocomplete = findViewById(R.id.autocomplete);
+            mGetDirections = findViewById(R.id.get_directions);
 
             getLocationPermission();
             init();
@@ -111,22 +113,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             getDeviceLocation();
         });
 
-        buildGeoApiContext();
         hideSoftKeyboard();
     }
 
-    private void buildGeoApiContext(){
-        mGeoApiContext = new GeoApiContext.Builder()
-                .queryRateLimit(3)
-                .apiKey(getString(R.string.google_maps_key2))
-                .connectTimeout(1, TimeUnit.SECONDS)
-                .readTimeout(1, TimeUnit.SECONDS)
-                .writeTimeout(1, TimeUnit.SECONDS)
-                .build();
-    }
 
-    private void calculateDirections(LatLng destination){
-        new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, destination, "driving"), "driving");
+    private void calculateDirections(){
+        if(mMarker != null) {
+            if (mPolyline != null)
+                mPolyline.remove();
+            mGetDirections.setVisibility(View.VISIBLE);
+            mGetDirections.setOnClickListener(v -> {
+                new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving");
+            });
+        }
     }
 
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
@@ -203,6 +202,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                     DEFAULT_ZOOM, "My Location");
+
                         } else {
                             Log.d(TAG, "onComplete: location null");
                             Toast.makeText(MapsActivity.this, "location not found", Toast.LENGTH_SHORT).show();
@@ -226,12 +226,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMarker = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .title(title));
-                    calculateDirections(latLng);
+                    calculateDirections();
         } else if(!title.equals("My Location")){
             mMarker.hideInfoWindow();
             mMarker.setPosition(latLng);
             mMarker.setTitle(title);
-            calculateDirections(latLng);
+            calculateDirections();
         }
         hideSoftKeyboard();
 
@@ -348,12 +348,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMarker = mMap.addMarker(new MarkerOptions()
                         .position(latLng)
                         .title(title));
+                        calculateDirections();
             } else if(!title.equals("My Location")){
                 mMarker.hideInfoWindow();
                 mMarker.setPosition(latLng);
                 mMarker.setTitle(title);
+                calculateDirections();
             }
+
         });
+
 
     }
 
