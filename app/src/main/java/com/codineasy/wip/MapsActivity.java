@@ -57,7 +57,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker mMarker;
     private GeoApiContext mGeoApiContext = null;
     private LatLng mDeviceLocation;
-    private Polyline mPolyline;
+    private Polyline[] mPolyline;
 
     private static final String TAG = "MapsActivity";
     private static final float DEFAULT_ZOOM = 15f;
@@ -119,8 +119,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void calculateDirections(){
         if(mMarker != null) {
-            if (mPolyline != null)
-                mPolyline.remove();
+            for (int i = 0; i < mPolyline.length; i++) {
+                if (mPolyline[i] != null)
+                    mPolyline[i].remove();
+            }
             mGetDirections.setVisibility(View.VISIBLE);
             mGetDirections.setOnClickListener(v -> {
                 new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving");
@@ -145,9 +147,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onTaskDone(Object... values) {
-        if (mPolyline != null)
+        if (mPolyline[] != null)
             mPolyline.remove();
-        mPolyline = mMap.addPolyline((PolylineOptions) values[0]);
+        for (int i = 0; i < values.length; i++) {
+            if (i == 0)
+                mPolyline = mMap.addPolyline((PolylineOptions) values[i]);
+            else
+                mPolyline = mMap.addPolyline((PolylineOptions) values[i]);
+        }
     }
 
     private void geoLocate(){
