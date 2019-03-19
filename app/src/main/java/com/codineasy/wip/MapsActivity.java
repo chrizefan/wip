@@ -279,11 +279,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mRouteInfoBox.setVisibility(View.INVISIBLE);
         String[] address = mMarker.getTitle().split(",");
         mAddress1.setText(address[0]);
-        String address2 = address[1];
+        StringBuilder address2 = new StringBuilder(address[1]);
         for (int i = 2; i < address.length; i++) {
-            address2 += "," + address[i];
+            address2.append(",").append(address[i]);
         }
-        mAddress2.setText(address2);
+        mAddress2.setText(address2.toString());
         mDestinationInfoBox.setVisibility(View.VISIBLE);
         getRoute();
     }
@@ -419,14 +419,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             moveCamera(latLng, DEFAULT_ZOOM, title);
         });
         mMap.setOnPolylineClickListener(polyline -> {
-            for (int i = 0; i < mPolyline.length; i++) {
-                if (polyline.getId().equals(mPolyline[i].getId())) {
-                    mPolyline[i].setColor(ContextCompat.getColor(getAppContext(), R.color.colorBlue));
-                    mPolyline[i].setZIndex(1);
+            for (Polyline aMPolyline : mPolyline) {
+                if (polyline.getId().equals(aMPolyline.getId())) {
+                    aMPolyline.setColor(ContextCompat.getColor(getAppContext(), R.color.colorBlue));
+                    aMPolyline.setZIndex(1);
                     focusRoute(polyline.getPoints());
                 } else {
-                    mPolyline[i].setColor(ContextCompat.getColor(getAppContext(), R.color.colorBlueTransparent));
-                    mPolyline[i].setZIndex(0);
+                    aMPolyline.setColor(ContextCompat.getColor(getAppContext(), R.color.colorBlueTransparent));
+                    aMPolyline.setZIndex(0);
                 }
             }
             displayRouteInfoBox();
