@@ -6,7 +6,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +18,10 @@ public class DataParser {
     JSONArray jRoutes;
     JSONArray jLegs;
 
-    public String[] parseDistance(JSONObject jObject) {
+    public double[] parseDistance(JSONObject jObject) {
         try {
             jRoutes = jObject.getJSONArray("routes");
-            String[] distances = new String[jRoutes.length()];
+            double[] distances = new double[jRoutes.length()];
             /** Traversing all routes */
             for (int i = 0; i < jRoutes.length(); i++) {
                 jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
@@ -31,8 +30,7 @@ public class DataParser {
                 for (int j = 0; j < jLegs.length(); j++) {
                     distance += jLegs.getJSONObject(j).getJSONObject("distance").getDouble("value");
                 }
-                DecimalFormat df = new DecimalFormat("#.###");
-                distances[i] = df.format(distance/1000.0) + " km";
+                distances[i] = distance;
             }
             return distances;
         } catch (JSONException e) {
@@ -41,10 +39,10 @@ public class DataParser {
         return null;
     }
 
-    public String[] parseDuration(JSONObject jObject) {
+    public int[] parseDuration(JSONObject jObject) {
         try {
             jRoutes = jObject.getJSONArray("routes");
-            String[] durations = new String[jRoutes.length()];
+            int[] durations = new int[jRoutes.length()];
             /** Traversing all routes */
             for (int i = 0; i < jRoutes.length(); i++) {
                 jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
@@ -53,15 +51,7 @@ public class DataParser {
                 for (int j = 0; j < jLegs.length(); j++) {
                     duration += jLegs.getJSONObject(j).getJSONObject("duration").getInt("value");
                 }
-                final int MINUTES_IN_AN_HOUR = 60;
-                final int SECONDS_IN_A_MINUTE = 60;
-
-                int seconds = duration % SECONDS_IN_A_MINUTE;
-                int totalMinutes = duration / SECONDS_IN_A_MINUTE;
-                int minutes = totalMinutes % MINUTES_IN_AN_HOUR;
-                int hours = totalMinutes / MINUTES_IN_AN_HOUR;
-
-                durations[i] = hours + "h" + minutes + "min" + seconds + "sec";
+                durations[i] = duration;
             }
             return durations;
         } catch (JSONException e) {

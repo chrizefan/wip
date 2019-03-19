@@ -47,6 +47,7 @@ import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -268,8 +269,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mDestinationInfoBox.setVisibility(View.INVISIBLE);
         for (int i = 0; i < mPolyline.length; i++) {
             if (mPolyline[i].getZIndex() == 1) {
-                mDuration.setText(new DataParser().parseDuration(jDirections)[i]);
-                mDistance.setText(new DataParser().parseDistance(jDirections)[i]);
+                int duration = new DataParser().parseDuration(jDirections)[i];
+                int seconds = duration % 60;
+                int totalMinutes = duration / 60;
+                int minutes = totalMinutes % 60;
+                int hours = totalMinutes / 60;
+                if (seconds >= 30) minutes += 1;
+                if (hours == 0) mDuration.setText(minutes + "min");
+                else mDuration.setText(hours + "h" + minutes + "min");
+
+                double distance = new DataParser().parseDistance(jDirections)[i];
+                distance = distance/1000.0;
+                if (distance < 100) {
+                    DecimalFormat df = new DecimalFormat("#.#");
+                    mDistance.setText(df.format(distance) + "km");
+                } else {
+                    distance = Math.round(distance);
+                    mDistance.setText( Long.toString(((Double)distance).longValue()) + "km");
+                }
             }
         }
         mRouteInfoBox.setVisibility(View.VISIBLE);
@@ -296,7 +313,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (LatLng latLngPoint : lstLatLngRoute)
             boundsBuilder.include(latLngPoint);
 
-        int routePadding = 300;
+        int routePadding = 100;
         LatLngBounds latLngBounds = boundsBuilder.build();
 
         mMap.animateCamera(
