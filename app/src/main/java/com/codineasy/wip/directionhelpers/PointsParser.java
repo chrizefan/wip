@@ -1,10 +1,12 @@
 package com.codineasy.wip.directionhelpers;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.codineasy.wip.MapsActivity;
+import com.codineasy.wip.R;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -13,6 +15,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.codineasy.wip.GlobalApplication.getAppContext;
 
 /**
  * Created by Vishal on 10/20/2018.
@@ -36,6 +40,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
 
         try {
             jObject = new JSONObject(jsonData[0]);
+            MapsActivity.jDirections = jObject;
             Log.d("mylog", jsonData[0]);
             DataParser parser = new DataParser();
             Log.d("mylog", parser.toString());
@@ -73,24 +78,20 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
             }
             // Adding all the points in the route to LineOptions
             lineOptions[i].addAll(points);
-            if (directionMode.equalsIgnoreCase("walking")) {
-                lineOptions[i].width(10);
-                lineOptions[i].color(Color.MAGENTA);
-            } else {
                 lineOptions[i].width(20);
                 lineOptions[i].clickable(true);
-
+                if (i == 0) {
+                    lineOptions[i].color(ContextCompat.getColor(getAppContext(), R.color.colorBlue));
+                    lineOptions[i].zIndex(1);
+                } else {
+                    lineOptions[i].color(ContextCompat.getColor(getAppContext(), R.color.colorBlueTransparent));
+                    lineOptions[i].zIndex(0);
+                }
             }
             Log.d("mylog", "onPostExecute lineoptions decoded");
-        }
-
-        // Drawing polyline in the Google Map for the i-th route
-        if (lineOptions != null) {
+            // Drawing polyline in the Google Map for the i-th route
             //mMap.addPolyline(lineOptions);
             taskCallback.onTaskDone((Object[]) lineOptions);
-
-        } else {
-            Log.d("mylog", "without Polylines drawn");
         }
-    }
+
 }

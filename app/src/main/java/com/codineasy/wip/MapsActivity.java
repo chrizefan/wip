@@ -19,8 +19,11 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.codineasy.wip.directionhelpers.DataParser;
 import com.codineasy.wip.directionhelpers.FetchURL;
 import com.codineasy.wip.directionhelpers.TaskLoadedCallback;
 import com.google.android.gms.common.ConnectionResult;
@@ -39,26 +42,36 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
-import com.google.maps.GeoApiContext;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.codineasy.wip.GlobalApplication.getAppContext;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, TaskLoadedCallback, GoogleApiClient.OnConnectionFailedListener {
 
     private ImageView mGps;
-    private Button mGetDirections;
+    private RelativeLayout mDestinationInfoBox;
+    private RelativeLayout mRouteInfoBox;
+    private TextView mAddress1;
+    private TextView mAddress2;
+    private TextView mDuration;
+    private TextView mDistance;
+    private Button mDirections;
+    private Button mStart;
     private GoogleMap mMap;
     private Boolean mLocationPermissionGranted;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private PlacesAutocompleteTextView mAutocomplete;
     private Marker mMarker;
-    private GeoApiContext mGeoApiContext = null;
     private LatLng mDeviceLocation;
     private Polyline[] mPolyline;
 
+    public static JSONObject jDirections;
     private static final String TAG = "MapsActivity";
     private static final float DEFAULT_ZOOM = 15f;
     private static final int GOOGLE_PLAY_SERVICE_UPDATED_ERROR_REQUEST = 0;
@@ -81,7 +94,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setContentView(R.layout.activity_maps);
             mGps = findViewById(R.id.ic_gps);
             mAutocomplete = findViewById(R.id.autocomplete);
-            mGetDirections = findViewById(R.id.get_directions);
+            mDirections = findViewById(R.id.get_directions);
+            mDestinationInfoBox = findViewById(R.id.destination_info_box);
+            mAddress1 = findViewById(R.id.info_box_address_line1);
+            mAddress2 = findViewById(R.id.info_box_address_line2);
+            mRouteInfoBox = findViewById(R.id.route_info_box);
+            mDuration = findViewById(R.id.info_box_duration);
+            mDistance = findViewById(R.id.info_box_distance);
+            mStart = findViewById(R.id.start);
 
             getLocationPermission();
             init();
@@ -117,16 +137,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    private void calculateDirections() {
+    private void getRoute() {
         if (mMarker != null && mPolyline != null) {
             for (Polyline aMPolyline : mPolyline) {
                 aMPolyline.remove();
             }
         }
-        mGetDirections.setVisibility(View.VISIBLE);
-        mGetDirections.setOnClickListener(v -> {
-            new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving");
-        });
+        mDirections.setVisibility(View.VISIBLE);
+        mDirections.setOnClickListener(v ->
+                new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving"));
     }
 
 
@@ -142,21 +161,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Output format
         String output = "json";
         // Building the url to the web service
-        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&alternatives=true" + "&key=" + getString(R.string.google_maps_key2);
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&alternatives=true"+ "&units=metric" + "&key=" + getString(R.string.google_maps_key2);
     }
 
     @Override
     public void onTaskDone(Object... values) {
-        if (mPolyline != null) {
-            for (Polyline aMPolyline : mPolyline) {
-                aMPolyline.remove();
-            }
-        }
         mPolyline = new Polyline[values.length];
         for (int i = 0; i < mPolyline.length; i++) {
             Log.d(TAG, "onTaskDone: adding polyline " + i);
             mPolyline[i] = mMap.addPolyline((PolylineOptions) values[i]);
+            focusRoute(mPolyline[0].getPoints());
         }
+        displayRouteInfoBox();
     }
 
     private void geoLocate(){
@@ -229,22 +245,68 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void moveCamera(LatLng latLng, float zoom, String title) {
         Log.d(TAG, "moveCamera: moving camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+        setMarker(latLng, title);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+        hideSoftKeyboard();
+    }
 
+    public void setMarker(LatLng latLng, String title) {
         if(!title.equals("My Location") && mMarker == null){
             mMarker = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .title(title));
-                    calculateDirections();
+                    displayDestinationInfoBox();
         } else if(!title.equals("My Location")){
             mMarker.hideInfoWindow();
             mMarker.setPosition(latLng);
             mMarker.setTitle(title);
-            calculateDirections();
+            displayDestinationInfoBox();
         }
-        hideSoftKeyboard();
-
     }
+
+    public void displayRouteInfoBox() {
+        mDestinationInfoBox.setVisibility(View.INVISIBLE);
+        for (int i = 0; i < mPolyline.length; i++) {
+            if (mPolyline[i].getZIndex() == 1) {
+                mDuration.setText(new DataParser().parseDuration(jDirections)[i]);
+                mDistance.setText(new DataParser().parseDistance(jDirections)[i]);
+            }
+        }
+        mRouteInfoBox.setVisibility(View.VISIBLE);
+    }
+
+    public void displayDestinationInfoBox() {
+        mRouteInfoBox.setVisibility(View.INVISIBLE);
+        String[] address = mMarker.getTitle().split(",");
+        mAddress1.setText(address[0]);
+        String address2 = address[1];
+        for (int i = 2; i < address.length; i++) {
+            address2 += "," + address[i];
+        }
+        mAddress2.setText(address2);
+        mDestinationInfoBox.setVisibility(View.VISIBLE);
+        getRoute();
+    }
+
+    public void focusRoute(List<LatLng> lstLatLngRoute) {
+
+        if (mMap == null || lstLatLngRoute == null || lstLatLngRoute.isEmpty()) return;
+
+        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+        for (LatLng latLngPoint : lstLatLngRoute)
+            boundsBuilder.include(latLngPoint);
+
+        int routePadding = 300;
+        LatLngBounds latLngBounds = boundsBuilder.build();
+
+        mMap.animateCamera(
+                CameraUpdateFactory.newLatLngBounds(latLngBounds, routePadding),
+                600,
+                null
+        );
+    }
+
+
 
     public boolean isGoogleServicesUpdated() {
         Log.d("Update", "isGoogleServicesUpdated: checking Google Play Services");
@@ -353,20 +415,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return;
             }
             String title = list.get(0).getAddressLine(0);
-            if(!title.equals("My Location") && mMarker == null){
-                mMarker = mMap.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .title(title));
-                        calculateDirections();
-            } else if(!title.equals("My Location")){
-                mMarker.hideInfoWindow();
-                mMarker.setPosition(latLng);
-                mMarker.setTitle(title);
-                calculateDirections();
-            }
-
+            setMarker(latLng, title);
+            moveCamera(latLng, DEFAULT_ZOOM, title);
         });
-
+        mMap.setOnPolylineClickListener(polyline -> {
+            for (int i = 0; i < mPolyline.length; i++) {
+                if (polyline.getId().equals(mPolyline[i].getId())) {
+                    mPolyline[i].setColor(ContextCompat.getColor(getAppContext(), R.color.colorBlue));
+                    mPolyline[i].setZIndex(1);
+                    focusRoute(polyline.getPoints());
+                } else {
+                    mPolyline[i].setColor(ContextCompat.getColor(getAppContext(), R.color.colorBlueTransparent));
+                    mPolyline[i].setZIndex(0);
+                }
+            }
+            displayRouteInfoBox();
+        });
 
     }
 

@@ -3,6 +3,6 @@
     <color name="colorPrimary">#FFFFFF</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#888888</color>
-    <color name="colorPolyline">#2196F3</color>
-    <color name="colorPolylineAlternative">#992196F3</color>
+    <color name="colorBlue">#4A80F5</color>
+    <color name="colorBlueTransparent">#4D4A80F5</color>
 </resources>
