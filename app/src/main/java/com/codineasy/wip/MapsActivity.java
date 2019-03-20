@@ -293,16 +293,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void displayDestinationInfoBox() {
-        mRouteInfoBox.setVisibility(View.INVISIBLE);
-        String[] address = mMarker.getTitle().split(",");
-        mAddress1.setText(address[0]);
-        StringBuilder address2 = new StringBuilder(address[1]);
-        for (int i = 2; i < address.length; i++) {
-            address2.append(",").append(address[i]);
+        try {
+            mRouteInfoBox.setVisibility(View.INVISIBLE);
+            String[] address = mMarker.getTitle().split(", ");
+            mAddress1.setText(address[0]);
+            StringBuilder address2 = new StringBuilder(address[1]);
+            for (int i = 2; i < address.length; i++) {
+                address2.append(", ").append(address[i]);
+            }
+            mAddress2.setText(address2.toString());
+            mDestinationInfoBox.setVisibility(View.VISIBLE);
+            getRoute();
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Toast.makeText(this, "address not available", Toast.LENGTH_SHORT).show();
         }
-        mAddress2.setText(address2.toString());
-        mDestinationInfoBox.setVisibility(View.VISIBLE);
-        getRoute();
     }
 
     public void focusRoute(List<LatLng> lstLatLngRoute) {
