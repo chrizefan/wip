@@ -44,11 +44,13 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.codineasy.wip.GlobalApplication.getAppContext;
@@ -71,6 +73,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker mMarker;
     private LatLng mDeviceLocation;
     private Polyline[] mPolyline;
+    private List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mRoutesData;
 
     public static JSONObject jDirections;
     private static final String TAG = "MapsActivity";
@@ -116,7 +119,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mAutocomplete.setHistoryManager(null);
         mAutocomplete.showClearButton(true);
         mAutocomplete.setOnPlaceSelectedListener(
-                place -> geoLocate());
+                place -> {
+                    try {
+                        geoLocate();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                });
         mAutocomplete.setOnEditorActionListener(
                 (v, actionId, event) -> {
                     if (actionId == EditorInfo.IME_ACTION_SEARCH
@@ -124,7 +135,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             || event.getAction() == KeyEvent.ACTION_DOWN
                             || event.getAction() == KeyEvent.KEYCODE_ENTER) {
 
-                        geoLocate();
+                        try {
+                            geoLocate();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                     return false;
                 });
@@ -138,15 +155,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    private void getRoute() {
+    private void getRoute() throws IOException, JSONException {
         if (mMarker != null && mPolyline != null) {
             for (Polyline aMPolyline : mPolyline) {
                 aMPolyline.remove();
             }
         }
         mDirections.setVisibility(View.VISIBLE);
-        mDirections.setOnClickListener(v ->
-                new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving"));
+        mDirections.setOnClickListener(v -> {
+            new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving");
+            DataParser dataParser = new DataParser();
+            try {
+                mRoutesData = dataParser.getRouteData(dataParser.getJObjectRoutes(jDirections));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Log.d(TAG, "routesData:" + mRoutesData.toString());
+        });
     }
 
 
@@ -176,7 +203,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         displayRouteInfoBox();
     }
 
-    private void geoLocate(){
+    private void geoLocate() throws IOException, JSONException {
         Log.d(TAG, "geoLocate: geolocating");
 
         String searchString = mAutocomplete.getText().toString();
@@ -235,6 +262,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     } catch (NullPointerException e) {
                         Log.d(TAG, "getDeviceLocation: NullPointerException: " + e.getMessage());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 });
             }
@@ -244,14 +275,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void moveCamera(LatLng latLng, float zoom, String title) {
+    public void moveCamera(LatLng latLng, float zoom, String title) throws IOException, JSONException {
         Log.d(TAG, "moveCamera: moving camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude);
         setMarker(latLng, title);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
         hideSoftKeyboard();
     }
 
-    public void setMarker(LatLng latLng, String title) {
+    public void setMarker(LatLng latLng, String title) throws IOException, JSONException {
         if(!title.equals("My Location") && mMarker == null){
             mMarker = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
@@ -269,7 +300,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mDestinationInfoBox.setVisibility(View.INVISIBLE);
         for (int i = 0; i < mPolyline.length; i++) {
             if (mPolyline[i].getZIndex() == 1) {
-                int duration = new DataParser().parseDuration(jDirections)[i];
+                int duration = new DataParser().parseTotalDuration(jDirections)[i];
                 int seconds = duration % 60;
                 int totalMinutes = duration / 60;
                 int minutes = totalMinutes % 60;
@@ -278,7 +309,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (hours == 0) mDuration.setText(minutes + "min");
                 else mDuration.setText(hours + "h" + minutes + "min");
 
-                double distance = new DataParser().parseDistance(jDirections)[i];
+                double distance = new DataParser().parseTotalDistance(jDirections)[i];
                 distance = distance/1000.0;
                 if (distance < 100) {
                     DecimalFormat df = new DecimalFormat("#.#");
@@ -292,7 +323,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mRouteInfoBox.setVisibility(View.VISIBLE);
     }
 
-    public void displayDestinationInfoBox() {
+    public void displayDestinationInfoBox() throws IOException, JSONException {
         try {
             mRouteInfoBox.setVisibility(View.INVISIBLE);
             String[] address = mMarker.getTitle().split(", ");
@@ -436,8 +467,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return;
             }
             String title = list.get(0).getAddressLine(0);
-            setMarker(latLng, title);
-            moveCamera(latLng, DEFAULT_ZOOM, title);
+            try {
+                setMarker(latLng, title);
+                moveCamera(latLng, DEFAULT_ZOOM, title);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         });
         mMap.setOnPolylineClickListener(polyline -> {
             for (Polyline aMPolyline : mPolyline) {

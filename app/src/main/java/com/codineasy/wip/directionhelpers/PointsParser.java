@@ -46,7 +46,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
             Log.d("mylog", parser.toString());
 
             // Starts parsing data
-            routes = parser.parse(jObject);
+            routes = parser.parseJObjectLatLng(jObject);
             Log.d("mylog", "Executing routes");
             Log.d("mylog", routes.toString());
 
