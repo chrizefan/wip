@@ -5,18 +5,28 @@ import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import com.codineasy.wip.MapsActivity;
 import com.codineasy.wip.R;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.model.EncodedPolyline;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import static com.codineasy.wip.GlobalApplication.getAppContext;
+import static com.codineasy.wip.MapsActivity.jDirections;
+import static com.codineasy.wip.MapsActivity.mRoutesData;
+
 
 /**
  * Created by Vishal on 10/20/2018.
@@ -25,6 +35,7 @@ import static com.codineasy.wip.GlobalApplication.getAppContext;
 public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
     TaskLoadedCallback taskCallback;
     String directionMode;
+    private static final String TAG = "PointsParser";
 
     public PointsParser(Context mContext, String directionMode) {
         this.taskCallback = (TaskLoadedCallback) mContext;
@@ -40,18 +51,20 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
 
         try {
             jObject = new JSONObject(jsonData[0]);
-            MapsActivity.jDirections = jObject;
-            Log.d("mylog", jsonData[0]);
+            jDirections = jObject;
+            Log.d(TAG, jsonData[0]);
             DataParser parser = new DataParser();
-            Log.d("mylog", parser.toString());
+            Log.d(TAG, parser.toString());
 
             // Starts parsing data
             routes = parser.parseJObjectLatLng(jObject);
-            Log.d("mylog", "Executing routes");
-            Log.d("mylog", routes.toString());
+            mRoutesData = parser.parseJObjectData(getJObjectRoutes(jObject));
+            Log.d(TAG, "Executing routes");
+            Log.d(TAG, routes.toString());
+            Log.d(TAG, "RoutesData:" + mRoutesData.toString());
 
         } catch (Exception e) {
-            Log.d("mylog", e.toString());
+            Log.d(TAG, e.toString());
             e.printStackTrace();
         }
         return routes;
@@ -88,10 +101,89 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
                     lineOptions[i].zIndex(0);
                 }
             }
-            Log.d("mylog", "onPostExecute lineoptions decoded");
+            Log.d(TAG, "onPostExecute lineoptions decoded");
             // Drawing polyline in the Google Map for the i-th route
             //mMap.addPolyline(lineOptions);
             taskCallback.onTaskDone((Object[]) lineOptions);
         }
+
+    private JSONObject getJObjectRoutes(JSONObject jObject) {
+        List<List<HashMap<String, String>>> routes = DataParser.parseJObjectLatLng(jObject);
+        JSONObject jObjectRoutes = new JSONObject();
+        for (int i = 0; i < routes.size(); i++) {
+            com.google.maps.model.LatLng origin;
+            com.google.maps.model.LatLng destination;
+            List<HashMap<String, String>> route;
+            route = routes.get(i);
+            HashMap<String, String> hashMap;
+            List<com.google.maps.model.LatLng> latLng = new ArrayList<>();
+            for (int j = 0; j < route.size(); j += route.size()/10) {
+                hashMap = route.get(j);
+                latLng.add(new com.google.maps.model.LatLng(Double.valueOf(hashMap.get("lat")), Double.valueOf(hashMap.get("lng"))));
+            }
+            origin = latLng.get(0);
+            destination = latLng.get(latLng.size() - 1);
+            latLng = latLng.subList(1, latLng.size() - 1);
+            try {
+                Log.d(TAG, "waypoints:" + latLng.toString());
+                jObjectRoutes = new JSONObject(downloadUrl(getUrl(origin, destination, latLng, "driving")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return jObjectRoutes;
+    }
+
+    private String downloadUrl(String strUrl) throws IOException {
+        String data = null;
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+        try {
+            URL url = new URL(strUrl);
+            // Creating an http connection to communicate with url
+            urlConnection = (HttpURLConnection) url.openConnection();
+            // Connecting to url
+            urlConnection.connect();
+            // Reading data from url
+            iStream = urlConnection.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+            data = sb.toString();
+            Log.d(TAG, "Downloaded URL: " + data);
+            br.close();
+        } catch (Exception e) {
+            Log.d(TAG, "Exception downloading URL: " + e.toString());
+        } finally {
+            assert iStream != null;
+            iStream.close();
+            urlConnection.disconnect();
+        }
+        return data;
+    }
+
+    private String getUrl(com.google.maps.model.LatLng origin, com.google.maps.model.LatLng destination, List<com.google.maps.model.LatLng> latLngs, String directionMode) {
+        // Origin of route
+        String str_origin = "origin=" + origin.lat + "," + origin.lng;
+        Log.d(TAG, "origin:" + origin);
+        // Destination of route
+        String str_dest = "destination=" + destination.lat + "," + destination.lng;
+        Log.d(TAG, "destination:" + destination);
+        // Mode
+        String mode = "mode=" + directionMode;
+        // WayPoints
+        String encodedWaypoints = "waypoints=enc:" + new EncodedPolyline(latLngs).getEncodedPath() + ":";
+        // Building the parameters to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + mode + "&" + encodedWaypoints;
+        // Output format
+        String output = "json";
+        // Building the url to the web service
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&alternatives=false" + "&units=metric" + "&key=" + getAppContext().getString(R.string.google_maps_key2);
+    }
 
 }
