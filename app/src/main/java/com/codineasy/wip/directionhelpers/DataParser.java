@@ -21,19 +21,19 @@ public class DataParser {
 
     private static final String TAG = "DataParser";
 
-    public double[] parseTotalDistance(JSONObject jObject) {
+    public int[] parseTotalDistance(JSONObject jObject) {
         JSONArray jRoutes;
         JSONArray jLegs;
         try {
             jRoutes = jObject.getJSONArray("routes");
-            double[] distances = new double[jRoutes.length()];
+            int[] distances = new int[jRoutes.length()];
             /** Traversing all routes */
             for (int i = 0; i < jRoutes.length(); i++) {
                 jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
-                double distance = 0;
+                int distance = 0;
                 /** Traversing all legs */
                 for (int j = 0; j < jLegs.length(); j++) {
-                    distance += jLegs.getJSONObject(j).getJSONObject("distance").getDouble("value");
+                    distance += jLegs.getJSONObject(j).getJSONObject("distance").getInt("value");
                 }
                 distances[i] = distance;
             }
@@ -67,50 +67,34 @@ public class DataParser {
         return null;
     }
 
-    public List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> parseJObjectData(JSONObject jObject) {
-        List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> routesData  = new ArrayList<>();
+    public List<HashMap<HashMap<String, String>, HashMap<String, String>>> parseJObjectData(JSONObject jObject) {
+        List routeData  = new ArrayList<>();
         JSONArray jRoutes;
         JSONArray jLegs;
-        JSONArray jSteps;
         try {
             jRoutes = jObject.getJSONArray("routes");
-            /** Traversing all routes */
-            for (int i = 0; i < jRoutes.length(); i++) {
-                jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
-                List path = new ArrayList<>();
-                int distance = 0;
-                int duration = 0;
-                /** Traversing all legs */
-                for (int j = 0; j < jLegs.length(); j++) {
-                    HashMap<HashMap, HashMap> data = new HashMap<>();
-                    jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
-                    /** Traversing all steps */
-                    for (int k = 0; k < jSteps.length(); k++) {
-                        String polyline = (String) ((JSONObject) ((JSONObject) jSteps.get(k)).get("polyline")).get("points");
-                        List<LatLng> list = new EncodedPolyline(polyline).decodePath();
-                        /** Traversing all points */
-                        for (int l = 0; l < list.size(); l++) {
-                            HashMap<String, String> latLng = new HashMap<>();
-                            latLng.put("lat", Double.toString((list.get(l)).lat));
-                            latLng.put("lng", Double.toString((list.get(l)).lng));
-                            data.put(latLng, latLng);
-                            HashMap<String, String> distanceDuration = new HashMap<>();
-                            distance += jSteps.getJSONObject(k).getJSONObject("distance").getInt("value");
-                            duration += jSteps.getJSONObject(k).getJSONObject("duration").getInt("value");
-                            distanceDuration.put("distance", Integer.toString(distance));
-                            distanceDuration.put("duration", Integer.toString(duration));
-                            data.put(distanceDuration, distanceDuration);
-                        }
-                    }
-                    path.add(data);
-                }
+            jLegs = ((JSONObject) jRoutes.get(0)).getJSONArray("legs");
+            Log.d(TAG, "Legs:" + jLegs.length());
+            int distance = 0;
+            int duration = 0;
+            /** Traversing all legs */
+            for (int j = 0; j < jLegs.length(); j++) {
+                HashMap<HashMap, HashMap> data = new HashMap<>();
+                HashMap<String, String> latLng = new HashMap<>();
+                latLng.put("lat", jLegs.getJSONObject(j).getJSONObject("end_location").getString("lat"));
+                latLng.put("lng", jLegs.getJSONObject(j).getJSONObject("end_location").getString("lng"));
+                HashMap<String, String> distanceDuration = new HashMap<>();
+                distance += jLegs.getJSONObject(j).getJSONObject("distance").getInt("value");
+                duration += jLegs.getJSONObject(j).getJSONObject("duration").getInt("value");
+                distanceDuration.put("distance", Integer.toString(distance));
+                distanceDuration.put("duration", Integer.toString(duration));
+                data.put(latLng, distanceDuration);
+                routeData.add(data);
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
+        } catch (JSONException e1) {
+            e1.printStackTrace();
         }
-        Log.d(TAG, routesData.toString());
-        return routesData;
+        return routeData;
     }
 
 

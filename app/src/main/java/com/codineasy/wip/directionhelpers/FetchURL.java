@@ -18,6 +18,7 @@ import java.net.URL;
 public class FetchURL extends AsyncTask<String, Void, String> {
     Context mContext;
     String directionMode = "driving";
+    private static final String TAG = "FetchURL";
 
     public FetchURL(Context mContext) {
         this.mContext = mContext;
@@ -31,7 +32,7 @@ public class FetchURL extends AsyncTask<String, Void, String> {
         try {
             // Fetching the data from web service
             data = downloadUrl(strings[0]);
-            Log.d("mylog", "Background task data " + data);
+            Log.d("TAG", "Background task data " + data);
         } catch (Exception e) {
             Log.d("Background Task", e.toString());
         }
@@ -65,10 +66,10 @@ public class FetchURL extends AsyncTask<String, Void, String> {
                 sb.append(line);
             }
             data = sb.toString();
-            Log.d("mylog", "Downloaded URL: " + data);
+            Log.d("TAG", "Downloaded URL: " + data);
             br.close();
         } catch (Exception e) {
-            Log.d("mylog", "Exception downloading URL: " + e.toString());
+            Log.d("TAGF", "Exception downloading URL: " + e.toString());
         } finally {
             assert iStream != null;
             iStream.close();

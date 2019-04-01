@@ -58,10 +58,9 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
 
             // Starts parsing data
             routes = parser.parseJObjectLatLng(jObject);
-            mRoutesData = parser.parseJObjectData(getJObjectRoutes(jObject));
+            mRoutesData = getJObjectData(jObject);
             Log.d(TAG, "Executing routes");
             Log.d(TAG, routes.toString());
-            Log.d(TAG, "RoutesData:" + mRoutesData.toString());
 
         } catch (Exception e) {
             Log.d(TAG, e.toString());
@@ -102,38 +101,42 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
                 }
             }
             Log.d(TAG, "onPostExecute lineoptions decoded");
+            Log.d(TAG, "RoutesData:" + mRoutesData.toString());
             // Drawing polyline in the Google Map for the i-th route
             //mMap.addPolyline(lineOptions);
             taskCallback.onTaskDone((Object[]) lineOptions);
         }
 
-    private JSONObject getJObjectRoutes(JSONObject jObject) {
+    private List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> getJObjectData(JSONObject jObject){
+        List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> routesData  = new ArrayList<>();
         List<List<HashMap<String, String>>> routes = DataParser.parseJObjectLatLng(jObject);
         JSONObject jObjectRoutes = new JSONObject();
         for (int i = 0; i < routes.size(); i++) {
             com.google.maps.model.LatLng origin;
             com.google.maps.model.LatLng destination;
-            List<HashMap<String, String>> route;
-            route = routes.get(i);
+            List<HashMap<String, String>> route = routes.get(i);
             HashMap<String, String> hashMap;
             List<com.google.maps.model.LatLng> latLng = new ArrayList<>();
             for (int j = 0; j < route.size(); j += route.size()/10) {
                 hashMap = route.get(j);
                 latLng.add(new com.google.maps.model.LatLng(Double.valueOf(hashMap.get("lat")), Double.valueOf(hashMap.get("lng"))));
             }
-            origin = latLng.get(0);
-            destination = latLng.get(latLng.size() - 1);
+            origin = new com.google.maps.model.LatLng(Double.valueOf(route.get(0).get("lat")), Double.valueOf(route.get(0).get("lng")));
+            destination = new com.google.maps.model.LatLng(Double.valueOf(route.get(route.size()-1).get("lat")), Double.valueOf(route.get(route.size()-1).get("lng")));
             latLng = latLng.subList(1, latLng.size() - 1);
             try {
                 Log.d(TAG, "waypoints:" + latLng.toString());
-                jObjectRoutes = new JSONObject(downloadUrl(getUrl(origin, destination, latLng, "driving")));
+                JSONObject jRoute = new JSONObject(downloadUrl(getUrl(origin, destination, latLng, "driving")));
+                routesData.add(new DataParser().parseJObjectData(jRoute));
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        return jObjectRoutes;
+
+        Log.d(TAG, "jObjectRoutes:" + jObjectRoutes.toString());
+        return routesData;
     }
 
     private String downloadUrl(String strUrl) throws IOException {
