@@ -8,7 +8,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -27,6 +26,7 @@ import android.widget.Toast;
 
 import com.codineasy.wip.directionhelpers.DataParser;
 import com.codineasy.wip.directionhelpers.FetchURL;
+import com.codineasy.wip.directionhelpers.LocationBuilder;
 import com.codineasy.wip.directionhelpers.TaskLoadedCallback;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -73,7 +73,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private PlacesAutocompleteTextView mAutocomplete;
     private Marker mMarker;
-    private LatLng mDeviceLocation;
+    public static LatLng mDeviceLocation;
     private LocationListener mLocationListener;
     private Polyline[] mPolyline;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mRoutesData;
@@ -139,7 +139,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.d(TAG, "onClick: gps icon clicked");
             getDeviceLocation();
         });
-        LocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 2, mLocationListener);
         hideSoftKeyboard();
     }
 
@@ -156,34 +155,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private void startNavigation(float bearing) {
-        LocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 2, new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        });
+    private void startNavigation() {
+        LocationBuilder locationBuilder = new LocationBuilder();
         mStart.setOnClickListener(v -> {
             CameraPosition camPos = new CameraPosition.Builder()
                     .target(mDeviceLocation)
                     .tilt(45)
-                    .zoom(DEFAULT_ZOOM)
-                    .bearing(bearing)
+                    .zoom(18f)
+                    .bearing(locationBuilder.getBearing())
                     .build();
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
         });
@@ -332,7 +311,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
         mRouteInfoBox.setVisibility(View.VISIBLE);
-        startNavigation(90);
+        startNavigation();
     }
 
     public void displayDestinationInfoBox() {
@@ -478,7 +457,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             String title = list.get(0).getAddressLine(0);
             setMarker(latLng, title);
-            moveCamera(latLng, DEFAULT_ZOOM, title);
             mAutocomplete.setText(title);
         });
         mMap.setOnPolylineClickListener(polyline -> {
