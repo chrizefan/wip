@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -35,6 +37,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -71,6 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private PlacesAutocompleteTextView mAutocomplete;
     private Marker mMarker;
     private LatLng mDeviceLocation;
+    private LocationListener mLocationListener;
     private Polyline[] mPolyline;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mRoutesData;
 
@@ -135,7 +139,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.d(TAG, "onClick: gps icon clicked");
             getDeviceLocation();
         });
-
+        LocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 2, mLocationListener);
         hideSoftKeyboard();
     }
 
@@ -152,9 +156,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private void startNavigation() {
-        mStart.setOnClickListener(v -> {
+    private void startNavigation(float bearing) {
+        LocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 2, new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
 
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        });
+        mStart.setOnClickListener(v -> {
+            CameraPosition camPos = new CameraPosition.Builder()
+                    .target(mDeviceLocation)
+                    .tilt(45)
+                    .zoom(DEFAULT_ZOOM)
+                    .bearing(bearing)
+                    .build();
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
         });
     }
 
@@ -301,6 +332,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
         mRouteInfoBox.setVisibility(View.VISIBLE);
+        startNavigation(90);
     }
 
     public void displayDestinationInfoBox() {
