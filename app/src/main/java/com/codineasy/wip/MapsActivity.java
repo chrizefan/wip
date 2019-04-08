@@ -152,6 +152,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    private void startNavigation() {
+        mStart.setOnClickListener(v -> {
+
+        });
+    }
 
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
         // Origin of route
@@ -198,6 +203,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             moveCamera(new LatLng(address.getLatitude(), address.getLongitude()),
                     DEFAULT_ZOOM, address.getAddressLine(0));
+        }
+        else {
+            Toast.makeText(MapsActivity.this, "address not found", Toast.LENGTH_SHORT).show();
         }
         hideSoftKeyboard();
     }
@@ -330,8 +338,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         );
     }
 
-
-
     public boolean isGoogleServicesUpdated() {
         Log.d("Update", "isGoogleServicesUpdated: checking Google Play Services");
 
@@ -441,6 +447,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             String title = list.get(0).getAddressLine(0);
             setMarker(latLng, title);
             moveCamera(latLng, DEFAULT_ZOOM, title);
+            mAutocomplete.setText(title);
         });
         mMap.setOnPolylineClickListener(polyline -> {
             for (Polyline aMPolyline : mPolyline) {
