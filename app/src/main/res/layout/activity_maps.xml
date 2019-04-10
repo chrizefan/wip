@@ -14,8 +14,8 @@
 
     <RelativeLayout
         android:id="@+id/relLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_width="402dp"
+        android:layout_height="69dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
-            android:layout_toEndOf="@+id/ic_magnify"
+            android:layout_toEndOf="@+id/ic_menu"
             android:background="@drawable/white_rectangle_100"
             android:hint="Enter Address, City or Zip Code"
             android:imeOptions="actionSearch"
@@ -38,13 +38,13 @@
             app:pacv_googleMapsApiKey="@string/google_maps_key2" />
 
         <ImageView
-            android:id="@+id/ic_magnify"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
+            android:id="@+id/ic_menu"
+            android:layout_width="51dp"
+            android:layout_height="52dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:src="@drawable/ic_magnify" />
+            android:src="@drawable/ic_menu" />
 
     </RelativeLayout>
 
