@@ -9,7 +9,7 @@
           android:id="settings"
 
           android:icon="@drawable/ic_menu"
-          
+
           />
 
 
