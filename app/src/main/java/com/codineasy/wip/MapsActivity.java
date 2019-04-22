@@ -10,13 +10,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -29,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v7.widget.Toolbar;
 
 import com.codineasy.wip.directionhelpers.DataParser;
 import com.codineasy.wip.directionhelpers.FetchURL;
@@ -105,7 +101,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (isGoogleServicesUpdated()) {
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_test);
+            setContentView(R.layout.activity_drawer);
             mGps = findViewById(R.id.ic_gps);
             mAutocomplete = findViewById(R.id.autocomplete);
             mDirections = findViewById(R.id.get_directions);
