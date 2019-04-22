@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
-            android:layout_toEndOf="@+id/ic_menu"
+            android:layout_toEndOf="@+id/bttn_menu"
             android:background="@drawable/white_rectangle_100"
             android:hint="Enter Address, City or Zip Code"
             android:imeOptions="actionSearch"
@@ -37,8 +37,8 @@
             android:textSize="15sp"
             app:pacv_googleMapsApiKey="@string/google_maps_key2" />
 
-        <ImageView
-            android:id="@+id/ic_menu"
+        <Button
+            android:id="@+id/bttn_menu"
             android:layout_width="51dp"
             android:layout_height="52dp"
             android:layout_centerVertical="true"
