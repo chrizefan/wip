@@ -121,6 +121,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             init();
 
         }
+        DrawerLayout navDrawer = findViewById(R.id.drawer_layout);
+        navDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         Button menubttn = findViewById(R.id.bttn_menu);
         menubttn.setOnClickListener(new View.OnClickListener() {
@@ -130,6 +132,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // If the navigation drawer is not open then open it, if its already open then close it.
                 if(!navDrawer.isDrawerOpen(GravityCompat.START)) navDrawer.openDrawer(Gravity.START);
                 else navDrawer.closeDrawer(Gravity.END);
+
+
             }
         });
 
