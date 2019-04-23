@@ -19,10 +19,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +50,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
+
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 import android.view.Gravity;
 import org.json.JSONObject;
@@ -81,6 +84,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Polyline[] mPolyline;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mRoutesData;
 
+    private Button slideBttn;
+    private boolean isup;
+
     public static JSONObject jDirections;
     private static final String TAG = "MapsActivity";
     private static final float DEFAULT_ZOOM = 15f;
@@ -90,6 +96,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136));
+
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -112,15 +120,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mDuration = findViewById(R.id.info_box_duration);
             mDistance = findViewById(R.id.info_box_distance);
             mStart = findViewById(R.id.start);
-
+            slideBttn = findViewById(R.id.slideUp);
             getLocationPermission();
             init();
 
         }
+
         DrawerLayout navDrawer = findViewById(R.id.drawer_layout);
         navDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         Button menubttn = findViewById(R.id.bttn_menu);
+
         menubttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,6 +142,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
+
+        LinearLayout slideView = findViewById(R.id.bottom_view);
+        slideView.setVisibility(View.INVISIBLE);
+
+        isup = false;
+
+
+        slideBttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isup) {
+                    slideDown(slideView);
+                    v.setBackgroundResource(R.drawable.ic_up);
+
+                } else {
+                    slideUp(slideView);
+                    v.setBackgroundResource(R.drawable.ic_down);
+
+                }
+                isup = !isup;
+            }
+        });
+
+
+
+
 
 
 
@@ -181,6 +217,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void startNavigation() {
         LocationBuilder locationBuilder = new LocationBuilder();
         mStart.setOnClickListener(v -> {
+
             CameraPosition camPos = new CameraPosition.Builder()
                     .target(mDeviceLocation)
                     .tilt(45)
@@ -311,6 +348,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void displayRouteInfoBox() {
         mDestinationInfoBox.setVisibility(View.INVISIBLE);
+        slideBttn.setVisibility(View.VISIBLE);
         for (int i = 0; i < mPolyline.length; i++) {
             if (mPolyline[i].getZIndex() == 1) {
                 int duration = new DataParser().parseTotalDuration(jDirections)[i];
@@ -338,6 +376,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void displayDestinationInfoBox() {
+
+
         try {
             mRouteInfoBox.setVisibility(View.INVISIBLE);
             String[] address = mMarker.getTitle().split(", ");
@@ -502,6 +542,40 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return false;
     }
+
+    public void slideUp(View view){
+        view.setVisibility(View.VISIBLE);
+        TranslateAnimation animate = new TranslateAnimation(
+                0,                 // fromXDelta
+                0,                 // toXDelta
+                view.getHeight(),  // fromYDelta
+                0);                // toYDelta
+        animate.setDuration(500);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
+    }
+
+    public void slideDown(View view){
+        TranslateAnimation animate = new TranslateAnimation(
+                0,                 // fromXDelta
+                0,                 // toXDelta
+                0,                 // fromYDelta
+                view.getHeight()); // toYDelta
+        animate.setDuration(500);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
 }
