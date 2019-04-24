@@ -28,8 +28,8 @@ public class LocationDetail extends BaseObservable {
     private int timeToArrive;
     private int distanceToArrive;
 
-    public LocationDetail(HashMap<String, String> details) {
-        this.updateDetails(details);
+    public LocationDetail(HashMap<String, String> latLng, HashMap<String, String> durDst) {
+        this.updateDetails(latLng, durDst);
         this.jsonHandler.addOnPropertyChangedCallback(new OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
@@ -38,14 +38,14 @@ public class LocationDetail extends BaseObservable {
         });
     }
 
-    public void updateDetails(HashMap<String, String> details) {
+    public void updateDetails(HashMap<String, String> latLng, HashMap<String, String> durDst) {
         this.location = new LatLng(
-                Double.parseDouble(Objects.requireNonNull(details.get("lat"))),
-                Double.parseDouble((Objects.requireNonNull(details.get("lng"))))
+                Double.parseDouble(Objects.requireNonNull(latLng.get("lat"))),
+                Double.parseDouble((Objects.requireNonNull(latLng.get("lng"))))
         );
 
-        this.timeToArrive = Integer.parseInt(Objects.requireNonNull(details.get("duration")));
-        this.distanceToArrive = Integer.parseInt(Objects.requireNonNull(details.get("distance")));
+        this.timeToArrive = Integer.parseInt(Objects.requireNonNull(durDst.get("duration")));
+        this.distanceToArrive = Integer.parseInt(Objects.requireNonNull(durDst.get("distance")));
 
         this.jsonHandler = new DarkSkyJSONHandler(this);
         notifyChange();
