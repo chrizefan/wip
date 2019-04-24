@@ -3,6 +3,7 @@ package com.codineasy.wip;
 import android.content.Context;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
+import android.databinding.Observable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -54,6 +55,12 @@ public class DarkSkyJSONHandler extends BaseObservable {
         this.json = null;
 
         this.detail = detail;
+        this.detail.addOnPropertyChangedCallback(new OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                update();
+            }
+        });
 
         weather = new Weather(this, this.detail);
     }
