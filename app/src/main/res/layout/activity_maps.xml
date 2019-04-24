@@ -193,7 +193,7 @@
 
     <LinearLayout
         android:id="@+id/bottom_view"
-        android:background="@color/DarkCyan"
+        android:background="@drawable/white_rectangle_50"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
