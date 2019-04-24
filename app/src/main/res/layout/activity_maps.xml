@@ -41,8 +41,8 @@
 
         <Button
             android:id="@+id/bttn_menu"
-            android:layout_width="51dp"
-            android:layout_height="52dp"
+            android:layout_width="38dp"
+            android:layout_height="31dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
@@ -194,7 +194,7 @@
 
     <LinearLayout
         android:id="@+id/bottom_view"
-        android:background="@drawable/white_rectangle_50"
+        android:background="@drawable/list_grad"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
