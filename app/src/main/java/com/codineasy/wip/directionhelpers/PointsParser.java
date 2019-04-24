@@ -1,11 +1,15 @@
 package com.codineasy.wip.directionhelpers;
 
 import android.content.Context;
+import android.databinding.ObservableArrayList;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.codineasy.wip.DarkSkyJSONHandler;
+import com.codineasy.wip.LocationDetail;
 import com.codineasy.wip.R;
+import com.codineasy.wip.WipGlobals;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.model.EncodedPolyline;
@@ -104,6 +108,20 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
             Log.d(TAG, "RoutesData:" + mRoutesData.toString());
             // Drawing polyline in the Google Map for the i-th route
             //mMap.addPolyline(lineOptions);
+
+        DarkSkyJSONHandler.allowAllUpdate(getAppContext());
+        for(List<HashMap<HashMap<String, String>, HashMap<String, String>>> listMapMap: mRoutesData) {
+            ObservableArrayList<LocationDetail> tmpList = new ObservableArrayList<>();
+            for(HashMap<HashMap<String, String>, HashMap<String, String>> mapMap : listMapMap)
+                for(HashMap<String, String> latlng : mapMap.keySet()) {
+                    LocationDetail detail = new LocationDetail(latlng, mapMap.get(latlng));
+                    detail.fetchDarkSky();
+                    tmpList.add(detail);
+                }
+
+            WipGlobals.details.add(tmpList);
+        }
+
             taskCallback.onTaskDone((Object[]) lineOptions);
         }
 
