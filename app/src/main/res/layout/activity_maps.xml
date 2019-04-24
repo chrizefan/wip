@@ -133,6 +133,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/blue_rectangle_25"/>
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -198,6 +199,20 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="490dp">
+
+        <Button
+            android:id="@+id/reset"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="330dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/ic_refresh"
+
+
+            />
+
+
+        
 
     </LinearLayout>
 
