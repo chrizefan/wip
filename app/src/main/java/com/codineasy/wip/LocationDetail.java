@@ -51,7 +51,7 @@ public class LocationDetail extends BaseObservable {
         notifyChange();
     }
 
-    public void forceDarkSkyUpdate() {
+    public void fetchDarkSky() {
         jsonHandler.update();
     }
 
