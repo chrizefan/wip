@@ -92,14 +92,20 @@ public class Weather extends BaseObservable {
     }
 
     public static Integer findWeatherClosestToTime(long time, JSONArray array) {
-        int closestIndex = -1;
-        long smallestDiff = -1;
+        int closestIndex = 0;
+        long smallestDiff;
+        try {
+            smallestDiff = Math.abs(array.getJSONObject(0).getInt("time") - time);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return 0;
+        }
 
         try {
-            for(int i = 0; i < array.length(); ++i) {
-                JSONObject json = (JSONObject) array.get(i);
+            for(int i = 1; i < array.length(); ++i) {
+                JSONObject json = array.getJSONObject(i);
                 long currentDiff = Math.abs(json.getInt("time") - time);
-                if (smallestDiff == -1 || currentDiff < smallestDiff) {
+                if (currentDiff < smallestDiff) {
                     smallestDiff = currentDiff;
                     closestIndex = i;
                 } else {
