@@ -21,10 +21,10 @@ public class Weather extends BaseObservable {
 
         this.detail = detail;
 
-        updateJSON();
+        update();
     }
 
-    private void updateJSON() {
+    public void update() {
         try {
             JSONObject json = handler.getJson();
             if(json != null) {
@@ -120,7 +120,7 @@ public class Weather extends BaseObservable {
         @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onPropertyChanged(Observable sender, int propertyId) {
-            updateJSON();
+            update();
         }
     }
 }
