@@ -55,12 +55,6 @@ public class DarkSkyJSONHandler extends BaseObservable {
         this.json = null;
 
         this.detail = detail;
-        this.detail.addOnPropertyChangedCallback(new OnPropertyChangedCallback() {
-            @Override
-            public void onPropertyChanged(Observable sender, int propertyId) {
-                update();
-            }
-        });
 
         weather = new Weather(this, this.detail);
     }
