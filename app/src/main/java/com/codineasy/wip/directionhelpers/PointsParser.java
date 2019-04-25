@@ -80,6 +80,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
         DarkSkyJSONHandler.allowAllUpdate(getAppContext());
         WipGlobals.startTime = Calendar.getInstance().getTimeInMillis()/1000;
 
+        WipGlobals.details.clear();
         for(List<HashMap<HashMap<String, String>, HashMap<String, String>>> listMapMap: mRoutesData) {
             ObservableArrayList<LocationDetail> tmpList = new ObservableArrayList<>();
             for(HashMap<HashMap<String, String>, HashMap<String, String>> mapMap : listMapMap)
