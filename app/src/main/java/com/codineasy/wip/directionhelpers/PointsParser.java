@@ -85,7 +85,6 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
             for(HashMap<HashMap<String, String>, HashMap<String, String>> mapMap : listMapMap)
                 for(HashMap<String, String> latlng : mapMap.keySet()) {
                     LocationDetail detail = new LocationDetail(latlng, mapMap.get(latlng));
-                    detail.fetchDarkSky();
                     tmpList.add(detail);
                 }
 

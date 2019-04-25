@@ -47,7 +47,10 @@ public class LocationDetail extends BaseObservable {
         this.timeToArrive = Integer.parseInt(Objects.requireNonNull(durDst.get("duration")));
         this.distanceToArrive = Integer.parseInt(Objects.requireNonNull(durDst.get("distance")));
 
-        this.jsonHandler = new DarkSkyJSONHandler(this);
+        if(jsonHandler == null)
+            this.jsonHandler = new DarkSkyJSONHandler(this);
+        jsonHandler.update();
+
         notifyChange();
     }
 
