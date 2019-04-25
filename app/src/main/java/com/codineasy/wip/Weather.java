@@ -20,8 +20,6 @@ public class Weather extends BaseObservable {
         this.handler.addOnPropertyChangedCallback(new DarkSkyJSONHandlerListener());
 
         this.detail = detail;
-
-        update();
     }
 
     public void update() {

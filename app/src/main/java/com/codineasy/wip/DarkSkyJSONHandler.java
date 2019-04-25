@@ -60,6 +60,7 @@ public class DarkSkyJSONHandler extends BaseObservable {
     }
 
     public Weather getWeather() {
+        weather.update();
         return weather;
     }
 
