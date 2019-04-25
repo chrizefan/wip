@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -77,6 +78,8 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
     @Override
     protected void onPostExecute(List<List<HashMap<String, String>>> result) {
         DarkSkyJSONHandler.allowAllUpdate(getAppContext());
+        WipGlobals.startTime = Calendar.getInstance().getTimeInMillis()/1000;
+
         for(List<HashMap<HashMap<String, String>, HashMap<String, String>>> listMapMap: mRoutesData) {
             ObservableArrayList<LocationDetail> tmpList = new ObservableArrayList<>();
             for(HashMap<HashMap<String, String>, HashMap<String, String>> mapMap : listMapMap)
