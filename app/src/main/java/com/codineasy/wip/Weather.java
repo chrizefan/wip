@@ -78,6 +78,9 @@ public class Weather extends BaseObservable {
     @Override
     public String toString() {
         return "Weather{" +
+                handler.getLocation() + ", " +
+                "duration=" + detail.getTimeToArrive() + ", " +
+                "distance=" + detail.getDistanceToArrive() + ", " +
                 "json=" + json +
                 '}';
     }

@@ -465,7 +465,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     aMPolyline.setColor(ContextCompat.getColor(getAppContext(), R.color.colorBlue));
                     aMPolyline.setZIndex(1);
                     focusRoute(polyline.getPoints());
-                    WipGlobals.details.get(0).forEach(ld -> Log.d(TAG, "getWeather at " + ld.getLocation() + ": " + ld.getWeather().toString()));
+                    WipGlobals.details.get(0).forEach(ld -> Log.d(TAG, "getWeather(): "+ ld.getWeather().toString()));
                 } else {
                     aMPolyline.setColor(ContextCompat.getColor(getAppContext(), R.color.colorBlueTransparent));
                     aMPolyline.setZIndex(0);
