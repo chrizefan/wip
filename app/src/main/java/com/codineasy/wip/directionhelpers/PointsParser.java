@@ -76,6 +76,19 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
     // Executes in UI thread, after the parsing process
     @Override
     protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+        DarkSkyJSONHandler.allowAllUpdate(getAppContext());
+        for(List<HashMap<HashMap<String, String>, HashMap<String, String>>> listMapMap: mRoutesData) {
+            ObservableArrayList<LocationDetail> tmpList = new ObservableArrayList<>();
+            for(HashMap<HashMap<String, String>, HashMap<String, String>> mapMap : listMapMap)
+                for(HashMap<String, String> latlng : mapMap.keySet()) {
+                    LocationDetail detail = new LocationDetail(latlng, mapMap.get(latlng));
+                    detail.fetchDarkSky();
+                    tmpList.add(detail);
+                }
+
+            WipGlobals.details.add(tmpList);
+        }
+
         ArrayList<LatLng> points;
         PolylineOptions[] lineOptions = new PolylineOptions[result.size()];
         // Traversing through all the routes
@@ -108,19 +121,6 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
             Log.d(TAG, "RoutesData:" + mRoutesData.toString());
             // Drawing polyline in the Google Map for the i-th route
             //mMap.addPolyline(lineOptions);
-
-        DarkSkyJSONHandler.allowAllUpdate(getAppContext());
-        for(List<HashMap<HashMap<String, String>, HashMap<String, String>>> listMapMap: mRoutesData) {
-            ObservableArrayList<LocationDetail> tmpList = new ObservableArrayList<>();
-            for(HashMap<HashMap<String, String>, HashMap<String, String>> mapMap : listMapMap)
-                for(HashMap<String, String> latlng : mapMap.keySet()) {
-                    LocationDetail detail = new LocationDetail(latlng, mapMap.get(latlng));
-                    detail.fetchDarkSky();
-                    tmpList.add(detail);
-                }
-
-            WipGlobals.details.add(tmpList);
-        }
 
             taskCallback.onTaskDone((Object[]) lineOptions);
         }
