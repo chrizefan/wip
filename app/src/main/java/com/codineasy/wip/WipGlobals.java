@@ -1,6 +1,7 @@
 package com.codineasy.wip;
 
 import android.databinding.ObservableArrayList;
+import android.databinding.ObservableInt;
 import android.databinding.ObservableList;
 
 import java.util.Comparator;
@@ -15,6 +16,7 @@ public class WipGlobals {
     public static long weatherUpdateTime = 1000*60*60;
     public static long maxTimeout = 1000;
     public static ObservableList<ObservableArrayList<LocationDetail>> details = new ObservableArrayList<>();
+    public static ObservableInt detailsIndex = new ObservableInt(0);
     public static class PointDistanceComparator implements Comparator<LocationDetail> {
 
         @Override
