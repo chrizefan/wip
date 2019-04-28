@@ -200,6 +200,10 @@
         android:layout_width="match_parent"
         android:layout_height="490dp">
 
+        <include layout="@layout/forecast_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
         <Button
             android:id="@+id/reset"
             android:layout_width="50dp"
