@@ -41,7 +41,7 @@ public class DarkSkyJSONHandler extends BaseObservable {
     private LocationDetail detail;
     private Weather weather;
 
-    private static final String requestFormat = "https://api.darksky.net/forecast/7b077f2e5773e91b61bf9cce9c4c759f/%f,%f,%d?exclude=minutely&units=si";
+    private static final String requestFormat = "https://api.darksky.net/forecast/7b077f2e5773e91b61bf9cce9c4c759f/%f,%f?exclude=minutely&units=si";
     private JSONObject json;
     private final Response.ErrorListener errorListener = (VolleyError error) -> {};
     private final Response.Listener<JSONObject> listener = (JSONObject response) -> {
@@ -97,7 +97,7 @@ public class DarkSkyJSONHandler extends BaseObservable {
     public void update() {
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
-                String.format(requestFormat, getLocation().latitude, getLocation().longitude, Calendar.getInstance().getTimeInMillis() / 1000 + detail.getTimeToArrive()),
+                String.format(requestFormat, getLocation().latitude, getLocation().longitude),
                 null,
                 this.listener,
                 this.errorListener
