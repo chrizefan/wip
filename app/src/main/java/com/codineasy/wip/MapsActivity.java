@@ -460,15 +460,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mAutocomplete.setText(title);
         });
         mMap.setOnPolylineClickListener(polyline -> {
+            int index = 0;
             for (Polyline aMPolyline : mPolyline) {
                 if (polyline.getId().equals(aMPolyline.getId())) {
                     aMPolyline.setColor(ContextCompat.getColor(getAppContext(), R.color.colorBlue));
                     aMPolyline.setZIndex(1);
                     focusRoute(polyline.getPoints());
-                    WipGlobals.details.get(0).forEach(ld -> Log.d(TAG, "getWeather(): "+ ld.getWeather().toString()));
+
+                    Log.d(TAG, "current index: " + index);
+                    WipGlobals.detailsIndex.set(index);
+                    WipGlobals.details.get(index).forEach(ld -> Log.d(TAG, "getWeather(): "+ ld.getWeather().toString()));
+
                 } else {
                     aMPolyline.setColor(ContextCompat.getColor(getAppContext(), R.color.colorBlueTransparent));
                     aMPolyline.setZIndex(0);
+                    ++index;
                 }
             }
             displayRouteInfoBox();
