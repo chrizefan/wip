@@ -156,6 +156,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void startNavigation() {
+        WipGlobals.details.get(WipGlobals.detailsIndex.get()).forEach(ld -> Log.d(TAG, "getWeather(): "+ ld.getWeather()));
+
         LocationBuilder locationBuilder = new LocationBuilder();
         mStart.setOnClickListener(v -> {
             CameraPosition camPos = new CameraPosition.Builder()
