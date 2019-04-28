@@ -194,7 +194,7 @@
 
     <LinearLayout
         android:id="@+id/bottom_view"
-        android:background="@drawable/list_grad"
+        android:background="@color/colorAccent"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
