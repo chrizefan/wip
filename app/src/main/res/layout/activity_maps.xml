@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
@@ -14,8 +16,8 @@
 
     <RelativeLayout
         android:id="@+id/relLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_width="402dp"
+        android:layout_height="69dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
@@ -28,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
-            android:layout_toEndOf="@+id/ic_magnify"
+            android:layout_toEndOf="@+id/bttn_menu"
             android:background="@drawable/white_rectangle_100"
             android:hint="Enter Address, City or Zip Code"
             android:imeOptions="actionSearch"
@@ -37,14 +39,14 @@
             android:textSize="15sp"
             app:pacv_googleMapsApiKey="@string/google_maps_key2" />
 
-        <ImageView
-            android:id="@+id/ic_magnify"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
+        <Button
+            android:id="@+id/bttn_menu"
+            android:layout_width="38dp"
+            android:layout_height="31dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:src="@drawable/ic_magnify" />
+            android:background="@drawable/ic_menu" />
 
     </RelativeLayout>
 
@@ -59,6 +61,18 @@
         android:scaleType="centerCrop"
         android:src="@drawable/ic_gps"
         android:background="@drawable/white_rectangle_100"/>
+    <Button
+        android:id="@+id/slideUp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="centerCrop"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_below="@id/ic_gps"
+        android:visibility="invisible"
+
+        android:background="@drawable/ic_up"/>
 
     <RelativeLayout
         android:id="@+id/route_info_box"
@@ -119,6 +133,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/blue_rectangle_25"/>
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -177,4 +192,32 @@
             android:textSize="12sp" />
     </RelativeLayout>
 
-</RelativeLayout>    
+    <LinearLayout
+        android:id="@+id/bottom_view"
+        android:background="@color/colorAccent"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="490dp">
+
+        <include layout="@layout/forecast_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <Button
+            android:id="@+id/reset"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="330dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/ic_refresh"
+
+
+            />
+
+
+        
+
+    </LinearLayout>
+
+</RelativeLayout>

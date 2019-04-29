@@ -10,16 +10,23 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,10 +52,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
+
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
-
+import android.view.Gravity;
 import org.json.JSONObject;
-
+import android.support.v4.view.GravityCompat;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -57,7 +65,7 @@ import java.util.List;
 
 import static com.codineasy.wip.GlobalApplication.getAppContext;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, TaskLoadedCallback, GoogleApiClient.OnConnectionFailedListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
 
     private ImageView mGps;
     private RelativeLayout mDestinationInfoBox;
@@ -78,6 +86,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Polyline[] mPolyline;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mRoutesData;
 
+    private Button slideBttn;
+    private boolean isup;
+
     public static JSONObject jDirections;
     private static final String TAG = "MapsActivity";
     private static final float DEFAULT_ZOOM = 15f;
@@ -87,6 +98,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136));
+
+    private ArrayList<String> mNames = new ArrayList<>();
+    private ArrayList<String> mImageUrls = new ArrayList<>();
+
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -98,7 +114,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if (isGoogleServicesUpdated()) {
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_maps);
+            setContentView(R.layout.activity_drawer);
             mGps = findViewById(R.id.ic_gps);
             mAutocomplete = findViewById(R.id.autocomplete);
             mDirections = findViewById(R.id.get_directions);
@@ -109,11 +125,91 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mDuration = findViewById(R.id.info_box_duration);
             mDistance = findViewById(R.id.info_box_distance);
             mStart = findViewById(R.id.start);
-
+            slideBttn = findViewById(R.id.slideUp);
             getLocationPermission();
             init();
 
         }
+
+        initImageBitmaps();
+
+        DrawerLayout navDrawer = findViewById(R.id.drawer_layout);
+        navDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+        Button menubttn = findViewById(R.id.bttn_menu);
+
+        menubttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DrawerLayout navDrawer = findViewById(R.id.drawer_layout);
+                // If the navigation drawer is not open then open it, if its already open then close it.
+                if(!navDrawer.isDrawerOpen(GravityCompat.START)) navDrawer.openDrawer(Gravity.START);
+                else navDrawer.closeDrawer(Gravity.END);
+
+
+            }
+        });
+
+        LinearLayout slideView = findViewById(R.id.bottom_view);
+        slideView.setVisibility(View.INVISIBLE);
+
+        isup = false;
+
+
+        slideBttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isup) {
+                    slideDown(slideView);
+                    v.setBackgroundResource(R.drawable.ic_up);
+
+                } else {
+                    slideUp(slideView);
+                    v.setBackgroundResource(R.drawable.ic_down);
+
+                }
+                isup = !isup;
+            }
+        });
+
+
+
+
+
+
+
+
+
+    }
+
+    private void initImageBitmaps(){
+
+       mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
+        mNames.add("Description 1");
+
+
+        mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
+        mNames.add("Description 2");
+
+        mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
+        mNames.add("Description 3");
+
+        mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
+        mNames.add("Description 4");
+
+        mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
+        mNames.add("Description 5");
+
+        initRecyclerView();
+    }
+
+    private void initRecyclerView()
+    {
+        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mNames, mImageUrls);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
     }
 
     private void init() {
@@ -160,6 +256,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LocationBuilder locationBuilder = new LocationBuilder();
         mStart.setOnClickListener(v -> {
+
             CameraPosition camPos = new CameraPosition.Builder()
                     .target(mDeviceLocation)
                     .tilt(45)
@@ -290,6 +387,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void displayRouteInfoBox() {
         mDestinationInfoBox.setVisibility(View.INVISIBLE);
+        slideBttn.setVisibility(View.VISIBLE);
         for (int i = 0; i < mPolyline.length; i++) {
             if (mPolyline[i].getZIndex() == 1) {
                 int duration = new DataParser().parseTotalDuration(jDirections)[i];
@@ -317,6 +415,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void displayDestinationInfoBox() {
+
+
         try {
             mRouteInfoBox.setVisibility(View.INVISIBLE);
             String[] address = mMarker.getTitle().split(", ");
@@ -483,5 +583,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
     }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
+    }
+
+    public void slideUp(View view){
+        view.setVisibility(View.VISIBLE);
+        TranslateAnimation animate = new TranslateAnimation(
+                0,                 // fromXDelta
+                0,                 // toXDelta
+                view.getHeight(),  // fromYDelta
+                0);                // toYDelta
+        animate.setDuration(500);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
+    }
+
+    public void slideDown(View view){
+        TranslateAnimation animate = new TranslateAnimation(
+                0,                 // fromXDelta
+                0,                 // toXDelta
+                0,                 // fromYDelta
+                view.getHeight()); // toYDelta
+        animate.setDuration(500);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
