@@ -20,13 +20,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>
 {
-    private ArrayList<String> mImageNames = new ArrayList<>();
     private ArrayList<String> mImages = new ArrayList<>();
     private Context mContext;
 
 
     public RecyclerViewAdapter(Context mContext, ArrayList<String> mImageNames, ArrayList<String> mImages) {
-        this.mImageNames = mImageNames;
         this.mImages = mImages;
         this.mContext = mContext;
     }
@@ -44,26 +42,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i)
     {
-        Glide.with(mContext)
-                .asBitmap()
-                .load(mImages.get(i))
-                .into(viewHolder.image);
-
-
-        viewHolder.imageName.setText(mImageNames.get(i));
+        viewHolder.imageName.setText(WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().toString());
 
         viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(mContext, mImageNames.get(i), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, ""+WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().temperature(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mImageNames.size();
+        if(WipGlobals.details.size() != 0)
+            return WipGlobals.details.get(WipGlobals.detailsIndex.get()).size();
+        else
+            return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder

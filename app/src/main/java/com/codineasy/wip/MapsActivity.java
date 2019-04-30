@@ -102,7 +102,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<String> mImageUrls = new ArrayList<>();
 
-
+    private RecyclerViewAdapter adapter;
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -206,7 +206,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initRecyclerView()
     {
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mNames, mImageUrls);
+        adapter = new RecyclerViewAdapter(this, mNames, mImageUrls);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -252,8 +252,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void startNavigation() {
-        WipGlobals.details.get(WipGlobals.detailsIndex.get()).forEach(ld -> Log.d(TAG, "getWeather(): "+ ld.getWeather()));
-
         LocationBuilder locationBuilder = new LocationBuilder();
         mStart.setOnClickListener(v -> {
 
@@ -291,6 +289,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             focusRoute(mPolyline[0].getPoints());
         }
         displayRouteInfoBox();
+
+        WipGlobals.detailsIndex.set(0);
+        adapter.notifyDataSetChanged();
+        WipGlobals.details.get(0).forEach(ld -> Log.d(TAG, "getWeather(): "+ ld.getWeather()));
     }
 
     private void geoLocate(){
@@ -571,8 +573,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     Log.d(TAG, "current index: " + index);
                     WipGlobals.detailsIndex.set(index);
+                    adapter.notifyDataSetChanged();
                     WipGlobals.details.get(index).forEach(ld -> Log.d(TAG, "getWeather(): "+ ld.getWeather().toString()));
-
                 } else {
                     aMPolyline.setColor(ContextCompat.getColor(getAppContext(), R.color.colorBlueTransparent));
                     aMPolyline.setZIndex(0);
