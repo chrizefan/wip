@@ -3,7 +3,6 @@ package com.codineasy.wip;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>
 {
@@ -42,13 +36,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i)
     {
-        viewHolder.imageName.setText(WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().toString());
+        viewHolder.temperature.setText(String.valueOf(WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().temperature()));
+        viewHolder.summary.setText(WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().summary());
 
         viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Toast.makeText(mContext, ""+WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().temperature(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, ""+WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().icon(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -63,16 +57,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder
     {
-        CircleImageView image;
-        TextView imageName;
+        TextView temperature;
+        TextView summary;
         RelativeLayout parentLayout;
 
 
         public ViewHolder(@NonNull View itemView)
         {
             super(itemView);
-            image = itemView.findViewById(R.id.image);
-            imageName = itemView.findViewById(R.id.image_name);
+            temperature = itemView.findViewById(R.id.temperature);
+            summary = itemView.findViewById(R.id.summary);
             parentLayout = itemView.findViewById(R.id.parent_layout);
         }
     }
