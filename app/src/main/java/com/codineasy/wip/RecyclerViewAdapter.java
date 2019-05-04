@@ -39,6 +39,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         viewHolder.temperature.setText(String.valueOf(WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().temperature()));
         viewHolder.summary.setText(WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().summary());
 
+        StringBuilder sb = new StringBuilder();
+        long sec = WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getTimeToArrive();
+        if(sec > 60) {
+            long min = sec / 60;
+            sec = sec - min * 60;
+            if(min > 60) {
+                long hrs = min / 60;
+                min = min - hrs * 60;
+                sb.append(hrs + "h" + min + "m");
+            } else {
+                sb.append(min + "m" + sec + "s");
+            }
+        } else {
+            sb.append(sec + 's');
+        }
+
+        viewHolder.duration.setText(sb.toString());
+
         viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,6 +77,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     {
         TextView temperature;
         TextView summary;
+        TextView duration;
+
         RelativeLayout parentLayout;
 
 
@@ -67,6 +87,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             super(itemView);
             temperature = itemView.findViewById(R.id.temperature);
             summary = itemView.findViewById(R.id.summary);
+            duration = itemView.findViewById(R.id.duration);
             parentLayout = itemView.findViewById(R.id.parent_layout);
         }
     }
