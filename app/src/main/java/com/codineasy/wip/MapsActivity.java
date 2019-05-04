@@ -9,6 +9,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -209,7 +210,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         adapter = new RecyclerViewAdapter(this, mNames, mImageUrls);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
     }
 
     private void init() {
@@ -291,8 +291,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         displayRouteInfoBox();
 
         WipGlobals.detailsIndex.set(0);
-        adapter.notifyDataSetChanged();
-        WipGlobals.details.get(0).forEach(ld -> Log.d(TAG, "getWeather(): "+ ld.getWeather()));
     }
 
     private void geoLocate(){
@@ -592,6 +590,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void slideUp(View view){
+        for(LocationDetail detail : WipGlobals.details.get(WipGlobals.detailsIndex.get())) {
+            while(Double.isNaN(detail.getWeather().temperature()));
+        }
+        adapter.notifyDataSetChanged();
+        WipGlobals.details.get(0).forEach(ld -> Log.d(TAG, "getWeather(): "+ ld.getWeather()));
+
         view.setVisibility(View.VISIBLE);
         TranslateAnimation animate = new TranslateAnimation(
                 0,                 // fromXDelta
