@@ -293,7 +293,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDirections.setVisibility(View.VISIBLE);
         mDirections.setOnClickListener(v -> {
             if(mDeviceLocation == null) {
-                Toast.makeText(this, "Can't find your location, still retrieving location", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Retrieve location first", Toast.LENGTH_SHORT).show();
             } else {
                 new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving");
             }
@@ -302,7 +302,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void startNavigation() {
         if(mDeviceLocation == null) {
-            Toast.makeText(this, "Can't find your location, still retrieving location", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Retrieve location first", Toast.LENGTH_SHORT).show();
         } else {
             LocationBuilder locationBuilder = new LocationBuilder();
             mStart.setOnClickListener(v -> {
@@ -368,7 +368,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         else {
             if (mWifiManager.isWifiEnabled()){
-                Toast.makeText(MapsActivity.this, "address not found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MapsActivity.this, "Address not found... Try again?", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(MapsActivity.this, "Please enable wifi", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(WifiManager.ACTION_PICK_WIFI_NETWORK));
@@ -420,7 +420,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         } else {
                             Log.d(TAG, "onComplete: location null");
-                            Toast.makeText(MapsActivity.this, "location not found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MapsActivity.this, "Address not found... Try again?", Toast.LENGTH_SHORT).show();
                         }
                     } catch (NullPointerException e) {
                         Log.d(TAG, "getDeviceLocation: NullPointerException: " + e.getMessage());
