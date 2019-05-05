@@ -9,6 +9,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -324,7 +325,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     DEFAULT_ZOOM, address.getAddressLine(0));
         }
         else {
-            Toast.makeText(MapsActivity.this, "address not found", Toast.LENGTH_SHORT).show();
+            WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+            if (wifi.isWifiEnabled()){
+                Toast.makeText(MapsActivity.this, "address not found", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(MapsActivity.this, "Please enable wifi", Toast.LENGTH_SHORT).show();
+            }
         }
         hideSoftKeyboard();
     }
