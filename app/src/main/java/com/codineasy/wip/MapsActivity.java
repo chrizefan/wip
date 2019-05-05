@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -395,37 +396,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         try {
             if (mLocationPermissionGranted) {
-                boolean statusOfGPS = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                final Task location = mFusedLocationProviderClient.getLastLocation();
+                location.addOnCompleteListener(task -> {
+                    try {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "onComplete: location found");
+                            Location currentLocation = (Location) task.getResult();
 
-                if (!statusOfGPS) {
-                    Toast.makeText(this, "Please enable GPS", Toast.LENGTH_SHORT).show();
-                } else {
-                    final Task location = mFusedLocationProviderClient.getLastLocation();
-                    location.addOnCompleteListener(task -> {
-                        try {
-                            if (task.isSuccessful()) {
-                                Log.d(TAG, "onComplete: location found");
-                                Location currentLocation = (Location) task.getResult();
-
-                                if(currentLocation == null) {
+                            if(currentLocation == null) {
+                                if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                                    Toast.makeText(this, "Please enable GPS", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                                } else {
                                     mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mGPSListener);
                                     mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mNetListener);
                                     Toast.makeText(this, "Retrieving location with GPS...", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    mDeviceLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                                    moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
-                                            DEFAULT_ZOOM, "My Location");
                                 }
-
                             } else {
-                                Log.d(TAG, "onComplete: location null");
-                                Toast.makeText(MapsActivity.this, "location not found", Toast.LENGTH_SHORT).show();
+                                mDeviceLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                                moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
+                                        DEFAULT_ZOOM, "My Location");
                             }
-                        } catch (NullPointerException e) {
-                            Log.d(TAG, "getDeviceLocation: NullPointerException: " + e.getMessage());
+
+                        } else {
+                            Log.d(TAG, "onComplete: location null");
+                            Toast.makeText(MapsActivity.this, "location not found", Toast.LENGTH_SHORT).show();
                         }
-                    });
-                }
+                    } catch (NullPointerException e) {
+                        Log.d(TAG, "getDeviceLocation: NullPointerException: " + e.getMessage());
+                    }
+                });
             }
         } catch (SecurityException e) {
             Log.d(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
