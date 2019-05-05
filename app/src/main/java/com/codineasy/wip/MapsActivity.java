@@ -1,6 +1,7 @@
 package com.codineasy.wip;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -180,7 +181,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        mLocationManager = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         mGPSListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
@@ -360,7 +361,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     DEFAULT_ZOOM, address.getAddressLine(0));
         }
         else {
-            WifiManager wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+            WifiManager wifi = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             if (wifi.isWifiEnabled()){
                 Toast.makeText(MapsActivity.this, "address not found", Toast.LENGTH_SHORT).show();
             } else {
@@ -595,6 +596,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Toast.makeText(this, "map is ready", Toast.LENGTH_SHORT).show();
