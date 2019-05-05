@@ -57,6 +57,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
 
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
 import android.view.Gravity;
 import org.json.JSONObject;
 import android.support.v4.view.GravityCompat;
@@ -108,6 +110,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private RecyclerViewAdapter adapter;
 
+    private SlidingUpPanelLayout slidePanel;
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
@@ -118,7 +122,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (isGoogleServicesUpdated()) {
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.slide_view);
+            setContentView(R.layout.activity_drawer);
             mGps = findViewById(R.id.ic_gps);
             mAutocomplete = findViewById(R.id.autocomplete);
             mDirections = findViewById(R.id.get_directions);
@@ -130,10 +134,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mDistance = findViewById(R.id.info_box_distance);
             mStart = findViewById(R.id.start);
             slideBttn = findViewById(R.id.slideUp);
+            slidePanel = findViewById(R.id.sliding_layout);
             getLocationPermission();
             init();
 
         }
+
+        slidePanel.setEnabled(false);
 
         initImageBitmaps();
 
@@ -154,6 +161,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+       slidePanel.setPanelHeight(0);
+
+
         LinearLayout slideView = findViewById(R.id.bottom_view);
         slideView.setVisibility(View.INVISIBLE);
 
@@ -170,10 +180,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 } else {
                     slideUp(slideView);
-                    v.setBackgroundResource(R.drawable.ic_down);
+
 
                 }
                 isup = !isup;
+
+                slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+
             }
         });
 
@@ -416,6 +429,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void displayRouteInfoBox() {
         mDestinationInfoBox.setVisibility(View.INVISIBLE);
         slideBttn.setVisibility(View.VISIBLE);
+        slidePanel.setEnabled(true);
+
+
+
+
         for (int i = 0; i < mPolyline.length; i++) {
             if (mPolyline[i].getZIndex() == 1) {
                 int duration = new DataParser().parseTotalDuration(jDirections)[i];
@@ -621,6 +639,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return false;
     }
 
+
+
     public void slideUp(View view){
         long time = SystemClock.uptimeMillis();
         for(LocationDetail detail : WipGlobals.details.get(WipGlobals.detailsIndex.get())) {
@@ -632,16 +652,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         adapter.notifyDataSetChanged();
         WipGlobals.details.get(0).forEach(ld -> Log.d(TAG, "getWeather(): "+ ld.getWeather()));
 
-        view.setVisibility(View.VISIBLE);
-        TranslateAnimation animate = new TranslateAnimation(
-                0,                 // fromXDelta
-                0,                 // toXDelta
-                view.getHeight(),  // fromYDelta
-                0);                // toYDelta
-        animate.setDuration(500);
-        animate.setFillAfter(true);
-        view.startAnimation(animate);
+        view.setVisibility(View.INVISIBLE);
+
+
+
     }
+
 
     public void slideDown(View view){
         TranslateAnimation animate = new TranslateAnimation(
@@ -652,6 +668,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         animate.setDuration(500);
         animate.setFillAfter(true);
         view.startAnimation(animate);
+        view.setVisibility(View.INVISIBLE);
     }
 
 

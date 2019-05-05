@@ -11,7 +11,7 @@
 
 
     <include
-        layout="@layout/activity_maps"
+        layout="@layout/slide_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

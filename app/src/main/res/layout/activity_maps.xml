@@ -201,7 +201,8 @@
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="490dp">
+        android:layout_height="490dp"
+        android:visibility="invisible">
 
         <Button
             android:id="@+id/reset"
