@@ -1,7 +1,5 @@
 package com.codineasy.wip.directionhelpers;
 
-import android.util.Log;
-
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.LatLng;
 
@@ -67,14 +65,15 @@ public class DataParser {
         return null;
     }
 
+
     public List<HashMap<HashMap<String, String>, HashMap<String, String>>> parseJObjectData(JSONObject jObject) {
         List routeData  = new ArrayList<>();
         JSONArray jRoutes;
         JSONArray jLegs;
+        JSONArray jSteps;
         try {
             jRoutes = jObject.getJSONArray("routes");
             jLegs = ((JSONObject) jRoutes.get(0)).getJSONArray("legs");
-            Log.d(TAG, "Legs:" + jLegs.length());
             int distance = 0;
             int duration = 0;
             /** Traversing all legs */
@@ -90,6 +89,12 @@ public class DataParser {
                 distanceDuration.put("duration", Integer.toString(duration));
                 data.put(latLng, distanceDuration);
                 routeData.add(data);
+                /** Traversing all steps */
+                jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
+                for (int k = 0; k < jSteps.length(); k++) {
+
+                }
+
             }
         } catch (JSONException e1) {
             e1.printStackTrace();
@@ -109,6 +114,7 @@ public class DataParser {
             for (int i = 0; i < jRoutes.length(); i++) {
                 jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
                 List path = new ArrayList<>();
+
                 /** Traversing all legs */
                 for (int j = 0; j < jLegs.length(); j++) {
                     jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");

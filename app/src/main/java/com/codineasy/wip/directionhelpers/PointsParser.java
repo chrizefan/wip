@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.model.EncodedPolyline;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +32,7 @@ import java.util.List;
 import static com.codineasy.wip.GlobalApplication.getAppContext;
 import static com.codineasy.wip.MapsActivity.jDirections;
 import static com.codineasy.wip.MapsActivity.mRoutesData;
+import static com.codineasy.wip.MapsActivity.mStepsData;
 
 
 /**
@@ -64,6 +66,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
             // Starts parsing data
             routes = parser.parseJObjectLatLng(jObject);
             mRoutesData = getJObjectData(jObject);
+            mStepsData = getJObjectStepsData(jObject);
             Log.d(TAG, "Executing routes");
             Log.d(TAG, routes.toString());
 
@@ -122,6 +125,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
             }
             Log.d(TAG, "onPostExecute lineoptions decoded");
             Log.d(TAG, "RoutesData:" + mRoutesData.toString());
+            Log.d(TAG, "StepsData:" + mStepsData.toString());
             // Drawing polyline in the Google Map for the i-th route
             //mMap.addPolyline(lineOptions);
 
@@ -154,6 +158,41 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
             }
         }
         return routesData;
+    }
+
+    public List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> getJObjectStepsData(JSONObject jObject) {
+        List stepsData  = new ArrayList<>();
+        JSONArray jRoutes;
+        JSONArray jLegs;
+        JSONArray jSteps;
+        try {
+            jRoutes = jObject.getJSONArray("routes");
+            /** Traversing all routes */
+            for (int i = 0; i < jRoutes.length(); i++) {
+                jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
+                List path = new ArrayList<>();
+                /** Traversing all legs */
+                for (int j = 0; j < jLegs.length(); j++) {
+                    jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
+                    /** Traversing all steps */
+                    for (int k = 0; k < jSteps.length(); k++) {
+                        HashMap<HashMap, HashMap> data = new HashMap<>();
+                        HashMap<String, String> instructions = new HashMap<>();
+                        instructions.put("html_instructions", jSteps.getJSONObject(j).optString("html_instructions"));
+                        instructions.put("maneuver", jSteps.getJSONObject(j).optString("maneuver"));
+                        HashMap<String, String> distanceDuration = new HashMap<>();
+                        distanceDuration.put("distance", Integer.toString(jSteps.getJSONObject(j).getJSONObject("distance").optInt("value")));
+                        distanceDuration.put("duration", Integer.toString(jSteps.getJSONObject(j).getJSONObject("duration").optInt("value")));
+                        data.put(instructions, distanceDuration);
+                        path.add(data);
+                    }
+                }
+                stepsData.add(path);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return stepsData;
     }
 
     private String downloadUrl(String strUrl) throws IOException {
