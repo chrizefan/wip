@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -366,6 +367,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Toast.makeText(MapsActivity.this, "address not found", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(MapsActivity.this, "Please enable wifi", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(WifiManager.ACTION_PICK_WIFI_NETWORK));
             }
         }
         hideSoftKeyboard();
