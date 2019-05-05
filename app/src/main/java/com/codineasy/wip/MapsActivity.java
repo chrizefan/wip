@@ -60,9 +60,13 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
 
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
 import android.view.Gravity;
 import org.json.JSONObject;
 import android.support.v4.view.GravityCompat;
+import android.widget.ViewFlipper;
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -100,6 +104,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mRoutesData;
 
     private Button slideBttn;
+    private Button switchBttn;
     private boolean isup;
 
     public static JSONObject jDirections;
@@ -116,6 +121,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ArrayList<String> mImageUrls = new ArrayList<>();
 
     private RecyclerViewAdapter adapter;
+
+    private SlidingUpPanelLayout slidePanel;
+    private ViewFlipper viewFlipper;
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -139,10 +147,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mDistance = findViewById(R.id.info_box_distance);
             mStart = findViewById(R.id.start);
             slideBttn = findViewById(R.id.slideUp);
+            switchBttn = findViewById(R.id.switcher);
+            slidePanel = findViewById(R.id.sliding_layout);
             getLocationPermission();
             init();
 
         }
+
+        viewFlipper= findViewById(R.id.view_flipper);
+
+
+
+        slidePanel.setEnabled(false);
 
         initImageBitmaps();
 
@@ -163,6 +179,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+
+
+
+
+
+
         LinearLayout slideView = findViewById(R.id.bottom_view);
         slideView.setVisibility(View.INVISIBLE);
 
@@ -176,12 +198,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     slideDown(slideView);
                     v.setBackgroundResource(R.drawable.ic_up);
 
+
                 } else {
                     slideUp(slideView);
-                    v.setBackgroundResource(R.drawable.ic_down);
+
 
                 }
                 isup = !isup;
+
+                slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+
             }
         });
 
@@ -457,6 +483,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void displayRouteInfoBox() {
         mDestinationInfoBox.setVisibility(View.INVISIBLE);
         slideBttn.setVisibility(View.VISIBLE);
+        slidePanel.setEnabled(true);
+
+
+
+
         for (int i = 0; i < mPolyline.length; i++) {
             if (mPolyline[i].getZIndex() == 1) {
                 int duration = new DataParser().parseTotalDuration(jDirections)[i];
@@ -675,16 +706,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         adapter.notifyDataSetChanged();
         WipGlobals.details.get(0).forEach(ld -> Log.d(TAG, "getWeather(): "+ ld.getWeather()));
 
-        view.setVisibility(View.VISIBLE);
-        TranslateAnimation animate = new TranslateAnimation(
-                0,                 // fromXDelta
-                0,                 // toXDelta
-                view.getHeight(),  // fromYDelta
-                0);                // toYDelta
-        animate.setDuration(500);
-        animate.setFillAfter(true);
-        view.startAnimation(animate);
+        view.setVisibility(View.INVISIBLE);
+
+
+
     }
+
 
     public void slideDown(View view){
         TranslateAnimation animate = new TranslateAnimation(
@@ -695,6 +722,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         animate.setDuration(500);
         animate.setFillAfter(true);
         view.startAnimation(animate);
+        view.setVisibility(View.INVISIBLE);
+    }
+
+    public void nextView(View v)
+    {
+        viewFlipper.showNext();
+
     }
 
 
