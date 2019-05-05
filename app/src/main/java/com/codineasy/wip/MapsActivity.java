@@ -76,6 +76,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static LatLng mDeviceLocation;
     private LocationListener mLocationListener;
     private Polyline[] mPolyline;
+    public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mStepsData;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mRoutesData;
 
     public static JSONObject jDirections;
@@ -161,11 +162,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             CameraPosition camPos = new CameraPosition.Builder()
                     .target(mDeviceLocation)
                     .tilt(45)
-                    .zoom(18f)
+                    .zoom(20f)
                     .bearing(locationBuilder.getBearing())
                     .build();
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
         });
+
     }
 
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
@@ -339,7 +341,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (LatLng latLngPoint : lstLatLngRoute)
             boundsBuilder.include(latLngPoint);
 
-        int routePadding = 100;
+        int routePadding = 200;
         LatLngBounds latLngBounds = boundsBuilder.build();
 
         mMap.animateCamera(
@@ -424,6 +426,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    public void onBackPressed() {
+
     }
 
     @Override
