@@ -660,6 +660,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return false;
     }
 
+    @SuppressLint("NewApi")
     public void slideUp(View view){
         long time = SystemClock.uptimeMillis();
         for(LocationDetail detail : WipGlobals.details.get(WipGlobals.detailsIndex.get())) {
