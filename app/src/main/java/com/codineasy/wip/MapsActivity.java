@@ -254,18 +254,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void startNavigation() {
-        LocationBuilder locationBuilder = new LocationBuilder();
-        mStart.setOnClickListener(v -> {
+        if(mDeviceLocation == null) {
+            Toast.makeText(this, "Can't find current location", Toast.LENGTH_SHORT).show();
+        } else {
+            LocationBuilder locationBuilder = new LocationBuilder();
+            mStart.setOnClickListener(v -> {
 
-            CameraPosition camPos = new CameraPosition.Builder()
-                    .target(mDeviceLocation)
-                    .tilt(45)
-                    .zoom(20f)
-                    .bearing(locationBuilder.getBearing())
-                    .build();
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
-        });
-
+                CameraPosition camPos = new CameraPosition.Builder()
+                        .target(mDeviceLocation)
+                        .tilt(45)
+                        .zoom(20f)
+                        .bearing(locationBuilder.getBearing())
+                        .build();
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
+            });
+        }   
     }
 
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
@@ -341,31 +344,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         try {
             if (mLocationPermissionGranted) {
-                LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
+                LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-                if(!statusOfGPS) {
-                    Toast.makeText(this, "Please enable GPS ", Toast.LENGTH_SHORT).show();
-                }
-                final Task location = mFusedLocationProviderClient.getLastLocation();
-                location.addOnCompleteListener(task -> {
-                    try {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "onComplete: location found");
-                            Location currentLocation = (Location) task.getResult();
-                            mDeviceLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                if (!statusOfGPS) {
+                    Toast.makeText(this, "Please enable GPS", Toast.LENGTH_SHORT).show();
+                } else {
+                    final Task location = mFusedLocationProviderClient.getLastLocation();
+                    location.addOnCompleteListener(task -> {
+                        try {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "onComplete: location found");
+                                Location currentLocation = (Location) task.getResult();
 
-                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
-                                    DEFAULT_ZOOM, "My Location");
+                                if(currentLocation == null) {
+                                  Toast.makeText(this, "Can't find current location", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    mDeviceLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                                    moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
+                                            DEFAULT_ZOOM, "My Location");
+                                }
 
-                        } else {
-                            Log.d(TAG, "onComplete: location null");
-                            Toast.makeText(MapsActivity.this, "location not found", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Log.d(TAG, "onComplete: location null");
+                                Toast.makeText(MapsActivity.this, "location not found", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (NullPointerException e) {
+                            Log.d(TAG, "getDeviceLocation: NullPointerException: " + e.getMessage());
                         }
-                    } catch (NullPointerException e) {
-                        Log.d(TAG, "getDeviceLocation: NullPointerException: " + e.getMessage());
-                    }
-                });
+                    });
+                }
             }
         } catch (SecurityException e) {
             Log.d(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
