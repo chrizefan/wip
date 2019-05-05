@@ -36,7 +36,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i)
     {
-        viewHolder.temperature.setText(String.valueOf(WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().temperature()));
+        viewHolder.temperature.setText(String.valueOf(WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().temperature())+"°C");
         viewHolder.summary.setText(WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().summary());
 
         StringBuilder sb = new StringBuilder();

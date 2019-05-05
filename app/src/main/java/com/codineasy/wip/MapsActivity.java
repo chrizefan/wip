@@ -118,7 +118,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (isGoogleServicesUpdated()) {
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_drawer);
+            setContentView(R.layout.slide_view);
             mGps = findViewById(R.id.ic_gps);
             mAutocomplete = findViewById(R.id.autocomplete);
             mDirections = findViewById(R.id.get_directions);
@@ -166,6 +166,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (isup) {
                     slideDown(slideView);
                     v.setBackgroundResource(R.drawable.ic_up);
+
 
                 } else {
                     slideUp(slideView);
@@ -651,6 +652,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         animate.setDuration(500);
         animate.setFillAfter(true);
         view.startAnimation(animate);
+        view.setVisibility(View.INVISIBLE);
     }
 
 

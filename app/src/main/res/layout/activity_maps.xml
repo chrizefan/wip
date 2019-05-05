@@ -6,6 +6,9 @@
 
 
 
+
+
+
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
@@ -200,24 +203,29 @@
         android:layout_width="match_parent"
         android:layout_height="490dp">
 
-        <include layout="@layout/forecast_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
         <Button
             android:id="@+id/reset"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="330dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="340dp"
+            android:layout_marginTop="0dp"
+            android:paddingTop="10sp"
             android:background="@drawable/ic_refresh"
 
 
             />
 
 
+        <include layout="@layout/forecast_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+
+
         
 
     </LinearLayout>
+
+
 
 </RelativeLayout>
