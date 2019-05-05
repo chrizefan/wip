@@ -8,6 +8,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -340,6 +341,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         try {
             if (mLocationPermissionGranted) {
+                LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
+                boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+                if(!statusOfGPS) {
+                    Toast.makeText(this, "Please enable GPS ", Toast.LENGTH_SHORT).show();
+                }
                 final Task location = mFusedLocationProviderClient.getLastLocation();
                 location.addOnCompleteListener(task -> {
                     try {
