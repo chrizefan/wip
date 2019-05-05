@@ -249,7 +249,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         mDirections.setVisibility(View.VISIBLE);
         mDirections.setOnClickListener(v -> {
-            new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving");
+            if(mDeviceLocation == null) {
+                Toast.makeText(this, "Can't find your location, try again later", Toast.LENGTH_SHORT);
+            } else {
+                new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving");
+            }
         });
     }
 
@@ -358,7 +362,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 Location currentLocation = (Location) task.getResult();
 
                                 if(currentLocation == null) {
-                                  Toast.makeText(this, "Can't find current location", Toast.LENGTH_SHORT).show();
+                                  Toast.makeText(this, "Can't find your location, try again later", Toast.LENGTH_SHORT).show();
                                 } else {
                                     mDeviceLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
                                     moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
