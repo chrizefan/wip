@@ -87,7 +87,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static LatLng mDeviceLocation;
 
     private LocationManager mLocationManager;
-    private LocationListener mListener;
+    private LocationListener mGPSListener;
+    private LocationListener mNetListener;
 
     private Polyline[] mPolyline;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mStepsData;
@@ -180,15 +181,43 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        mListener = new LocationListener() {
+        mGPSListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    mDeviceLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                    mLocationManager.removeUpdates(this);
+
+                    moveCamera(new LatLng(location.getLatitude(), location.getLongitude()),
+                            DEFAULT_ZOOM, "My Location");
+                }
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {}
+                @Override
+                public void onProviderEnabled(String provider) {}
+                @Override
+                public void onProviderDisabled(String provider) {
+                    Log.d(TAG, provider + " Provider disabled");
+                }
+        };
+        mNetListener = new LocationListener() {
             @Override
-            public void onLocationChanged(Location location) {}
+            public void onLocationChanged(Location location) {
+                if (mDeviceLocation == null) {
+                    mDeviceLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                    mLocationManager.removeUpdates(this);
+
+                    moveCamera(new LatLng(location.getLatitude(), location.getLongitude()),
+                            DEFAULT_ZOOM, "My Location");
+                }
+            }
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {}
             @Override
             public void onProviderEnabled(String provider) {}
             @Override
-            public void onProviderDisabled(String provider) {}
+            public void onProviderDisabled(String provider) {
+                Log.d(TAG, provider + " Provider disabled");
+            }
         };
     }
 
@@ -257,7 +286,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDirections.setVisibility(View.VISIBLE);
         mDirections.setOnClickListener(v -> {
             if(mDeviceLocation == null) {
-                Toast.makeText(this, "Can't find your location, try again later", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Can't find your location, still retrieving location", Toast.LENGTH_SHORT).show();
             } else {
                 new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving");
             }
@@ -266,7 +295,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void startNavigation() {
         if(mDeviceLocation == null) {
-            Toast.makeText(this, "Can't find your location, try again later", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Can't find your location, still retrieving location", Toast.LENGTH_SHORT).show();
         } else {
             LocationBuilder locationBuilder = new LocationBuilder();
             mStart.setOnClickListener(v -> {
@@ -360,8 +389,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         try {
             if (mLocationPermissionGranted) {
-                LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                boolean statusOfGPS = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
                 if (!statusOfGPS) {
                     Toast.makeText(this, "Please enable GPS", Toast.LENGTH_SHORT).show();
@@ -374,7 +402,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 Location currentLocation = (Location) task.getResult();
 
                                 if(currentLocation == null) {
-                                  Toast.makeText(this, "Can't find your location, try again later", Toast.LENGTH_SHORT).show();
+                                    mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mGPSListener);
+                                    mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mNetListener);
+                                    Toast.makeText(this, "Retrieving location with GPS...", Toast.LENGTH_SHORT).show();
                                 } else {
                                     mDeviceLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
                                     moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
