@@ -251,7 +251,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDirections.setVisibility(View.VISIBLE);
         mDirections.setOnClickListener(v -> {
             if(mDeviceLocation == null) {
-                Toast.makeText(this, "Can't find your location, try again later", Toast.LENGTH_SHORT);
+                Toast.makeText(this, "Can't find your location, try again later", Toast.LENGTH_SHORT).show();
             } else {
                 new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving");
             }
