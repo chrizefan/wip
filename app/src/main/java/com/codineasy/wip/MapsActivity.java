@@ -85,7 +85,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private PlacesAutocompleteTextView mAutocomplete;
     private Marker mMarker;
     public static LatLng mDeviceLocation;
-    private LocationListener mLocationListener;
+
+    private LocationManager mLocationManager;
+    private LocationListener mListener;
+
     private Polyline[] mPolyline;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mStepsData;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mRoutesData;
