@@ -62,6 +62,8 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import android.view.Gravity;
 import org.json.JSONObject;
 import android.support.v4.view.GravityCompat;
+import android.widget.ViewFlipper;
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -93,6 +95,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mRoutesData;
 
     private Button slideBttn;
+    private Button switchBttn;
     private boolean isup;
 
     public static JSONObject jDirections;
@@ -111,6 +114,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private RecyclerViewAdapter adapter;
 
     private SlidingUpPanelLayout slidePanel;
+    private ViewFlipper viewFlipper;
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -134,11 +138,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mDistance = findViewById(R.id.info_box_distance);
             mStart = findViewById(R.id.start);
             slideBttn = findViewById(R.id.slideUp);
+            switchBttn = findViewById(R.id.switcher);
             slidePanel = findViewById(R.id.sliding_layout);
             getLocationPermission();
             init();
 
         }
+
+        viewFlipper= findViewById(R.id.view_flipper);
+
+
 
         slidePanel.setEnabled(false);
 
@@ -161,7 +170,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-       slidePanel.setPanelHeight(0);
+
+
+
+
 
 
         LinearLayout slideView = findViewById(R.id.bottom_view);
@@ -669,6 +681,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         animate.setFillAfter(true);
         view.startAnimation(animate);
         view.setVisibility(View.INVISIBLE);
+    }
+
+    public void nextView(View v)
+    {
+        viewFlipper.showNext();
+
     }
 
 

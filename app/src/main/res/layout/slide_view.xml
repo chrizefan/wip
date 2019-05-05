@@ -9,8 +9,9 @@
         android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight ="0.5"
         android:gravity="bottom"
-        sothree:umanoPanelHeight="100dp"
+        sothree:umanoPanelHeight="0dp"
         sothree:umanoShadowHeight="4dp"
         sothree:umanoScrollableView="@+id/recyclerview">
 
