@@ -319,7 +319,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDirections.setVisibility(View.VISIBLE);
         mDirections.setOnClickListener(v -> {
             if(mDeviceLocation == null) {
-                Toast.makeText(this, "Retrieve location first", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Location must be retrieved first", Toast.LENGTH_SHORT).show();
             } else {
                 new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving");
             }
@@ -328,7 +328,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void startNavigation() {
         if(mDeviceLocation == null) {
-            Toast.makeText(this, "Retrieve location first", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Location must be retrieved first", Toast.LENGTH_SHORT).show();
         } else {
             LocationBuilder locationBuilder = new LocationBuilder();
             mStart.setOnClickListener(v -> {
@@ -436,7 +436,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 } else {
                                     mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mGPSListener);
                                     mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mNetListener);
-                                    Toast.makeText(this, "Retrieving location with GPS...", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(this, "Retrieving location may take a few minutes", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 mDeviceLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
