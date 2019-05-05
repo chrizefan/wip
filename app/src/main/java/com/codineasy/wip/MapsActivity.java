@@ -652,7 +652,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         animate.setDuration(500);
         animate.setFillAfter(true);
         view.startAnimation(animate);
-        view.setVisibility(View.INVISIBLE);
     }
 
 
