@@ -92,6 +92,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LocationListener mGPSListener;
     private LocationListener mNetListener;
 
+    private WifiManager mWifiManager;
+
     private Polyline[] mPolyline;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mStepsData;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mRoutesData;
@@ -221,6 +223,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.d(TAG, provider + " Provider disabled");
             }
         };
+
+        mWifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
     }
 
     private void initImageBitmaps(){
@@ -362,8 +366,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     DEFAULT_ZOOM, address.getAddressLine(0));
         }
         else {
-            WifiManager wifi = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            if (wifi.isWifiEnabled()){
+            if (mWifiManager.isWifiEnabled()){
                 Toast.makeText(MapsActivity.this, "address not found", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(MapsActivity.this, "Please enable wifi", Toast.LENGTH_SHORT).show();
