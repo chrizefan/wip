@@ -260,7 +260,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void startNavigation() {
         if(mDeviceLocation == null) {
-            Toast.makeText(this, "Can't find current location", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Can't find your location, try again later", Toast.LENGTH_SHORT).show();
         } else {
             LocationBuilder locationBuilder = new LocationBuilder();
             mStart.setOnClickListener(v -> {
