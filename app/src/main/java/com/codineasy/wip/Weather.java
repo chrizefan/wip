@@ -36,6 +36,10 @@ public class Weather extends BaseObservable {
         }
     }
 
+    public boolean isReady() {
+        return json != null;
+    }
+
 
     public String summary()  {
         try {
