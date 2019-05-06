@@ -249,7 +249,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                for(List<LocationDetail> d : WipGlobals.details) {
+                    for (LocationDetail ld : d) {
+                        ld.fetchDarkSky();
+                        Log.d(TAG, "fetching DarkSky");
+                    }
+                }
+                adapter.notifyDataSetChanged();
             }
         });
     }
