@@ -14,7 +14,7 @@
         android:textColor="#000"
         android:layout_centerVertical="true"
         android:layout_marginLeft="30dp"
-        android:textSize="40sp"
+        android:textSize="30sp"
         />
 
     <TextView
@@ -34,10 +34,10 @@
         android:layout_height="wrap_content"
         android:text="Weather wtv"
         android:id="@+id/duration"
-        android:layout_toRightOf="@+id/summary"
+
         android:textColor="#000"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="300dp"
         android:textSize="17sp"
         />
 

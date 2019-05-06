@@ -259,7 +259,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void initImageBitmaps(){
 
-       mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
+              mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
         mNames.add("Description 1");
 
 
