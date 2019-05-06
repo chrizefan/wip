@@ -480,15 +480,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void setMarker(LatLng latLng, String title) {
+        slideBttn.setVisibility(View.INVISIBLE);
+        mMap.clear();
         if(!title.equals("My Location") && mMarker == null){
             mMarker = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .title(title));
                     displayDestinationInfoBox();
         } else if(!title.equals("My Location")){
+            mMarker = mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .title(title));
             mMarker.hideInfoWindow();
-            mMarker.setPosition(latLng);
-            mMarker.setTitle(title);
             displayDestinationInfoBox();
         }
     }
@@ -496,7 +499,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void displayRouteInfoBox() {
         if(!mRoutesData.isEmpty()) {
             mDestinationInfoBox.setVisibility(View.INVISIBLE);
-            slideBttn.setVisibility(View.VISIBLE);
+            slideBttn.setVisibility(View.INVISIBLE);
             slidePanel.setEnabled(true);
             for (int i = 0; i < mPolyline.length; i++) {
                 if (mPolyline[i].getZIndex() == 1) {
@@ -520,6 +523,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
             }
+            slideBttn.setVisibility(View.VISIBLE);
             mRouteInfoBox.setVisibility(View.VISIBLE);
             startNavigation();
         } else {

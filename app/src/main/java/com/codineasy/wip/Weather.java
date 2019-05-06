@@ -70,14 +70,13 @@ public class Weather extends BaseObservable {
     public int temperature()  {
             try {
                 double temp = json.getDouble("temperature");
-
                 int a = (int) Math.round(temp);
                 if(json != null)
-
                     return a;
-
             } catch (JSONException e) {
-
+                e.printStackTrace();
+            } catch (NullPointerException e1) {
+                e1.printStackTrace();
             }
         double temp1= Double.NaN;
             int b = (int) Math.round(temp1);
