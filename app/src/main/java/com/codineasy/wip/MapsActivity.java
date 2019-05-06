@@ -21,6 +21,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -53,6 +54,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -153,6 +155,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             init();
 
         }
+        getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         viewFlipper= findViewById(R.id.view_flipper);
 
@@ -638,6 +641,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toast.makeText(this, "map is ready", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onMapReady: map ready");
         mMap = googleMap;
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
 
         if (mLocationPermissionGranted) {
             getDeviceLocation();
@@ -728,6 +732,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void nextView(View v)
     {
         viewFlipper.showNext();
+
+        if(viewFlipper.getDisplayedChild()==1)
+        {
+            switchBttn.setText("Weather");
+        }
+
+        if(viewFlipper.getDisplayedChild()==0)
+        {
+            switchBttn.setText("Directions");
+        }
+
+    }
+
+    public void changeStyle(View v)
+    {
 
     }
 
