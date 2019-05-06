@@ -7,7 +7,18 @@
 
     <item android:title="Quick Settings">
         <menu>
-
+            <item
+                android:id="@+id/toggle_units"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Toggle Units" />
+            <item
+                android:id="@+id/dark_mode"
+                android:icon="@drawable/ic_darkmode"
+                android:title="Night Mode" />
+            <item
+                android:title="more stuff"
+                android:id="@+id/idk_yet"
+                />
         </menu>
     </item>
 
