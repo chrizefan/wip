@@ -227,7 +227,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void onProviderEnabled(String provider) {}
                 @Override
                 public void onProviderDisabled(String provider) {
-                    Log.d(TAG, provider + " Provider disabled");
+                    Toast.makeText(getApplicationContext(), "GPS location retrieval failed", Toast.LENGTH_SHORT);
                 }
         };
         mNetListener = new LocationListener() {
@@ -321,7 +321,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if(mDeviceLocation == null) {
                 Toast.makeText(this, "Location must be retrieved first", Toast.LENGTH_SHORT).show();
             } else {
-                new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving");
+                if(!mWifiManager.isWifiEnabled()) {
+                    Toast.makeText(MapsActivity.this, "Please enable wifi", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(WifiManager.ACTION_PICK_WIFI_NETWORK));
+                } else {
+                    new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving");
+                }
             }
         });
     }
