@@ -230,7 +230,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void onProviderEnabled(String provider) {}
                 @Override
                 public void onProviderDisabled(String provider) {
-                    Toast.makeText(getApplicationContext(), "GPS location retrieval failed", Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), "GPS location retrieval failed", Toast.LENGTH_SHORT).show();
                 }
         };
         mNetListener = new LocationListener() {
@@ -676,9 +676,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             } catch (IOException e) {
                 return;
             }
-            String title = list.get(0).getAddressLine(0);
-            setMarker(latLng, title);
-            mAutocomplete.setText(title);
+            if(!list.isEmpty()) {
+                String title = list.get(0).getAddressLine(0);
+                moveCamera(latLng, DEFAULT_ZOOM, title);
+                mAutocomplete.setText(title);
+            } else {
+                Toast.makeText(getApplicationContext(), "No address available", Toast.LENGTH_SHORT).show();
+            }
         });
         mMap.setOnPolylineClickListener(polyline -> {
             int index = 0;
