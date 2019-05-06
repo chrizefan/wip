@@ -655,8 +655,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toast.makeText(this, "map is ready", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onMapReady: map ready");
         mMap = googleMap;
-        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
-
+      
         if (mLocationPermissionGranted) {
             getDeviceLocation();
 
