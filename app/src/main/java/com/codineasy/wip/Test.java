@@ -73,7 +73,13 @@ public class Test extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        if (id == R.id.toggle_units) {
+            // Handle the camera action
+        }  else if (id == R.id.dark_mode) {
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else if (id == R.id.idk_yet) {
 
+        }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
