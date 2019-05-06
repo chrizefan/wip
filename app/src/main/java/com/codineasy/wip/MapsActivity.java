@@ -182,17 +182,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-
-
-
-
-
-
         LinearLayout slideView = findViewById(R.id.bottom_view);
         slideView.setVisibility(View.INVISIBLE);
 
         isup = false;
-
 
         slideBttn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,17 +193,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (isup) {
                     slideDown(slideView);
                     v.setBackgroundResource(R.drawable.ic_up);
-
-
                 } else {
                     slideUp(slideView);
-
-
                 }
                 isup = !isup;
-
                 slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-
             }
         });
 
@@ -278,8 +265,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         initRecyclerView();
     }
 
-    private void initRecyclerView()
-    {
+    private void initRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         adapter = new RecyclerViewAdapter(this, mNames, mImageUrls);
         recyclerView.setAdapter(adapter);
