@@ -86,10 +86,18 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
             WipGlobals.startTime = Calendar.getInstance().getTimeInMillis()/1000;
 
             WipGlobals.details.clear();
+
+            // iterate through a list of list of HashMap where each top level list represent one
+            // route from point A to B
             for (List<HashMap<HashMap<String, String>, HashMap<String, String>>> listMapMap : mRoutesData) {
                 ObservableArrayList<LocationDetail> tmpList = new ObservableArrayList<>();
+
+                //iterate through  list of HashMap, containing points for one route from point
+                // A to B
                 for (HashMap<HashMap<String, String>, HashMap<String, String>> mapMap : listMapMap)
                     for (HashMap<String, String> latlng : mapMap.keySet()) {
+                        // HashMap containing latitude and longitude is used as key to obtain
+                        // a HashMap containing duration and distance
                         LocationDetail detail = new LocationDetail(latlng, mapMap.get(latlng));
                         tmpList.add(detail);
                     }
