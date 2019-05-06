@@ -149,7 +149,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mDistance = findViewById(R.id.info_box_distance);
             mStart = findViewById(R.id.start);
             slideBttn = findViewById(R.id.slideUp);
-
+            switchBttn = findViewById(R.id.switcher);
             slidePanel = findViewById(R.id.sliding_layout);
             getLocationPermission();
             init();
