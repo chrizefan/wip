@@ -230,7 +230,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void onProviderEnabled(String provider) {}
                 @Override
                 public void onProviderDisabled(String provider) {
-                    Log.d(TAG, provider + " Provider disabled");
+                    Toast.makeText(getApplicationContext(), "GPS location retrieval failed", Toast.LENGTH_SHORT);
                 }
         };
         mNetListener = new LocationListener() {
@@ -322,28 +322,38 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDirections.setVisibility(View.VISIBLE);
         mDirections.setOnClickListener(v -> {
             if(mDeviceLocation == null) {
-                Toast.makeText(this, "Retrieve location first", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Location must be retrieved first", Toast.LENGTH_SHORT).show();
             } else {
-                new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving");
+                if(!mWifiManager.isWifiEnabled()) {
+                    Toast.makeText(MapsActivity.this, "Please enable wifi", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(WifiManager.ACTION_PICK_WIFI_NETWORK));
+                } else {
+                    new FetchURL(MapsActivity.this).execute(getUrl(mDeviceLocation, new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude), "driving"), "driving");
+                }
             }
         });
     }
 
     private void startNavigation() {
         if(mDeviceLocation == null) {
-            Toast.makeText(this, "Retrieve location first", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Location must be retrieved first", Toast.LENGTH_SHORT).show();
         } else {
-            LocationBuilder locationBuilder = new LocationBuilder();
-            mStart.setOnClickListener(v -> {
+            if(!mWifiManager.isWifiEnabled()) {
+                Toast.makeText(MapsActivity.this, "Please enable wifi", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(WifiManager.ACTION_PICK_WIFI_NETWORK));
+            } else {
+                LocationBuilder locationBuilder = new LocationBuilder();
+                mStart.setOnClickListener(v -> {
 
-                CameraPosition camPos = new CameraPosition.Builder()
-                        .target(mDeviceLocation)
-                        .tilt(45)
-                        .zoom(20f)
-                        .bearing(locationBuilder.getBearing())
-                        .build();
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
-            });
+                    CameraPosition camPos = new CameraPosition.Builder()
+                            .target(mDeviceLocation)
+                            .tilt(45)
+                            .zoom(20f)
+                            .bearing(locationBuilder.getBearing())
+                            .build();
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
+                });
+            }
         }   
     }
 
@@ -439,7 +449,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 } else {
                                     mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mGPSListener);
                                     mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mNetListener);
-                                    Toast.makeText(this, "Retrieving location with GPS...", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(this, "Retrieving location may take a few minutes", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 mDeviceLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
