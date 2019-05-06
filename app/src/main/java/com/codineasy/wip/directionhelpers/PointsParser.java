@@ -5,6 +5,7 @@ import android.databinding.ObservableArrayList;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.codineasy.wip.DarkSkyJSONHandler;
 import com.codineasy.wip.LocationDetail;
@@ -80,39 +81,41 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
     // Executes in UI thread, after the parsing process
     @Override
     protected void onPostExecute(List<List<HashMap<String, String>>> result) {
-        DarkSkyJSONHandler.allowAllUpdate(getAppContext());
-        WipGlobals.startTime = Calendar.getInstance().getTimeInMillis()/1000;
+        if(result != null) {
+            DarkSkyJSONHandler.allowAllUpdate(getAppContext());
+            WipGlobals.startTime = Calendar.getInstance().getTimeInMillis()/1000;
 
-        WipGlobals.details.clear();
-        for(List<HashMap<HashMap<String, String>, HashMap<String, String>>> listMapMap: mRoutesData) {
-            ObservableArrayList<LocationDetail> tmpList = new ObservableArrayList<>();
-            for(HashMap<HashMap<String, String>, HashMap<String, String>> mapMap : listMapMap)
-                for(HashMap<String, String> latlng : mapMap.keySet()) {
-                    LocationDetail detail = new LocationDetail(latlng, mapMap.get(latlng));
-                    tmpList.add(detail);
-                }
+            WipGlobals.details.clear();
+            for (List<HashMap<HashMap<String, String>, HashMap<String, String>>> listMapMap : mRoutesData) {
+                ObservableArrayList<LocationDetail> tmpList = new ObservableArrayList<>();
+                for (HashMap<HashMap<String, String>, HashMap<String, String>> mapMap : listMapMap)
+                    for (HashMap<String, String> latlng : mapMap.keySet()) {
+                        LocationDetail detail = new LocationDetail(latlng, mapMap.get(latlng));
+                        tmpList.add(detail);
+                    }
 
-            WipGlobals.details.add(tmpList);
-        }
-
-        ArrayList<LatLng> points;
-        PolylineOptions[] lineOptions = new PolylineOptions[result.size()];
-        // Traversing through all the routes
-        for (int i = 0; i < lineOptions.length; i++) {
-            points = new ArrayList<>();
-            lineOptions[i] = new PolylineOptions();
-            // Fetching i-th route
-            List<HashMap<String, String>> path = result.get(i);
-            // Fetching all the points in i-th route
-            for (int j = 0; j < path.size(); j++) {
-                HashMap<String, String> point = path.get(j);
-                double lat = Double.parseDouble(point.get("lat"));
-                double lng = Double.parseDouble(point.get("lng"));
-                LatLng position = new LatLng(lat, lng);
-                points.add(position);
+                WipGlobals.details.add(tmpList);
             }
-            // Adding all the points in the route to LineOptions
-            lineOptions[i].addAll(points);
+
+
+            ArrayList<LatLng> points;
+            PolylineOptions[] lineOptions = new PolylineOptions[result.size()];
+            // Traversing through all the routes
+            for (int i = 0; i < lineOptions.length; i++) {
+                points = new ArrayList<>();
+                lineOptions[i] = new PolylineOptions();
+                // Fetching i-th route
+                List<HashMap<String, String>> path = result.get(i);
+                // Fetching all the points in i-th route
+                for (int j = 0; j < path.size(); j++) {
+                    HashMap<String, String> point = path.get(j);
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
+                    LatLng position = new LatLng(lat, lng);
+                    points.add(position);
+                }
+                // Adding all the points in the route to LineOptions
+                lineOptions[i].addAll(points);
                 lineOptions[i].width(20);
                 lineOptions[i].clickable(true);
                 if (i == 0) {
@@ -122,14 +125,15 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
                     lineOptions[i].color(ContextCompat.getColor(getAppContext(), R.color.colorBlueTransparent));
                     lineOptions[i].zIndex(0);
                 }
-            }
-            Log.d(TAG, "onPostExecute lineoptions decoded");
-            Log.d(TAG, "RoutesData:" + mRoutesData.toString());
-            Log.d(TAG, "StepsData:" + mStepsData.toString());
-            // Drawing polyline in the Google Map for the i-th route
-            //mMap.addPolyline(lineOptions);
+                }
+                Log.d(TAG, "onPostExecute lineoptions decoded");
+                Log.d(TAG, "RoutesData:" + mRoutesData.toString());
+                Log.d(TAG, "StepsData:" + mStepsData.toString());
+                // Drawing polyline in the Google Map for the i-th route
+                //mMap.addPolyline(lineOptions);
 
-            taskCallback.onTaskDone((Object[]) lineOptions);
+                taskCallback.onTaskDone((Object[]) lineOptions);
+            }
         }
 
     private List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> getJObjectData(JSONObject jObject){
