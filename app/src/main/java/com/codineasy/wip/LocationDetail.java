@@ -29,7 +29,10 @@ public class LocationDetail extends BaseObservable {
     private int distanceToArrive;
 
     public LocationDetail(HashMap<String, String> latLng, HashMap<String, String> durDst) {
+        // Set location, distance and duration
         this.updateDetails(latLng, durDst);
+
+        // Start listening to DarkSkyJSONHandler in case it successfully obtains JSON from darksky.net
         this.jsonHandler.addOnPropertyChangedCallback(new OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
