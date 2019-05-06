@@ -494,8 +494,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void displayRouteInfoBox() {
-        mDestinationInfoBox.setVisibility(View.INVISIBLE);
         if(!mRoutesData.isEmpty()) {
+            mDestinationInfoBox.setVisibility(View.INVISIBLE);
             slideBttn.setVisibility(View.VISIBLE);
             slidePanel.setEnabled(true);
             for (int i = 0; i < mPolyline.length; i++) {
