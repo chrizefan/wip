@@ -495,36 +495,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void displayRouteInfoBox() {
         mDestinationInfoBox.setVisibility(View.INVISIBLE);
-        slideBttn.setVisibility(View.VISIBLE);
-        slidePanel.setEnabled(true);
+        if(!mRoutesData.isEmpty()) {
+            slideBttn.setVisibility(View.VISIBLE);
+            slidePanel.setEnabled(true);
+            for (int i = 0; i < mPolyline.length; i++) {
+                if (mPolyline[i].getZIndex() == 1) {
+                    int duration = new DataParser().parseTotalDuration(jDirections)[i];
+                    int seconds = duration % 60;
+                    int totalMinutes = duration / 60;
+                    int minutes = totalMinutes % 60;
+                    int hours = totalMinutes / 60;
+                    if (seconds >= 30) minutes += 1;
+                    if (hours == 0) mDuration.setText(minutes + "min");
+                    else mDuration.setText(hours + "h" + minutes + "min");
 
-
-
-
-        for (int i = 0; i < mPolyline.length; i++) {
-            if (mPolyline[i].getZIndex() == 1) {
-                int duration = new DataParser().parseTotalDuration(jDirections)[i];
-                int seconds = duration % 60;
-                int totalMinutes = duration / 60;
-                int minutes = totalMinutes % 60;
-                int hours = totalMinutes / 60;
-                if (seconds >= 30) minutes += 1;
-                if (hours == 0) mDuration.setText(minutes + "min");
-                else mDuration.setText(hours + "h" + minutes + "min");
-
-                double distance = new DataParser().parseTotalDistance(jDirections)[i];
-                distance = distance/1000.0;
-                if (distance < 100) {
-                    DecimalFormat df = new DecimalFormat("#.#");
-                    mDistance.setText(df.format(distance) + "km");
-                } else {
-                    distance = Math.round(distance);
-                    mDistance.setText( Long.toString(((Double)distance).longValue()) + "km");
+                    double distance = new DataParser().parseTotalDistance(jDirections)[i];
+                    distance = distance / 1000.0;
+                    if (distance < 100) {
+                        DecimalFormat df = new DecimalFormat("#.#");
+                        mDistance.setText(df.format(distance) + "km");
+                    } else {
+                        distance = Math.round(distance);
+                        mDistance.setText(Long.toString(((Double) distance).longValue()) + "km");
+                    }
                 }
             }
+            mRouteInfoBox.setVisibility(View.VISIBLE);
+            startNavigation();
+        } else {
+            Toast.makeText(getApplicationContext(), "No routes available", Toast.LENGTH_SHORT).show();
         }
-        mRouteInfoBox.setVisibility(View.VISIBLE);
-        startNavigation();
     }
 
     public void displayDestinationInfoBox() {
