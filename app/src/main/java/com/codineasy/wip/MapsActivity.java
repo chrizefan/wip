@@ -335,17 +335,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(mDeviceLocation == null) {
             Toast.makeText(this, "Location must be retrieved first", Toast.LENGTH_SHORT).show();
         } else {
-            LocationBuilder locationBuilder = new LocationBuilder();
-            mStart.setOnClickListener(v -> {
+            if(!mWifiManager.isWifiEnabled()) {
+                Toast.makeText(MapsActivity.this, "Please enable wifi", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(WifiManager.ACTION_PICK_WIFI_NETWORK));
+            } else {
+                LocationBuilder locationBuilder = new LocationBuilder();
+                mStart.setOnClickListener(v -> {
 
-                CameraPosition camPos = new CameraPosition.Builder()
-                        .target(mDeviceLocation)
-                        .tilt(45)
-                        .zoom(20f)
-                        .bearing(locationBuilder.getBearing())
-                        .build();
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
-            });
+                    CameraPosition camPos = new CameraPosition.Builder()
+                            .target(mDeviceLocation)
+                            .tilt(45)
+                            .zoom(20f)
+                            .bearing(locationBuilder.getBearing())
+                            .build();
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
+                });
+            }
         }   
     }
 
