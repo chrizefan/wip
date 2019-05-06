@@ -157,7 +157,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-        viewFlipper= findViewById(R.id.view_flipper);
+
 
 
 
@@ -739,21 +739,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         view.setVisibility(View.INVISIBLE);
     }
 
-    public void nextView(View v)
-    {
-        viewFlipper.showNext();
 
-        if(viewFlipper.getDisplayedChild()==1)
-        {
-            switchBttn.setText("Weather");
-        }
-
-        if(viewFlipper.getDisplayedChild()==0)
-        {
-            switchBttn.setText("Directions");
-        }
-
-    }
 
     public void changeStyle(View v)
     {
