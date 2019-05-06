@@ -126,6 +126,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private SlidingUpPanelLayout slidePanel;
     private ViewFlipper viewFlipper;
+    private Button refresh;
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -151,6 +152,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             slideBttn = findViewById(R.id.slideUp);
             switchBttn = findViewById(R.id.switcher);
             slidePanel = findViewById(R.id.sliding_layout);
+            refresh = findViewById(R.id.refresh);
             getLocationPermission();
             init();
 
@@ -255,6 +257,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         };
 
         mWifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
     }
 
     private void initImageBitmaps(){
