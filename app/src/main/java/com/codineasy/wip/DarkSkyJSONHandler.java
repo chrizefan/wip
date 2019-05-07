@@ -21,12 +21,12 @@ public class DarkSkyJSONHandler extends BaseObservable {
     private LocationDetail detail;
     private Weather weather;
 
-    private static final String requestFormat = "https://api.darksky.net/forecast/eea270ac07533974219309823863b40b/%f,%f?exclude=minutely&units=si";
+    private static final String REQUEST_FORMAT = "https://api.darksky.net/forecast/eea270ac07533974219309823863b40b/%f,%f?exclude=minutely&units=si";
     private JSONObject json;
-    private final Response.ErrorListener errorListener = (VolleyError error) -> {
+    private final Response.ErrorListener ERROR_LISTENER = (VolleyError error) -> {
         Log.d("DarkSkyJSONHandler", "Volley request error: " + error);
     };
-    private final Response.Listener<JSONObject> listener = (JSONObject response) -> {
+    private final Response.Listener<JSONObject> LISTENER = (JSONObject response) -> {
             json = response;
             notifyChange();
         };
@@ -79,10 +79,10 @@ public class DarkSkyJSONHandler extends BaseObservable {
     public void update() {
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
-                String.format(requestFormat, getLocation().latitude, getLocation().longitude),
+                String.format(REQUEST_FORMAT, getLocation().latitude, getLocation().longitude),
                 null,
-                this.listener,
-                this.errorListener
+                this.LISTENER,
+                this.ERROR_LISTENER
         );
         queue.add(request);
     }
