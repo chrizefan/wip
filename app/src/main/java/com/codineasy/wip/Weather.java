@@ -17,7 +17,12 @@ public class Weather extends BaseObservable {
     public Weather(DarkSkyJSONHandler handler, LocationDetail detail) {
         this.handler = handler;
 
-        this.handler.addOnPropertyChangedCallback(new DarkSkyJSONHandlerListener());
+        this.handler.addOnPropertyChangedCallback(new OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                update();
+            }
+        });
 
         this.detail = detail;
     }
@@ -131,14 +136,5 @@ public class Weather extends BaseObservable {
         }
 
         return closestIndex;
-    }
-
-    class DarkSkyJSONHandlerListener extends OnPropertyChangedCallback {
-
-        @RequiresApi(api = Build.VERSION_CODES.N)
-        @Override
-        public void onPropertyChanged(Observable sender, int propertyId) {
-            update();
-        }
     }
 }
