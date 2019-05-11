@@ -768,11 +768,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(viewFlipper.getDisplayedChild()==1)
         {
             switchBttn.setText("Weather");
+            WipGlobals.isShowingDirection = false;
+            adapter.notifyDataSetChanged();
         }
 
         if(viewFlipper.getDisplayedChild()==0)
         {
             switchBttn.setText("Directions");
+            WipGlobals.isShowingDirection = true;
+            adapter.notifyDataSetChanged();
         }
 
     }
