@@ -30,17 +30,20 @@ public class WeatherUnitTest {
             Assert.fail();
         }
 
-        WipGlobals.startTime =  1557590551;
+        WipGlobals.startTime =  1557590400;
         LocationDetail ld = Mockito.mock(LocationDetail.class);
-        Mockito.when(ld.getTimeToArrive()).thenReturn(3600);
+        Mockito.when(ld.getTimeToArrive()).thenReturn(0);
         Weather w = new Weather(h, ld);
+        Truth.assertThat(w.temperature()).isEqualTo(10);
 
         try {
             Weather w2 = w.getNextHourWeather();
             Truth.assertThat(w2.time()).isGreaterThan(w.time());
+            Truth.assertThat(w2.temperature()).isEqualTo(11);
 
             Weather w3 = w2.getNextHourWeather();
             Truth.assertThat(w3.time()).isGreaterThan(w2.time());
+            Truth.assertThat(w3.temperature()).isEqualTo(12);
         } catch (JSONException e) {
             e.printStackTrace();
             Assert.fail();
