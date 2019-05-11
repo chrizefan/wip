@@ -123,7 +123,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<String> mImageUrls = new ArrayList<>();
 
-    private RecyclerViewAdapter adapter;
+    public static RecyclerViewAdapter adapter;
 
     private SlidingUpPanelLayout slidePanel;
     private ViewFlipper viewFlipper;
