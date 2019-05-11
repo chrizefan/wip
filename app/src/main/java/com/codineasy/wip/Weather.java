@@ -29,6 +29,8 @@ public class Weather extends BaseObservable {
         });
 
         this.detail = detail;
+
+        update();
     }
 
     public Weather(DarkSkyJSONHandler handler, JSONObject json) throws JSONException, NullPointerException {
