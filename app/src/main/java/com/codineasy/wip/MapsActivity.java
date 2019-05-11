@@ -769,6 +769,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    public void customDialog(String title, String message, final String cancelMethod, final String okMethod)
+    {
+        final android.support.v7.app.AlertDialog.Builder builderSingle = new android.support.v7.app.AlertDialog.Builder(this);
+
+    }
+
 
 
 
