@@ -38,9 +38,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i)
-    {
-        if(!WipGlobals.isShowingDirection) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+        if (!WipGlobals.isShowingDirection) {
             viewHolder.column1.setText(String.valueOf(WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().temperature()) + "°C");
             viewHolder.column2.setText(WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().summary());
 
@@ -62,41 +61,42 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             viewHolder.column3.setText(sb.toString());
 
-        viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Dialog dialog = new Dialog(mContext);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Dialog dialog = new Dialog(mContext);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-                LinearLayout layout = new LinearLayout(mContext);
-                layout.setOrientation(LinearLayout.VERTICAL);
-                layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+                    LinearLayout layout = new LinearLayout(mContext);
+                    layout.setOrientation(LinearLayout.VERTICAL);
+                    layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 
-                Weather weather = WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather();
+                    Weather weather = WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather();
 
-                Iterator<String> iterator = weather.getJson().keys();
-                while(iterator.hasNext()) {
-                    String name = iterator.next();
-                    if(!name.equals("time") && !name.equals("icon")) {
-                        TextView textView = new TextView(dialog.getContext());
-                        try {
-                            textView.setText(name + ": " + weather.getJson().getString(name));
-                            textView.setTextSize(25);
-                            textView.setPadding(5,5,5,5);
-                            textView.setLayoutParams(new RelativeLayout.LayoutParams(
-                                    RelativeLayout.LayoutParams.MATCH_PARENT,
-                                    RelativeLayout.LayoutParams.WRAP_CONTENT
-                            ));
-                            layout.addView(textView);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                    Iterator<String> iterator = weather.getJson().keys();
+                    while (iterator.hasNext()) {
+                        String name = iterator.next();
+                        if (!name.equals("time") && !name.equals("icon")) {
+                            TextView textView = new TextView(dialog.getContext());
+                            try {
+                                textView.setText(name + ": " + weather.getJson().getString(name));
+                                textView.setTextSize(25);
+                                textView.setPadding(5, 5, 5, 5);
+                                textView.setLayoutParams(new RelativeLayout.LayoutParams(
+                                        RelativeLayout.LayoutParams.MATCH_PARENT,
+                                        RelativeLayout.LayoutParams.WRAP_CONTENT
+                                ));
+                                layout.addView(textView);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
+                    dialog.setContentView(layout);
+                    dialog.show();
                 }
-                dialog.setContentView(layout);
-                dialog.show();
-            }
-        });
+            });
+        }
     }
 
     @Override
