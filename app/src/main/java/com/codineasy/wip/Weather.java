@@ -71,18 +71,17 @@ public class Weather extends BaseObservable {
 
 
     public int temperature()  {
-            try {
-                double temp = json.getDouble("temperature");
-                int a = (int) Math.round(temp);
-                return a;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (NullPointerException e1) {
-                e1.printStackTrace();
-            }
-        double temp1= Double.NaN;
-            int b = (int) Math.round(temp1);
-            return b;
+        try {
+            double temp = json.getDouble("temperature");
+            int a = (int) Math.round(temp);
+            return a;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e1) {
+            e1.printStackTrace();
+        }
+
+        return Integer.MAX_VALUE;
     }
 
     public String getString(String key) throws JSONException {
