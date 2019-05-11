@@ -1,11 +1,14 @@
 package com.codineasy.wip;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,6 +64,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, ""+WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().icon(), Toast.LENGTH_SHORT).show();
+
+                final Dialog dialog = new Dialog(mContext);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.dialog_textview);
+                dialog.show();
+
+
             }
         });
     }
@@ -91,4 +101,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             parentLayout = itemView.findViewById(R.id.parent_layout);
         }
     }
+
+
+
 }

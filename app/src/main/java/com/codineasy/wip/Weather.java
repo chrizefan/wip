@@ -75,6 +75,8 @@ public class Weather extends BaseObservable {
             return json.getString("summary");
         } catch (JSONException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -84,6 +86,8 @@ public class Weather extends BaseObservable {
         try {
             return json.getString("icon");
         } catch (JSONException e) {
+            e.printStackTrace();
+        }catch (NullPointerException e) {
             e.printStackTrace();
         }
         return null;
