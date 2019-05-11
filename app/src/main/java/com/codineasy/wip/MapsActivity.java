@@ -131,7 +131,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<String> mImageUrls = new ArrayList<>();
 
-    private RecyclerViewAdapter adapter;
+    public static RecyclerViewAdapter adapter;
 
     private SlidingUpPanelLayout slidePanel;
     private ViewFlipper viewFlipper;
@@ -339,7 +339,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void initRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        adapter = new RecyclerViewAdapter(this, mNames, mImageUrls);
+        adapter = new RecyclerViewAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -846,11 +846,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(viewFlipper.getDisplayedChild()==1)
         {
             switchBttn.setText("Weather");
+            WipGlobals.isShowingDirection = false;
+            adapter.notifyDataSetChanged();
         }
 
         if(viewFlipper.getDisplayedChild()==0)
         {
             switchBttn.setText("Directions");
+            WipGlobals.isShowingDirection = true;
+            adapter.notifyDataSetChanged();
         }
 
     }

@@ -20,10 +20,10 @@ public class WipGlobals {
     public static ObservableList<Weather> currentWeathers = new ObservableArrayList<>();
     public static ObservableInt detailsIndex = new ObservableInt(-1);
     public static class PointDistanceComparator implements Comparator<LocationDetail> {
-
         @Override
         public int compare(LocationDetail o1, LocationDetail o2) {
             return o1.getDistanceToArrive() - o2.getDistanceToArrive();
         }
     }
+    public static boolean isShowingDirection = false;
 }
