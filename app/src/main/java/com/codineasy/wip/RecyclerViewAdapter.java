@@ -1,5 +1,6 @@
 package com.codineasy.wip;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,6 +12,12 @@ import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.jsoup.Jsoup;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>
 {
@@ -31,6 +38,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i)
     {
@@ -65,20 +73,41 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     dialog.setContentView(R.layout.dialog_textview);
                     dialog.show();
-
-
                 }
             });
         } else {
+            List<HashMap<HashMap<String, String>, HashMap<String, String>>> route = MapsActivity.mStepsData.get(WipGlobals.detailsIndex.get());
+            int index = 0;
+            for (HashMap<HashMap<String, String>, HashMap<String, String>> step : route) {
+                if(index + step.keySet().size() <= i) {
+                    index += step.keySet().size();
+                } else {
+                    HashMap<String, String> instructions = (HashMap<String, String>) step.keySet().toArray()[0];
+                            viewHolder.column1.setText(instructions.get("maneuver"));
+                    viewHolder.column2.setText(Jsoup.parse(instructions.get("html_instructions")).text());
+                    viewHolder.column3.setText(
+                            step.get(instructions).get("distance") + "\n" +
+                                    step.get(instructions).get("duration"));
+                }
+            }
         }
     }
 
     @Override
     public int getItemCount() {
-        if(WipGlobals.details.size() != 0)
-            return WipGlobals.details.get(WipGlobals.detailsIndex.get()).size();
-        else
-            return 0;
+        if(!WipGlobals.isShowingDirection) {
+            if (WipGlobals.details.size() != 0)
+                return WipGlobals.details.get(WipGlobals.detailsIndex.get()).size();
+            else
+                return 0;
+        } else {
+            int count = 0;
+            List<HashMap<HashMap<String, String>, HashMap<String, String>>> legs = MapsActivity.mStepsData.get(WipGlobals.detailsIndex.get());
+            for (HashMap<HashMap<String, String>, HashMap<String, String>> steps : legs) {
+                count += steps.keySet().size();
+            }
+            return count;
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder
