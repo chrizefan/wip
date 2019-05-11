@@ -143,6 +143,10 @@ public class Weather extends BaseObservable {
                 '}';
     }
 
+    public JSONObject getJson() {
+        return json;
+    }
+
     @Override
     public boolean equals(Object o) {
         if(o instanceof Weather) {
