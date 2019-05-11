@@ -52,10 +52,9 @@ public class Weather extends BaseObservable {
 
     public String summary()  {
         try {
-            if(json != null)
-                return json.getString("summary");
+            return json.getString("summary");
         } catch (JSONException e) {
-
+            e.printStackTrace();
         }
         return null;
     }
@@ -63,10 +62,9 @@ public class Weather extends BaseObservable {
 
     public String icon()  {
         try {
-            if(json != null)
-                return json.getString("icon");
+            return json.getString("icon");
         } catch (JSONException e) {
-
+            e.printStackTrace();
         }
         return null;
     }
@@ -76,8 +74,7 @@ public class Weather extends BaseObservable {
             try {
                 double temp = json.getDouble("temperature");
                 int a = (int) Math.round(temp);
-                if(json != null)
-                    return a;
+                return a;
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (NullPointerException e1) {
