@@ -83,11 +83,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     index += step.keySet().size();
                 } else {
                     HashMap<String, String> instructions = (HashMap<String, String>) step.keySet().toArray()[0];
-                            viewHolder.column1.setText(instructions.get("maneuver"));
+                    viewHolder.column1.setText(instructions.get("maneuver"));
                     viewHolder.column2.setText(Jsoup.parse(instructions.get("html_instructions")).text());
-                    viewHolder.column3.setText(
-                            step.get(instructions).get("distance") + "\n" +
-                                    step.get(instructions).get("duration"));
+                    viewHolder.column3.setText(step.get(instructions).get("distance") + "\n" + step.get(instructions).get("duration"));
                 }
             }
         }
