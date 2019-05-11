@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.databinding.Observable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -312,6 +313,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             getDeviceLocation();
         });
         hideSoftKeyboard();
+
+        WipGlobals.detailsIndex.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                WipGlobals.currentWeathers.clear();
+                for (LocationDetail ld : WipGlobals.details.get(WipGlobals.detailsIndex.get())) {
+                    WipGlobals.currentWeathers.add(ld.getWeather());
+                }
+            }
+        });
     }
 
 
@@ -385,6 +396,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         displayRouteInfoBox();
 
         WipGlobals.detailsIndex.set(0);
+        WipGlobals.detailsIndex.notifyChange();
     }
 
     private void geoLocate(){
@@ -699,6 +711,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     Log.d(TAG, "current index: " + index);
                     WipGlobals.detailsIndex.set(index);
+                    WipGlobals.detailsIndex.notifyChange();
                     adapter.notifyDataSetChanged();
                     WipGlobals.details.get(index).forEach(ld -> Log.d(TAG, "getWeather(): "+ ld.getWeather().toString()));
                 } else {
