@@ -8,9 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>
 {
@@ -56,21 +62,41 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             viewHolder.column3.setText(sb.toString());
 
-            viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(mContext, "" + WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().icon(), Toast.LENGTH_SHORT).show();
+        viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(mContext);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-                    final Dialog dialog = new Dialog(mContext);
-                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog.setContentView(R.layout.dialog_textview);
-                    dialog.show();
+                LinearLayout layout = new LinearLayout(mContext);
+                layout.setOrientation(LinearLayout.VERTICAL);
+                layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 
+                Weather weather = WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather();
 
+                Iterator<String> iterator = weather.getJson().keys();
+                while(iterator.hasNext()) {
+                    String name = iterator.next();
+                    if(!name.equals("time") && !name.equals("icon")) {
+                        TextView textView = new TextView(dialog.getContext());
+                        try {
+                            textView.setText(name + ": " + weather.getJson().getString(name));
+                            textView.setTextSize(25);
+                            textView.setPadding(5,5,5,5);
+                            textView.setLayoutParams(new RelativeLayout.LayoutParams(
+                                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                                    RelativeLayout.LayoutParams.WRAP_CONTENT
+                            ));
+                            layout.addView(textView);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
-            });
-        } else {
-        }
+                dialog.setContentView(layout);
+                dialog.show();
+            }
+        });
     }
 
     @Override
