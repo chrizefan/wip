@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10sp"
+    android:id="@+id/parent_layout">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="69"
+        android:id="@+id/temperature"
+        android:textColor="#000"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="30dp"
+        android:textSize="30sp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Weather wtv"
+        android:id="@+id/summary"
+        android:layout_toRightOf="@+id/temperature"
+        android:textColor="#000"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="30dp"
+        android:textSize="17sp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Weather wtv"
+        android:id="@+id/duration"
+
+        android:textColor="#000"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="300dp"
+        android:textSize="17sp"
+        />
+
+</RelativeLayout>
