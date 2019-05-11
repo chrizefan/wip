@@ -89,6 +89,15 @@ public class Weather extends BaseObservable {
         return json.getString(key);
     }
 
+    public long time() {
+        try {
+            return json.getLong("time");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
     @Override
     public String toString() {
         return "Weather{" +
