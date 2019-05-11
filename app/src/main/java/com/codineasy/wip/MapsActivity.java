@@ -284,7 +284,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void initRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        adapter = new RecyclerViewAdapter(this, mNames, mImageUrls);
+        adapter = new RecyclerViewAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
