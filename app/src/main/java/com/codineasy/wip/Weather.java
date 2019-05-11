@@ -105,7 +105,7 @@ public class Weather extends BaseObservable {
             e1.printStackTrace();
         }
 
-        return Integer.MAX_VALUE;
+        return 0;
     }
 
     public String getString(String key) throws JSONException {
