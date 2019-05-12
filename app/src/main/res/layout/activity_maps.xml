@@ -64,7 +64,7 @@
         android:scaleType="centerCrop"
         android:src="@drawable/ic_gps"
         android:background="@drawable/white_rectangle_100"/>
-    <Button
+    <ImageButton
         android:id="@+id/slideUp"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -74,8 +74,10 @@
         android:layout_marginEnd="10dp"
         android:layout_below="@id/ic_gps"
         android:visibility="invisible"
+        android:src="@drawable/ic_arrow"
 
-        android:background="@drawable/ic_up"/>
+
+        android:background="@drawable/white_rectangle_100"/>
 
     <RelativeLayout
         android:id="@+id/route_info_box"

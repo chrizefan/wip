@@ -112,9 +112,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mStepsData;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mRoutesData;
 
-    private Button slideBttn;
+    private ImageButton slideBttn;
     private Button switchBttn;
-    private boolean isup;
+    private boolean isUp;
 
     public static JSONObject jDirections;
     private static final String TAG = "MapsActivity";
@@ -188,9 +188,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDrawer = findViewById(R.id.drawer_layout);
         mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        Button menubttn = findViewById(R.id.bttn_menu);
+        Button menuBttn = findViewById(R.id.bttn_menu);
 
-        menubttn.setOnClickListener(new View.OnClickListener() {
+        menuBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                // DrawerLayout navDrawer = findViewById(R.id.drawer_layout);
@@ -205,18 +205,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         LinearLayout slideView = findViewById(R.id.bottom_view);
         slideView.setVisibility(View.INVISIBLE);
 
-        isup = false;
+        isUp = false;
 
         slideBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isup) {
+                if (isUp) {
                     slideDown(slideView);
                     v.setBackgroundResource(R.drawable.ic_up);
                 } else {
                     slideUp(slideView);
                 }
-                isup = !isup;
+                isUp = !isUp;
                 slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             }
         });
@@ -796,10 +796,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @SuppressLint("NewApi")
     public void slideUp(View view){
+        long time = SystemClock.uptimeMillis();
+        for(LocationDetail detail : WipGlobals.details.get(WipGlobals.detailsIndex.get())) {
+            while(Double.isNaN(detail.getWeather().temperature())) {
+                if(SystemClock.uptimeMillis() - time >= 2000)
+                    break;
+            }
+        }
         adapter.notifyDataSetChanged();
         WipGlobals.details.get(0).forEach(ld -> Log.d(TAG, "getWeather(): "+ ld.getWeather()));
 
         view.setVisibility(View.INVISIBLE);
+
+
+
     }
 
 
