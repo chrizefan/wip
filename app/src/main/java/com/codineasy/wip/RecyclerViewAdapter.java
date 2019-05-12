@@ -49,6 +49,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         if(!WipGlobals.isShowingDirection) {
             Weather weather = WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather();
             if(weather.isReady()) {
+                viewHolder.imageView.setImageResource(getImageResource(""));
                 viewHolder.column1.setText(String.valueOf(weather.temperature()) + "°C");
                 viewHolder.column2.setText(weather.summary());
 
@@ -90,6 +91,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             List<HashMap<HashMap<String, String>, HashMap<String, String>>> route = MapsActivity.mStepsData.get(WipGlobals.detailsIndex.get());
             HashMap<HashMap<String, String>, HashMap<String, String>> step = route.get(i);
             HashMap<String, String> instructions = (HashMap<String, String>) step.keySet().toArray()[0];
+            viewHolder.column1.setText("");
             viewHolder.imageView.setImageResource(getImageResource(instructions.get("maneuver")));
             viewHolder.column2.setText(Jsoup.parse(instructions.get("html_instructions")).text());
             viewHolder.column3.setText(step.get(instructions).get("distance") + "\n"
@@ -119,9 +121,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             case "turn-slight-left": return R.drawable.slightly_left;
             case "turn-sharp-left": return R.drawable.hard_left;
             case "uturn-left": return R.drawable.uturn_left;
+            case "turn-left": return R.drawable.turn_left;
             case "turn-slight-right": return R.drawable.slightly_right;
             case "turn-sharp-right": return R.drawable.hard_right;
             case "uturn-right": return R.drawable.uturn_right;
+            case "turn-right": return R.drawable.turn_right;
             case "straight": return R.drawable.straight;
             case "ramp-left": return R.drawable.exit_left;
             case "ramp-right": return R.drawable.exit_right;
