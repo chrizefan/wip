@@ -130,7 +130,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static RecyclerViewAdapter adapter;
 
     private SlidingUpPanelLayout slidePanel;
-    private ViewFlipper viewFlipper;
     private Button refresh;
 
     public static final String SHARED_PREFS = "sharedPrefs";
@@ -182,30 +181,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
 
-
-
-
-
-
-
         setNavigationViewListner();
 
-
-
-
-
-
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
-
-        viewFlipper= findViewById(R.id.view_flipper);
-
-
-
-
-
-
-
 
         slidePanel.setEnabled(false);
 
@@ -843,20 +821,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void nextView(View v)
     {
-        viewFlipper.showNext();
+        WipGlobals.isShowingDirection = !WipGlobals.isShowingDirection;
+        adapter.notifyDataSetChanged();
 
-        if(viewFlipper.getDisplayedChild()==1)
+        if(!WipGlobals.isShowingDirection )
         {
             switchBttn.setText("Weather");
-            WipGlobals.isShowingDirection = false;
-            adapter.notifyDataSetChanged();
         }
 
-        if(viewFlipper.getDisplayedChild()==0)
+        if(WipGlobals.isShowingDirection )
         {
             switchBttn.setText("Directions");
-            WipGlobals.isShowingDirection = true;
-            adapter.notifyDataSetChanged();
         }
 
     }

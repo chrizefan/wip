@@ -26,38 +26,14 @@
         android:background="@drawable/ic_refresh"
         android:id="@+id/refresh"/>
 
-
-
-    <ViewFlipper
-        android:id="@+id/view_flipper"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:inAnimation="@android:anim/slide_in_left"
-        >
+        android:layout_marginTop="45dp"
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview"
-            android:layout_width="match_parent"
-            android:layout_marginTop="45dp"
+        android:paddingTop="10sp"
+        android:layout_height="match_parent">
 
-            android:paddingTop="10sp"
-            android:layout_height="match_parent">
-
-        </android.support.v7.widget.RecyclerView>
-
-
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/recyclerview2"
-            >
-
-
-        </android.support.v7.widget.RecyclerView>
-
-
-
-    </ViewFlipper>
-
+    </android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>
