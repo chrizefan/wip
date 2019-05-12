@@ -43,7 +43,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i)
     {
         if(!WipGlobals.isShowingDirection) {
-            viewHolder.column1.setText(String.valueOf(WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().temperature()) + "°C");
+            viewHolder.column1.setText(WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().temperature() + "°C");
             viewHolder.column2.setText(WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().summary());
 
             StringBuilder sb = new StringBuilder();

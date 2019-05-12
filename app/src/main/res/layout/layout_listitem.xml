@@ -3,42 +3,59 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10sp"
     android:id="@+id/parent_layout">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/data"
+        android:background="@color/colorPrimaryDark"
+        android:layout_centerInParent="true"
+        android:layout_marginRight="75dp"
+        android:layout_marginLeft="75dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="69"
-        android:id="@+id/temperature"
-        android:textColor="#000"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="30dp"
-        android:textSize="30sp"
-        />
+        android:id="@+id/data"
+        android:padding="15dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Weather wtv"
-        android:id="@+id/summary"
-        android:layout_toRightOf="@+id/temperature"
-        android:textColor="#000"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="30dp"
-        android:textSize="17sp"
-        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="69"
+            android:id="@+id/temperature"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:textSize="30sp"
+            />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Weather wtv"
-        android:id="@+id/duration"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Weather wtv"
+            android:id="@+id/summary"
+            android:layout_toEndOf="@+id/temperature"
+            android:layout_toStartOf="@id/duration"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:textSize="17sp"
+            />
 
-        android:textColor="#000"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="300dp"
-        android:textSize="17sp"
-        />
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Weather wtv"
+            android:id="@+id/duration"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:textSize="20sp"
+            />
+    </RelativeLayout>
 </RelativeLayout>
