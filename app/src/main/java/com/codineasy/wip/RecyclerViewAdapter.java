@@ -3,18 +3,22 @@ package com.codineasy.wip;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.media.Image;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.jsoup.Jsoup;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +90,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             List<HashMap<HashMap<String, String>, HashMap<String, String>>> route = MapsActivity.mStepsData.get(WipGlobals.detailsIndex.get());
             HashMap<HashMap<String, String>, HashMap<String, String>> step = route.get(i);
             HashMap<String, String> instructions = (HashMap<String, String>) step.keySet().toArray()[0];
-            viewHolder.column1.setText(instructions.get("maneuver"));
+            viewHolder.imageView.setImageResource(getImageResource(instructions.get("maneuver")));
             viewHolder.column2.setText(Jsoup.parse(instructions.get("html_instructions")).text());
             viewHolder.column3.setText(step.get(instructions).get("distance") + "\n"
                     + step.get(instructions).get("duration"));
@@ -110,11 +114,31 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
+    public int getImageResource(String maneuver) {
+        switch (maneuver) {
+            case "turn-slight-left": return R.drawable.slightly_left;
+            case "turn-sharp-left": return R.drawable.hard_left;
+            case "uturn-left": return R.drawable.uturn_left;
+            case "turn-slight-right": return R.drawable.slightly_right;
+            case "turn-sharp-right": return R.drawable.hard_right;
+            case "uturn-right": return R.drawable.uturn_right;
+            case "straight": return R.drawable.straight;
+            case "ramp-left": return R.drawable.exit_left;
+            case "ramp-right": return R.drawable.exit_right;
+            case "fork-left": return R.drawable.left;
+            case "fork-right": return R.drawable.right;
+            case "roundabout-left": return R.drawable.circle_clockwise;
+            case "roundabout-right": return R.drawable.circle_counterclockwise;
+            default: return R.drawable.clear;
+        }
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder
     {
         TextView column1;
         TextView column2;
         TextView column3;
+        ImageView imageView;
 
         RelativeLayout parentLayout;
 
@@ -122,6 +146,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public ViewHolder(@NonNull View itemView)
         {
             super(itemView);
+            imageView = itemView.findViewById(R.id.image);
             column1 = itemView.findViewById(R.id.temperature);
             column2 = itemView.findViewById(R.id.summary);
             column3 = itemView.findViewById(R.id.duration);
