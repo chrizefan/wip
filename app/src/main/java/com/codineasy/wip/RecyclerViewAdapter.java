@@ -50,7 +50,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             Weather weather = WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather();
             if(weather.isReady()) {
                 viewHolder.imageView.setImageResource(getImageResource(""));
-                viewHolder.column1.setText(String.valueOf(weather.temperature()) + "°C");
+                viewHolder.column1.setText(weather.temperature() + "°C");
                 viewHolder.column2.setText(weather.summary());
 
                 StringBuilder sb = new StringBuilder();
@@ -133,6 +133,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             case "fork-right": return R.drawable.right;
             case "roundabout-left": return R.drawable.circle_clockwise;
             case "roundabout-right": return R.drawable.circle_counterclockwise;
+            case "merge": return R.drawable.merge;
             default: return R.drawable.clear;
         }
     }
