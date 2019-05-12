@@ -3,8 +3,6 @@ package com.codineasy.wip;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.media.Image;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,10 +16,8 @@ import android.widget.Toast;
 
 import org.jsoup.Jsoup;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>
 {
@@ -50,7 +46,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             Weather weather = WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather();
             if(weather.isReady()) {
                 viewHolder.imageView.setImageResource(getImageResource(""));
-                viewHolder.column1.setText(String.valueOf(weather.temperature()) + "°C");
+                viewHolder.column1.setText(weather.temperature() + "°C");
                 viewHolder.column2.setText(weather.summary());
 
                 StringBuilder sb = new StringBuilder();
@@ -133,6 +129,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             case "fork-right": return R.drawable.right;
             case "roundabout-left": return R.drawable.circle_clockwise;
             case "roundabout-right": return R.drawable.circle_counterclockwise;
+            case "merge": return R.drawable.merge;
             default: return R.drawable.clear;
         }
     }
