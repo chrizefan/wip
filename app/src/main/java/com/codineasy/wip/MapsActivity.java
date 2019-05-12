@@ -112,7 +112,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mStepsData;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mRoutesData;
 
-    private Button slideBttn;
+    private ImageButton slideBttn;
     private Button switchBttn;
     private boolean isup;
 
@@ -210,12 +210,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         slideBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isup) {
-                    slideDown(slideView);
-                    v.setBackgroundResource(R.drawable.ic_up);
-                } else {
-                    slideUp(slideView);
-                }
+               // if (isup) {
+                  //  slideDown(slideView);
+                //
+                //} else {
+                  //  slideUp(slideView);
+                //}
                 isup = !isup;
                 slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             }
