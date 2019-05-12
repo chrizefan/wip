@@ -21,7 +21,7 @@ public class DarkSkyJSONHandler extends BaseObservable {
     private LocationDetail detail;
     private Weather weather;
 
-    private static final String REQUEST_FORMAT = "https://api.darksky.net/forecast/eea270ac07533974219309823863b40b/%f,%f?exclude=minutely&units=si";
+    private static final String REQUEST_FORMAT = "https://api.darksky.net/forecast/7b077f2e5773e91b61bf9cce9c4c759f/%f,%f?exclude=minutely&units=si";
     private JSONObject json;
     private final Response.ErrorListener ERROR_LISTENER = (VolleyError error) -> {
         Log.d("DarkSkyJSONHandler", "Volley request error: " + error);

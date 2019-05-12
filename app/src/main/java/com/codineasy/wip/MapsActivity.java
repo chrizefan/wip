@@ -114,7 +114,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private ImageButton slideBttn;
     private Button switchBttn;
-    private boolean isUp;
+    private boolean isup;
 
     public static JSONObject jDirections;
     private static final String TAG = "MapsActivity";
@@ -205,18 +205,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         LinearLayout slideView = findViewById(R.id.bottom_view);
         slideView.setVisibility(View.INVISIBLE);
 
-        isUp = false;
+        isup = false;
 
         slideBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isUp) {
+                if (isup) {
                     slideDown(slideView);
                     v.setBackgroundResource(R.drawable.ic_up);
                 } else {
                     slideUp(slideView);
                 }
-                isUp = !isUp;
+                isup = !isup;
                 slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             }
         });
