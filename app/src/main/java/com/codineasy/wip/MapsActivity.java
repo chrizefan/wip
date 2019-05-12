@@ -37,6 +37,7 @@ import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -93,6 +94,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView mDistance;
     private Button mDirections;
     private Button mStart;
+    private ImageButton mCancel;
     private GoogleMap mMap;
     private Boolean mLocationPermissionGranted;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -138,15 +140,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private int test;
     private boolean isChecked = false;
-
     private MenuItem darkMode;
 
     private DrawerLayout mDrawer;
-
-    private Button yes;
-
-
-
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -169,12 +165,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mDuration = findViewById(R.id.info_box_duration);
             mDistance = findViewById(R.id.info_box_distance);
             mStart = findViewById(R.id.start);
+            mCancel = findViewById(R.id.cancel_action);
             slideBttn = findViewById(R.id.slideUp);
             switchBttn = findViewById(R.id.switcher);
             slidePanel = findViewById(R.id.sliding_layout);
             refresh = findViewById(R.id.refresh);
             darkMode = findViewById(R.id.dark_mode);
-
 
             getLocationPermission();
             init();
@@ -395,9 +391,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             .build();
                     mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
                     mStart.setVisibility(View.INVISIBLE);
+                    mCancel.setVisibility(View.VISIBLE);
+                });
+                mCancel.setOnClickListener(v -> {
+                    for (int i = 0; i < mPolyline.length; i++) {
+                        if (mPolyline[i].getZIndex() == 1) {
+                            focusRoute(mPolyline[i].getPoints());
+                        }
+                    }
+                    mCancel.setVisibility(View.INVISIBLE);
+                    mStart.setVisibility(View.VISIBLE);
                 });
             }
-        }   
+        }
     }
 
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
