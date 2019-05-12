@@ -796,20 +796,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @SuppressLint("NewApi")
     public void slideUp(View view){
-        long time = SystemClock.uptimeMillis();
-        for(LocationDetail detail : WipGlobals.details.get(WipGlobals.detailsIndex.get())) {
-            while(Double.isNaN(detail.getWeather().temperature())) {
-                if(SystemClock.uptimeMillis() - time >= 2000)
-                    break;
-            }
-        }
         adapter.notifyDataSetChanged();
         WipGlobals.details.get(0).forEach(ld -> Log.d(TAG, "getWeather(): "+ ld.getWeather()));
 
         view.setVisibility(View.INVISIBLE);
-
-
-
     }
 
 
