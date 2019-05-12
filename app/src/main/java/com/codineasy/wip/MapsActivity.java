@@ -112,7 +112,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mStepsData;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mRoutesData;
 
-    private Button slideBttn;
+    private ImageButton slideBttn;
     private Button switchBttn;
     private boolean isUp;
 
@@ -205,19 +205,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         LinearLayout slideView = findViewById(R.id.bottom_view);
         slideView.setVisibility(View.INVISIBLE);
 
-        isUp = false;
+        isup = false;
 
         slideBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isUp) {
+                if (isup) {
                     slideDown(slideView);
                     v.setBackgroundResource(R.drawable.ic_up);
                 } else {
                     slideUp(slideView);
-                    adapter.notifyDataSetChanged();
                 }
-                isUp = !isUp;
+                isup = !isup;
                 slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             }
         });
