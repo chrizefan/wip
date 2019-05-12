@@ -43,38 +43,45 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i)
     {
         if(!WipGlobals.isShowingDirection) {
-            viewHolder.column1.setText(WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().temperature() + "°C");
-            viewHolder.column2.setText(WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().summary());
+            Weather weather = WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather();
+            if(weather.isReady()) {
+                viewHolder.column1.setText(String.valueOf(weather.temperature()) + "°C");
+                viewHolder.column2.setText(weather.summary());
 
-            StringBuilder sb = new StringBuilder();
-            long sec = WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getTimeToArrive();
-            if (sec > 60) {
-                long min = sec / 60;
-                sec = sec - min * 60;
-                if (min > 60) {
-                    long hrs = min / 60;
-                    min = min - hrs * 60;
-                    sb.append(hrs + "h" + min + "m");
+                StringBuilder sb = new StringBuilder();
+                long sec = WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getTimeToArrive();
+                if (sec > 60) {
+                    long min = sec / 60;
+                    sec = sec - min * 60;
+                    if (min > 60) {
+                        long hrs = min / 60;
+                        min = min - hrs * 60;
+                        sb.append(hrs + "h" + min + "m");
+                    } else {
+                        sb.append(min + "m" + sec + "s");
+                    }
                 } else {
-                    sb.append(min + "m" + sec + "s");
+                    sb.append(sec + 's');
                 }
+
+                viewHolder.column3.setText(sb.toString());
+
+                viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(mContext, "" + WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().icon(), Toast.LENGTH_SHORT).show();
+
+                        final Dialog dialog = new Dialog(mContext);
+                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialog.setContentView(R.layout.dialog_textview);
+                        dialog.show();
+                    }
+                });
             } else {
-                sb.append(sec + 's');
+                viewHolder.column1.setText("");
+                viewHolder.column2.setText("Waiting for weather data, please refresh");
+                viewHolder.column3.setText("");
             }
-
-            viewHolder.column3.setText(sb.toString());
-
-            viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(mContext, "" + WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().icon(), Toast.LENGTH_SHORT).show();
-
-                    final Dialog dialog = new Dialog(mContext);
-                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dialog.setContentView(R.layout.dialog_textview);
-                    dialog.show();
-                }
-            });
         } else {
             List<HashMap<HashMap<String, String>, HashMap<String, String>>> route = MapsActivity.mStepsData.get(WipGlobals.detailsIndex.get());
             HashMap<HashMap<String, String>, HashMap<String, String>> step = route.get(i);
