@@ -416,6 +416,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             .bearing(locationBuilder.getBearing())
                             .build();
                     mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
+                    mStart.setVisibility(View.INVISIBLE);
                 });
             }
         }   
@@ -553,7 +554,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void moveCamera(LatLng latLng, float zoom, String title) {
         Log.d(TAG, "moveCamera: moving camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude);
         setMarker(latLng, title);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+        CameraPosition camPos = new CameraPosition.Builder()
+                .target(latLng)
+                .tilt(0)
+                .zoom(zoom)
+                .build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
         hideSoftKeyboard();
     }
 
