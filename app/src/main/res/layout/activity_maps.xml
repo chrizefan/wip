@@ -120,6 +120,20 @@
                 android:textSize="20sp" />
         </LinearLayout>
 
+        <ImageButton
+            android:id="@+id/cancel_action"
+            android:src="@drawable/ic_cancel"
+            android:layout_alignParentEnd="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/White"/>
+
+
         <Button
             android:id="@+id/start"
             android:drawableLeft="@drawable/ic_start"
