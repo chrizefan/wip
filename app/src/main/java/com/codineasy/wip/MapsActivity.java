@@ -188,9 +188,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDrawer = findViewById(R.id.drawer_layout);
         mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        Button menubttn = findViewById(R.id.bttn_menu);
+        Button menuBttn = findViewById(R.id.bttn_menu);
 
-        menubttn.setOnClickListener(new View.OnClickListener() {
+        menuBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                // DrawerLayout navDrawer = findViewById(R.id.drawer_layout);
@@ -205,18 +205,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         LinearLayout slideView = findViewById(R.id.bottom_view);
         slideView.setVisibility(View.INVISIBLE);
 
-        isup = false;
+        isUp = false;
 
         slideBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isup) {
+                if (isUp) {
                     slideDown(slideView);
                     v.setBackgroundResource(R.drawable.ic_up);
                 } else {
                     slideUp(slideView);
                 }
-                isup = !isup;
+                isUp = !isUp;
                 slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             }
         });
