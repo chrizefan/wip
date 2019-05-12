@@ -3,8 +3,6 @@ package com.codineasy.wip;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.media.Image;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,10 +16,8 @@ import android.widget.Toast;
 
 import org.jsoup.Jsoup;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>
 {
