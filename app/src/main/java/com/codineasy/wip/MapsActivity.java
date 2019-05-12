@@ -433,6 +433,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         WipGlobals.detailsIndex.set(0);
         WipGlobals.detailsIndex.notifyChange();
+
+        for(List<LocationDetail> lds : WipGlobals.details) {
+            for(LocationDetail ld : lds) {
+                ld.getWeather().clearWeather();
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     private void geoLocate(){

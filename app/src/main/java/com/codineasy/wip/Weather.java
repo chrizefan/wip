@@ -61,6 +61,10 @@ public class Weather extends BaseObservable {
         }
     }
 
+    public void clearWeather() {
+        this.json = null;
+    }
+
     public void fetchDarkSky() {
         this.detail.fetchDarkSky();
     }
