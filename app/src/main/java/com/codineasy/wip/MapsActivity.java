@@ -503,8 +503,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 }
                             } else {
                                 mDeviceLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                                moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
-                                        DEFAULT_ZOOM, "My Location");
+                                CameraPosition camPos = new CameraPosition.Builder()
+                                        .target(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                                        .tilt(0)
+                                        .zoom(DEFAULT_ZOOM)
+                                        .build();
+                                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
                             }
 
                         } else {
@@ -549,6 +553,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void setMarker(LatLng latLng, String title) {
         slideBttn.setVisibility(View.INVISIBLE);
+        mMap.clear();
         if(!title.equals("My Location") && mMarker == null){
             mMarker = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
