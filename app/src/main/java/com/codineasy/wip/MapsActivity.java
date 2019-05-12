@@ -549,7 +549,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void setMarker(LatLng latLng, String title) {
         slideBttn.setVisibility(View.INVISIBLE);
-        mMap.clear();
         if(!title.equals("My Location") && mMarker == null){
             mMarker = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
