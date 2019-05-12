@@ -46,7 +46,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             Weather weather = WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather();
             if(weather.isReady()) {
                 viewHolder.imageView.setImageResource(getImageResource(""));
-                viewHolder.column1.setText(weather.temperature() + "°C");
+                if(MapsActivity.mUnits == "metric") viewHolder.column1.setText(weather.temperature() + "°C");
+                else if(MapsActivity.mUnits == "imperial")viewHolder.column1.setText(weather.temperature() + "°F");
                 viewHolder.column2.setText(weather.summary());
 
                 StringBuilder sb = new StringBuilder();

@@ -117,6 +117,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean isup;
 
     public static JSONObject jDirections;
+    public static String mUnits;
     private static final String TAG = "MapsActivity";
     private static final float DEFAULT_ZOOM = 15f;
     private static final int GOOGLE_PLAY_SERVICE_UPDATED_ERROR_REQUEST = 0;
@@ -171,6 +172,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             slidePanel = findViewById(R.id.sliding_layout);
             refresh = findViewById(R.id.refresh);
             darkMode = findViewById(R.id.dark_mode);
+            mUnits = "metric";
 
             getLocationPermission();
             init();
@@ -280,11 +282,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         loadData();
     }
-
-
-
-
-
 
     private void initImageBitmaps(){
 
@@ -417,8 +414,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         String parameters = str_origin + "&" + str_dest + "&" + mode ;
         // Output format
         String output = "json";
+        //Units
+        String units = mUnits;
         // Building the url to the web service
-        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&alternatives=true"+ "&units=metric" + "&key=" + getString(R.string.google_maps_key2);
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&alternatives=true"+ "&units=" + units + "&key=" + getString(R.string.google_maps_key2);
     }
 
     @Override
@@ -590,15 +589,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (seconds >= 30) minutes += 1;
                     if (hours == 0) mDuration.setText(minutes + "min");
                     else mDuration.setText(hours + "h" + minutes + "min");
-
-                    double distance = new DataParser().parseTotalDistance(jDirections)[i];
-                    distance = distance / 1000.0;
-                    if (distance < 100) {
-                        DecimalFormat df = new DecimalFormat("#.#");
-                        mDistance.setText(df.format(distance) + "km");
-                    } else {
-                        distance = Math.round(distance);
-                        mDistance.setText(Long.toString(((Double) distance).longValue()) + "km");
+                    if(mUnits == "metric") {
+                        double distance = new DataParser().parseTotalDistance(jDirections)[i];
+                        distance = distance / 1000.0;
+                        if (distance < 100) {
+                            DecimalFormat df = new DecimalFormat("#.#");
+                            mDistance.setText(df.format(distance) + "km");
+                        } else {
+                            distance = Math.round(distance);
+                            mDistance.setText(Long.toString(((Double) distance).longValue()) + "km");
+                        }
+                    }
+                    else if(mUnits == "imperial") {
+                        double distance = new DataParser().parseTotalDistance(jDirections)[i] * 3.28084;
+                        distance = distance / 5280.0;
+                        if (distance < 100) {
+                            DecimalFormat df = new DecimalFormat("#.#");
+                            mDistance.setText(df.format(distance) + "mi");
+                        } else {
+                            distance = Math.round(distance);
+                            mDistance.setText((((Double) distance).longValue()) + "mi");
+                        }
                     }
                 }
             }
@@ -920,8 +931,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (item.getItemId()) {
 
             case R.id.dark_mode: {
-
-
                 final Dialog dialog = new Dialog(this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.restart_notice);
@@ -930,7 +939,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
             case R.id.toggle_units: {
-
+                if(mUnits == "metric") mUnits = "imperial";
+                else if(mUnits == "imperial") mUnits = "metric";
             }
         }
         //close navigation drawer

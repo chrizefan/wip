@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.codineasy.wip.DarkSkyJSONHandler;
 import com.codineasy.wip.LocationDetail;
+import com.codineasy.wip.MapsActivity;
 import com.codineasy.wip.R;
 import com.codineasy.wip.WipGlobals;
 import com.google.android.gms.maps.model.LatLng;
@@ -251,10 +252,12 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
         String encodedWaypoints = "waypoints=enc:" + new EncodedPolyline(latLngs).getEncodedPath() + ":";
         // Building the parameters to the web service
         String parameters = str_origin + "&" + str_dest + "&" + mode + "&" + encodedWaypoints;
+        //Units
+        String units = MapsActivity.mUnits;
         // Output format
         String output = "json";
         // Building the url to the web service
-        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&alternatives=false" + "&units=metric" + "&key=" + getAppContext().getString(R.string.google_maps_key2);
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&alternatives=false" + "&units=" + units + "&key=" + getAppContext().getString(R.string.google_maps_key2);
     }
 
 }

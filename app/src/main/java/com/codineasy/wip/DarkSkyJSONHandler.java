@@ -20,8 +20,6 @@ import java.util.Objects;
 public class DarkSkyJSONHandler extends BaseObservable {
     private LocationDetail detail;
     private Weather weather;
-
-    private static final String REQUEST_FORMAT = "https://api.darksky.net/forecast/7b077f2e5773e91b61bf9cce9c4c759f/%f,%f?exclude=minutely&units=si";
     private JSONObject json;
     private final Response.ErrorListener ERROR_LISTENER = (VolleyError error) -> {
         Log.d("DarkSkyJSONHandler", "Volley request error: " + error);
@@ -32,6 +30,12 @@ public class DarkSkyJSONHandler extends BaseObservable {
         };
     private static RequestQueue queue;
 
+    private String getRequestFormat() {
+        String units = "auto";
+        if(MapsActivity.mUnits == "metric") units = "si";
+        else if(MapsActivity.mUnits == "imperial") units = "us";
+        return "https://api.darksky.net/forecast/7b077f2e5773e91b61bf9cce9c4c759f/%f,%f?exclude=minutely&units="+units;
+    }
 
     public DarkSkyJSONHandler(LocationDetail detail) {
         this.json = null;
@@ -79,7 +83,7 @@ public class DarkSkyJSONHandler extends BaseObservable {
     public void update() {
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
-                String.format(REQUEST_FORMAT, getLocation().latitude, getLocation().longitude),
+                String.format(getRequestFormat(), getLocation().latitude, getLocation().longitude),
                 null,
                 this.LISTENER,
                 this.ERROR_LISTENER
