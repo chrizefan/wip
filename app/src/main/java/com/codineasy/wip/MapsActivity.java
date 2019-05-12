@@ -2,9 +2,13 @@ package com.codineasy.wip;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.databinding.Observable;
 import android.location.Address;
@@ -27,8 +31,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -62,6 +69,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
 
+import com.mahfa.dnswitch.DayNightSwitch;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -78,7 +86,7 @@ import java.util.List;
 
 import static com.codineasy.wip.GlobalApplication.getAppContext;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener{
 
     private ImageView mGps;
     private RelativeLayout mDestinationInfoBox;
@@ -129,6 +137,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ViewFlipper viewFlipper;
     private Button refresh;
 
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String yeye = "yeye";
+    public static final String switch1 = "switch1";
+
+    private int test;
+    private boolean isChecked = false;
+
+    private MenuItem darkMode;
+
+    private DrawerLayout mDrawer;
+
+    private Button yes;
+
+
+
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
@@ -154,13 +178,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             switchBttn = findViewById(R.id.switcher);
             slidePanel = findViewById(R.id.sliding_layout);
             refresh = findViewById(R.id.refresh);
+            darkMode = findViewById(R.id.dark_mode);
+
+
             getLocationPermission();
             init();
 
         }
-        getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
+
+
+
+
+
+
+        setNavigationViewListner();
+
+
+
+
+
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
 
         viewFlipper= findViewById(R.id.view_flipper);
+
+
+
+
+
 
 
 
@@ -168,18 +215,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         initImageBitmaps();
 
-        DrawerLayout navDrawer = findViewById(R.id.drawer_layout);
-        navDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mDrawer = findViewById(R.id.drawer_layout);
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         Button menubttn = findViewById(R.id.bttn_menu);
 
         menubttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DrawerLayout navDrawer = findViewById(R.id.drawer_layout);
+               // DrawerLayout navDrawer = findViewById(R.id.drawer_layout);
                 // If the navigation drawer is not open then open it, if its already open then close it.
-                if(!navDrawer.isDrawerOpen(GravityCompat.START)) navDrawer.openDrawer(Gravity.START);
-                else navDrawer.closeDrawer(Gravity.END);
+                if(!mDrawer.isDrawerOpen(GravityCompat.START)) mDrawer.openDrawer(Gravity.START);
+                else mDrawer.closeDrawer(Gravity.END);
 
 
             }
@@ -259,7 +306,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 adapter.notifyDataSetChanged();
             }
         });
+
+
+        loadData();
     }
+
+
+
+
+
 
     private void initImageBitmaps(){
 
@@ -486,6 +541,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    public boolean isChecked()
+    {
+        if(test == 0)
+        {
+            return false;
+        }
+
+        else
+        {
+            return true;
+        }
+    }
+
     public void moveCamera(LatLng latLng, float zoom, String title) {
         Log.d(TAG, "moveCamera: moving camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude);
         setMarker(latLng, title);
@@ -544,6 +612,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(getApplicationContext(), "No routes available", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     public void displayDestinationInfoBox() {
 
@@ -663,12 +732,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+
+
     @SuppressLint("NewApi")
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Toast.makeText(this, "map is ready", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "map is ready" + "test value: " + test, Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onMapReady: map ready");
         mMap = googleMap;
+
+        if(test==1)
+        {
+            mMap.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(
+                        this, R.raw.style_json));
+        }
+
+
+
 
         if (mLocationPermissionGranted) {
             getDeviceLocation();
@@ -725,10 +806,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
-    }
+
 
     @SuppressLint("NewApi")
     public void slideUp(View view){
@@ -781,10 +859,59 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    public void warning(View v)
+    {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.restart_notice);
+        dialog.show();
+    }
+
     public void changeStyle(View v)
     {
 
+        saveData();
+
+        Intent mStartActivity = new Intent(MapsActivity.this, MapsActivity.class);
+        int mPendingIntentId = 123456;
+        PendingIntent mPendingIntent = PendingIntent.getActivity(MapsActivity.this, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager)MapsActivity.this.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+        System.exit(0);
     }
+
+
+
+    public void saveData()
+    {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        if(test ==0)
+        {
+            editor.putInt(yeye, 1);
+            editor.commit();
+            return;
+        }
+
+
+        if(test==1)
+        {
+            editor.putInt(yeye, 0);
+            editor.commit();
+            return;
+        }
+
+
+    }
+
+    public void loadData()
+    {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        test = sharedPreferences.getInt(yeye, 0);
+    }
+
+
 
     public void customDialog(String title, String message, final String cancelMethod, final String okMethod)
     {
@@ -793,15 +920,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // Handle navigation view item clicks here.
+        switch (item.getItemId()) {
+
+            case R.id.dark_mode: {
+
+
+                final Dialog dialog = new Dialog(this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.restart_notice);
+                dialog.show();
+                break;
+            }
+
+            case R.id.toggle_units: {
+
+            }
+        }
+        //close navigation drawer
+        mDrawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    public void tjnsad()
+    {
 
 
 
+    }
 
-
-
-
-
-
-
-
+    private void setNavigationViewListner() {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
 }

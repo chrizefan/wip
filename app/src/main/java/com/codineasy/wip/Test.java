@@ -1,5 +1,6 @@
 package com.codineasy.wip;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -13,6 +14,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.Window;
+import android.widget.Toast;
 
 public class Test extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,6 +37,8 @@ public class Test extends AppCompatActivity
         });
 
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -57,17 +62,12 @@ public class Test extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -75,11 +75,12 @@ public class Test extends AppCompatActivity
 
         if (id == R.id.toggle_units) {
             // Handle the camera action
+            Toast.makeText(this, "pressed on lol", Toast.LENGTH_SHORT).show();
         }  else if (id == R.id.dark_mode) {
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else if (id == R.id.idk_yet) {
 
+            Toast.makeText(this, "pressed on lol", Toast.LENGTH_SHORT).show();
         }
+
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+
+    android:id="@+id/warning_view"
+    >
+
+    <TextView
+        android:padding="10dp"
+        android:id="@+id/warning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Warning, changing \n the theme requires \n the app to restart \n \n Press OK to continue"
+
+        android:textColor="#000"/>
+
+
+    <Button
+        android:id="@+id/yes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/warning"
+        android:layout_marginTop="2dp"
+        android:onClick="changeStyle"
+        android:layout_marginLeft="30dp"
+        android:padding="10dp"
+        android:text="OK"
+        android:textSize="15sp" />
+
+
+
+</RelativeLayout>

@@ -12,6 +12,8 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
+
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
@@ -26,6 +28,8 @@
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="Wip"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+
 
 
 
