@@ -212,7 +212,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View v) {
                 if (isup) {
                     slideDown(slideView);
-                    v.setBackgroundResource(R.drawable.ic_up);
+
                 } else {
                     slideUp(slideView);
                 }
