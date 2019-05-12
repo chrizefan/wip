@@ -67,17 +67,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 viewHolder.column3.setText(sb.toString());
 
-                viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(mContext, "" + WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().icon(), Toast.LENGTH_SHORT).show();
-
-                        final Dialog dialog = new Dialog(mContext);
-                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        dialog.setContentView(R.layout.dialog_textview);
-                        dialog.show();
-                    }
-                });
+//                viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Toast.makeText(mContext, "" + WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().icon(), Toast.LENGTH_SHORT).show();
+//
+//                        final Dialog dialog = new Dialog(mContext);
+//                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//                        dialog.setContentView(R.layout.dialog_textview);
+//                        dialog.show();
+//                    }
+//                });
             } else {
                 viewHolder.column1.setText("");
                 viewHolder.column2.setText("Waiting for weather data, please refresh");
