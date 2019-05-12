@@ -77,17 +77,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             });
         } else {
             List<HashMap<HashMap<String, String>, HashMap<String, String>>> route = MapsActivity.mStepsData.get(WipGlobals.detailsIndex.get());
-            int index = 0;
-            for (HashMap<HashMap<String, String>, HashMap<String, String>> step : route) {
-                if(index + step.keySet().size() <= i) {
-                    index += step.keySet().size();
-                } else {
-                    HashMap<String, String> instructions = (HashMap<String, String>) step.keySet().toArray()[0];
-                    viewHolder.column1.setText(instructions.get("maneuver"));
-                    viewHolder.column2.setText(Jsoup.parse(instructions.get("html_instructions")).text());
-                    viewHolder.column3.setText(step.get(instructions).get("distance") + "\n" + step.get(instructions).get("duration"));
-                }
-            }
+            HashMap<HashMap<String, String>, HashMap<String, String>> step = route.get(i);
+            HashMap<String, String> instructions = (HashMap<String, String>) step.keySet().toArray()[0];
+            viewHolder.column1.setText(instructions.get("maneuver"));
+            viewHolder.column2.setText(Jsoup.parse(instructions.get("html_instructions")).text());
+            viewHolder.column3.setText(step.get(instructions).get("distance") + "\n"
+                    + step.get(instructions).get("duration"));
         }
     }
 

@@ -69,7 +69,6 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
 
-import com.mahfa.dnswitch.DayNightSwitch;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
