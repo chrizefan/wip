@@ -21,7 +21,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/white_rectangle_100"
+        android:background="@drawable/white_rectangle_25"
         android:elevation="10dp">
 
         <com.seatgeek.placesautocomplete.PlacesAutocompleteTextView
