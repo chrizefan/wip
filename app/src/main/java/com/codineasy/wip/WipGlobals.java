@@ -17,7 +17,7 @@ public class WipGlobals {
 //     public static long weatherUpdateTime = 1000*60*60;
 //    public static long maxTimeout = 1000;
     public static ObservableList<ObservableArrayList<LocationDetail>> details = new ObservableArrayList<>();
-//     public static ObservableList<Weather> currentWeathers = new ObservableArrayList<>();
+    public static ObservableList<Weather> currentWeathers = new ObservableArrayList<>();
     public static ObservableInt detailsIndex = new ObservableInt(-1);
 //     public static class PointDistanceComparator implements Comparator<LocationDetail> {
 //         @Override

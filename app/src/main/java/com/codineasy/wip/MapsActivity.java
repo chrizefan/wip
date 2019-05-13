@@ -73,7 +73,6 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import android.view.Gravity;
 import org.json.JSONObject;
 import android.support.v4.view.GravityCompat;
-import android.widget.ViewFlipper;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
