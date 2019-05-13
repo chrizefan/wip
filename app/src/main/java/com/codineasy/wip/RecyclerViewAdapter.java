@@ -82,26 +82,26 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             if (MapsActivity.mUnits == "metric") {
                 distance = distance / 1000.0;
                 if (distance < 0.1) {
-                    distanceString = ( Math.round(distance * 1000) + "m");
+                    distanceString = ( Math.round(distance * 1000) + " m");
                 }
                 else if (distance < 100) {
                     DecimalFormat df = new DecimalFormat("#.#");
-                    distanceString = (df.format(distance) + "km");
+                    distanceString = (df.format(distance) + " km");
                 } else {
                     distance = Math.round(distance);
-                    distanceString = ((((Double) distance).longValue()) + "km");
+                    distanceString = ((((Double) distance).longValue()) + " km");
                 }
             } else if (MapsActivity.mUnits == "imperial") {
                 distance = distance / 5280.0;
                 if (distance < 0.1) {
-                    distanceString = (Math.round(distance * 5280) + "ft");
+                    distanceString = (Math.round(distance * 5280) + " ft");
                 }
                 else if (distance < 100) {
                     DecimalFormat df = new DecimalFormat("#.#");
-                    distanceString = (df.format(distance) + "mi");
+                    distanceString = (df.format(distance) + " mi");
                 } else {
                     distance = Math.round(distance);
-                    distanceString = ((((Double) distance).longValue()) + "mi");
+                    distanceString = ((((Double) distance).longValue()) + " mi");
                 }
             }
             viewHolder.column3.setText(distanceString + "\n"

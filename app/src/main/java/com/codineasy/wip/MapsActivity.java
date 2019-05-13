@@ -583,28 +583,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         double distance = new DataParser().parseTotalDistance(jDirections)[i];
                         distance = distance / 1000.0;
                         if (distance < 0.1) {
-                            mDistance.setText(Math.round(distance * 1000) + "m");
+                            mDistance.setText(Math.round(distance * 1000) + " m");
                         }
                         if (distance < 100) {
                             DecimalFormat df = new DecimalFormat("#.#");
-                            mDistance.setText(df.format(distance) + "km");
+                            mDistance.setText(df.format(distance) + " km");
                         } else {
                             distance = Math.round(distance);
-                            mDistance.setText((((Double) distance).longValue()) + "km");
+                            mDistance.setText((((Double) distance).longValue()) + " km");
                         }
                     }
                     else if(mUnits == "imperial") {
                         double distance = new DataParser().parseTotalDistance(jDirections)[i] * 3.28084;
                         distance = distance / 5280.0;
                         if (distance < 0.1) {
-                            mDistance.setText(Math.round(distance * 5280) + "ft");
+                            mDistance.setText(Math.round(distance * 5280) + " ft");
                         }
                         if (distance < 100) {
                             DecimalFormat df = new DecimalFormat("#.#");
-                            mDistance.setText(df.format(distance) + "mi");
+                            mDistance.setText(df.format(distance) + " mi");
                         } else {
                             distance = Math.round(distance);
-                            mDistance.setText((((Double) distance).longValue()) + "mi");
+                            mDistance.setText((((Double) distance).longValue()) + " mi");
                         }
                     }
                 }
@@ -910,27 +910,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 double distance = new DataParser().parseTotalDistance(jDirections)[i];
                                 distance = distance / 1000.0;
                                 if (distance < 0.1) {
-                                    mDistance.setText(Math.round(distance * 1000) + "m");
+                                    mDistance.setText(Math.round(distance * 1000) + " m");
                                 }
                                 else if (distance < 100) {
                                     DecimalFormat df = new DecimalFormat("#.#");
-                                    mDistance.setText(df.format(distance) + "km");
+                                    mDistance.setText(df.format(distance) + " km");
                                 } else {
                                     distance = Math.round(distance);
-                                    mDistance.setText((((Double) distance).longValue()) + "km");
+                                    mDistance.setText((((Double) distance).longValue()) + " km");
                                 }
                             } else if (mUnits == "imperial") {
                                 double distance = new DataParser().parseTotalDistance(jDirections)[i] * 3.28084;
                                 distance = distance / 5280.0;
                                 if (distance < 0.1) {
-                                    mDistance.setText(Math.round(distance * 5280) + "ft");
+                                    mDistance.setText(Math.round(distance * 5280) + " ft");
                                 }
                                 else if (distance < 100) {
                                     DecimalFormat df = new DecimalFormat("#.#");
-                                    mDistance.setText(df.format(distance) + "mi");
+                                    mDistance.setText(df.format(distance) + " mi");
                                 } else {
                                     distance = Math.round(distance);
-                                    mDistance.setText((((Double) distance).longValue()) + "mi");
+                                    mDistance.setText((((Double) distance).longValue()) + " mi");
                                 }
                             }
                         }
