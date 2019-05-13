@@ -15,7 +15,7 @@ import java.util.TreeSet;
 public class WipGlobals {
     public static long startTime = 0;
 //     public static long weatherUpdateTime = 1000*60*60;
-    public static long maxTimeout = 1000;
+//    public static long maxTimeout = 1000;
     public static ObservableList<ObservableArrayList<LocationDetail>> details = new ObservableArrayList<>();
 //     public static ObservableList<Weather> currentWeathers = new ObservableArrayList<>();
     public static ObservableInt detailsIndex = new ObservableInt(-1);
