@@ -903,33 +903,35 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case R.id.toggle_units: {
                 if(mUnits == "metric") mUnits = "imperial";
                 else if(mUnits == "imperial") mUnits = "metric";
-                for (int i = 0; i < mPolyline.length; i++) {
-                    if (mPolyline[i].getZIndex() == 1) {
-                        if (mUnits == "metric") {
-                            double distance = new DataParser().parseTotalDistance(jDirections)[i];
-                            distance = distance / 1000.0;
-                            if (distance < 0.1) {
-                                mDistance.setText(Math.round(distance * 1000) + "m");
-                            }
-                            else if (distance < 100) {
-                                DecimalFormat df = new DecimalFormat("#.#");
-                                mDistance.setText(df.format(distance) + "km");
-                            } else {
-                                distance = Math.round(distance);
-                                mDistance.setText((((Double) distance).longValue()) + "km");
-                            }
-                        } else if (mUnits == "imperial") {
-                            double distance = new DataParser().parseTotalDistance(jDirections)[i] * 3.28084;
-                            distance = distance / 5280.0;
-                            if (distance < 0.1) {
-                                mDistance.setText(Math.round(distance * 5280) + "ft");
-                            }
-                            else if (distance < 100) {
-                                DecimalFormat df = new DecimalFormat("#.#");
-                                mDistance.setText(df.format(distance) + "mi");
-                            } else {
-                                distance = Math.round(distance);
-                                mDistance.setText((((Double) distance).longValue()) + "mi");
+                if(!(jDirections == null)) {
+                    for (int i = 0; i < mPolyline.length; i++) {
+                        if (mPolyline[i].getZIndex() == 1) {
+                            if (mUnits == "metric") {
+                                double distance = new DataParser().parseTotalDistance(jDirections)[i];
+                                distance = distance / 1000.0;
+                                if (distance < 0.1) {
+                                    mDistance.setText(Math.round(distance * 1000) + "m");
+                                }
+                                else if (distance < 100) {
+                                    DecimalFormat df = new DecimalFormat("#.#");
+                                    mDistance.setText(df.format(distance) + "km");
+                                } else {
+                                    distance = Math.round(distance);
+                                    mDistance.setText((((Double) distance).longValue()) + "km");
+                                }
+                            } else if (mUnits == "imperial") {
+                                double distance = new DataParser().parseTotalDistance(jDirections)[i] * 3.28084;
+                                distance = distance / 5280.0;
+                                if (distance < 0.1) {
+                                    mDistance.setText(Math.round(distance * 5280) + "ft");
+                                }
+                                else if (distance < 100) {
+                                    DecimalFormat df = new DecimalFormat("#.#");
+                                    mDistance.setText(df.format(distance) + "mi");
+                                } else {
+                                    distance = Math.round(distance);
+                                    mDistance.setText((((Double) distance).longValue()) + "mi");
+                                }
                             }
                         }
                     }
