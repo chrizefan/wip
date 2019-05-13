@@ -502,7 +502,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 mDeviceLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
                                 CameraPosition camPos = new CameraPosition.Builder()
                                         .target(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
-                                        .tilt(0)
                                         .zoom(DEFAULT_ZOOM)
                                         .build();
                                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
