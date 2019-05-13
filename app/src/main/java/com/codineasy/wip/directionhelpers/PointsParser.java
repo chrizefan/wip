@@ -194,7 +194,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
                         instructions.put("html_instructions", jSteps.getJSONObject(k).optString("html_instructions"));
                         instructions.put("maneuver", jSteps.getJSONObject(k).optString("maneuver"));
                         HashMap<String, String> distanceDuration = new HashMap<>();
-                        distanceDuration.put("distance", jSteps.getJSONObject(k).getJSONObject("distance").optString("text"));
+                        distanceDuration.put("distance", Integer.toString(jSteps.getJSONObject(k).getJSONObject("distance").optInt("value")));
                         distanceDuration.put("duration", jSteps.getJSONObject(k).getJSONObject("duration").optString("text"));
                         data.put(instructions, distanceDuration);
                         path.add(data);
