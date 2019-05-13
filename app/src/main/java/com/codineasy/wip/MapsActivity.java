@@ -117,7 +117,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean isup;
 
     public static JSONObject jDirections;
-    public static String mUnits;
+    public static String mUnits = "metric";
     private static final String TAG = "MapsActivity";
     private static final float DEFAULT_ZOOM = 15f;
     private static final int GOOGLE_PLAY_SERVICE_UPDATED_ERROR_REQUEST = 0;
@@ -137,11 +137,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String yeye = "yeye";
-    public static final String switch1 = "switch1";
 
     private int test;
-    private boolean isChecked = false;
-    private MenuItem darkMode;
 
     private DrawerLayout mDrawer;
 
@@ -171,8 +168,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             switchBttn = findViewById(R.id.switcher);
             slidePanel = findViewById(R.id.sliding_layout);
             refresh = findViewById(R.id.refresh);
-            darkMode = findViewById(R.id.dark_mode);
-            mUnits = "metric";
 
             getLocationPermission();
             init();
@@ -266,14 +261,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mWifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
 
-        refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                for(List<LocationDetail> d : WipGlobals.details) {
-                    for (LocationDetail ld : d) {
-                        ld.fetchDarkSky();
-                        Log.d(TAG, "fetching DarkSky");
-                    }
+        refresh.setOnClickListener(v -> {
+            for(List<LocationDetail> d : WipGlobals.details) {
+                for (LocationDetail ld : d) {
+                    ld.fetchDarkSky();
+                    Log.d(TAG, "fetching DarkSky");
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -483,7 +475,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-
     private void getDeviceLocation() {
         Log.d(TAG, "getDeviceLocation: get device location");
 
@@ -592,17 +583,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if(mUnits == "metric") {
                         double distance = new DataParser().parseTotalDistance(jDirections)[i];
                         distance = distance / 1000.0;
+                        if (distance < 0.1) {
+                            mDistance.setText(Math.round(distance * 1000) + "m");
+                        }
                         if (distance < 100) {
                             DecimalFormat df = new DecimalFormat("#.#");
                             mDistance.setText(df.format(distance) + "km");
                         } else {
                             distance = Math.round(distance);
-                            mDistance.setText(Long.toString(((Double) distance).longValue()) + "km");
+                            mDistance.setText((((Double) distance).longValue()) + "km");
                         }
                     }
                     else if(mUnits == "imperial") {
                         double distance = new DataParser().parseTotalDistance(jDirections)[i] * 3.28084;
                         distance = distance / 5280.0;
+                        if (distance < 0.1) {
+                            mDistance.setText(Math.round(distance * 5280) + "ft");
+                        }
                         if (distance < 100) {
                             DecimalFormat df = new DecimalFormat("#.#");
                             mDistance.setText(df.format(distance) + "mi");
@@ -621,10 +618,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-
     public void displayDestinationInfoBox() {
-
-
         try {
             mRouteInfoBox.setVisibility(View.INVISIBLE);
             String[] address = mMarker.getTitle().split(", ");
@@ -755,10 +749,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 MapStyleOptions.loadRawResourceStyle(
                         this, R.raw.style_json));
         }
-
-
-
-
         if (mLocationPermissionGranted) {
             getDeviceLocation();
 
@@ -814,8 +804,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-
-
     @SuppressLint("NewApi")
     public void slideUp(View view){
         long time = SystemClock.uptimeMillis();
@@ -864,19 +852,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    public void warning(View v)
-    {
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.restart_notice);
-        dialog.show();
-    }
-
-    public void changeStyle(View v)
-    {
-
+    public void changeStyle(View v) {
         saveData();
-
         Intent mStartActivity = new Intent(MapsActivity.this, MapsActivity.class);
         int mPendingIntentId = 123456;
         PendingIntent mPendingIntent = PendingIntent.getActivity(MapsActivity.this, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -885,23 +862,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         System.exit(0);
     }
 
-
-
-    public void saveData()
-    {
+    public void saveData() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        if(test ==0)
-        {
+        if(test ==0) {
             editor.putInt(yeye, 1);
             editor.commit();
             return;
         }
 
 
-        if(test==1)
-        {
+        if(test==1) {
             editor.putInt(yeye, 0);
             editor.commit();
             return;
@@ -910,18 +882,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    public void loadData()
-    {
+    public void loadData() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         test = sharedPreferences.getInt(yeye, 0);
-    }
-
-
-
-    public void customDialog(String title, String message, final String cancelMethod, final String okMethod)
-    {
-        final android.support.v7.app.AlertDialog.Builder builderSingle = new android.support.v7.app.AlertDialog.Builder(this);
-
     }
 
 
@@ -941,18 +904,43 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case R.id.toggle_units: {
                 if(mUnits == "metric") mUnits = "imperial";
                 else if(mUnits == "imperial") mUnits = "metric";
+                for (int i = 0; i < mPolyline.length; i++) {
+                    if (mPolyline[i].getZIndex() == 1) {
+                        if (mUnits == "metric") {
+                            double distance = new DataParser().parseTotalDistance(jDirections)[i];
+                            distance = distance / 1000.0;
+                            if (distance < 0.1) {
+                                mDistance.setText(Math.round(distance * 1000) + "m");
+                            }
+                            else if (distance < 100) {
+                                DecimalFormat df = new DecimalFormat("#.#");
+                                mDistance.setText(df.format(distance) + "km");
+                            } else {
+                                distance = Math.round(distance);
+                                mDistance.setText((((Double) distance).longValue()) + "km");
+                            }
+                        } else if (mUnits == "imperial") {
+                            double distance = new DataParser().parseTotalDistance(jDirections)[i] * 3.28084;
+                            distance = distance / 5280.0;
+                            if (distance < 0.1) {
+                                mDistance.setText(Math.round(distance * 5280) + "ft");
+                            }
+                            else if (distance < 100) {
+                                DecimalFormat df = new DecimalFormat("#.#");
+                                mDistance.setText(df.format(distance) + "mi");
+                            } else {
+                                distance = Math.round(distance);
+                                mDistance.setText((((Double) distance).longValue()) + "mi");
+                            }
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
             }
         }
         //close navigation drawer
         mDrawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public void tjnsad()
-    {
-
-
-
     }
 
     private void setNavigationViewListner() {

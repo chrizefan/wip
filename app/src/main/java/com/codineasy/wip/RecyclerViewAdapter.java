@@ -8,14 +8,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.jsoup.Jsoup;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 
@@ -49,7 +48,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 if(MapsActivity.mUnits == "metric") viewHolder.column1.setText(weather.temperature() + "°C");
                 else if(MapsActivity.mUnits == "imperial")viewHolder.column1.setText(weather.temperature() + "°F");
                 viewHolder.column2.setText(weather.summary());
-
                 StringBuilder sb = new StringBuilder();
                 long sec = WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getTimeToArrive();
                 if (sec > 60) {
@@ -65,20 +63,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 } else {
                     sb.append(sec + 's');
                 }
-
                 viewHolder.column3.setText(sb.toString());
 
-//                viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Toast.makeText(mContext, "" + WipGlobals.details.get(WipGlobals.detailsIndex.get()).get(i).getWeather().icon(), Toast.LENGTH_SHORT).show();
-//
-//                        final Dialog dialog = new Dialog(mContext);
-//                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//                        dialog.setContentView(R.layout.dialog_textview);
-//                        dialog.show();
-//                    }
-//                });
             } else {
                 viewHolder.column1.setText("");
                 viewHolder.column2.setText("Waiting for weather data, please refresh");
@@ -91,7 +77,34 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             viewHolder.column1.setText("");
             viewHolder.imageView.setImageResource(getImageResource(instructions.get("maneuver")));
             viewHolder.column2.setText(Jsoup.parse(instructions.get("html_instructions")).text());
-            viewHolder.column3.setText(step.get(instructions).get("distance") + "\n"
+            double distance = Double.valueOf(step.get(instructions).get("distance"));
+            String distanceString = "";
+            if (MapsActivity.mUnits == "metric") {
+                distance = distance / 1000.0;
+                if (distance < 0.1) {
+                    distanceString = ( Math.round(distance * 1000) + "m");
+                }
+                else if (distance < 100) {
+                    DecimalFormat df = new DecimalFormat("#.#");
+                    distanceString = (df.format(distance) + "km");
+                } else {
+                    distance = Math.round(distance);
+                    distanceString = ((((Double) distance).longValue()) + "km");
+                }
+            } else if (MapsActivity.mUnits == "imperial") {
+                distance = distance / 5280.0;
+                if (distance < 0.1) {
+                    distanceString = (Math.round(distance * 5280) + "ft");
+                }
+                else if (distance < 100) {
+                    DecimalFormat df = new DecimalFormat("#.#");
+                    distanceString = (df.format(distance) + "mi");
+                } else {
+                    distance = Math.round(distance);
+                    distanceString = ((((Double) distance).longValue()) + "mi");
+                }
+            }
+            viewHolder.column3.setText(distanceString + "\n"
                     + step.get(instructions).get("duration"));
         }
     }
