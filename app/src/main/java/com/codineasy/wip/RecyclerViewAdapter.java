@@ -61,7 +61,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         sb.append(min + "m" + sec + "s");
                     }
                 } else {
-                    sb.append(sec + 's');
+                    sb.append(sec + "s");
                 }
                 viewHolder.column3.setText(sb.toString());
 
