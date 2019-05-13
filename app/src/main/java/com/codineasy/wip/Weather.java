@@ -20,7 +20,8 @@ public class Weather extends BaseObservable {
 
     public Weather(DarkSkyJSONHandler handler, LocationDetail detail) {
         this.handler = handler;
-
+        
+        // Listen to changes of handler, and update when it notfies change
         this.handler.addOnPropertyChangedCallback(new OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
@@ -29,7 +30,8 @@ public class Weather extends BaseObservable {
         });
 
         this.detail = detail;
-
+        
+        // set the values in case response from darksky.net was quick
         update();
     }
 
@@ -47,7 +49,7 @@ public class Weather extends BaseObservable {
 //        this.time = json.getInt("time");
 //    }
 
-    public void update() {
+    void update() {
         try {
             JSONObject json = handler.getJson();
             if(json != null) {
@@ -116,14 +118,14 @@ public class Weather extends BaseObservable {
         return json.getString(key);
     }
 
-    public long time() {
-        try {
-            return json.getLong("time");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return -1;
-    }
+//    public long time() {
+//        try {
+//            return json.getLong("time");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        return -1;
+//    }
 
 //    public Weather getNextHourWeather() throws JSONException {
 //        if(this.json == null)
@@ -147,17 +149,17 @@ public class Weather extends BaseObservable {
                 '}';
     }
 
-    public JSONObject getJson() {
-        return json;
-    }
+//    public JSONObject getJson() {
+//        return json;
+//    }
 
-    @Override
-    public boolean equals(Object o) {
-        if(o instanceof Weather) {
-            return json.toString().equals(((Weather) o).json.toString());
-        }
-        return false;
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if(o instanceof Weather) {
+//            return json.toString().equals(((Weather) o).json.toString());
+//        }
+//        return false;
+//    }
 
     public static Integer findWeatherClosestToTime(long time, JSONArray array) {
         int closestIndex = 0;
