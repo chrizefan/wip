@@ -129,8 +129,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static int mTheme;
     private static boolean isUp = false;
 
-
-
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(getAppContext(), "Connection with Google API failed", Toast.LENGTH_SHORT).show();
