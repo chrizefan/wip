@@ -4,37 +4,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="navigation_view">
 
-
-
-
-
-
-
-
     <item android:title="Quick Settings">
         <menu>
             <item
                 android:id="@+id/toggle_units"
                 android:icon="@drawable/ic_settings"
                 android:title="Toggle Units" />
-
-
             <item
-
                 app:showAsAction="always"
                 android:id="@+id/dark_mode"
                 android:checkable="true"
                 android:title="Night Mode"
                 android:icon="@drawable/ic_darkmode"/>
 
-
-
-
-
-
         </menu>
     </item>
-
-
-
 </menu>
