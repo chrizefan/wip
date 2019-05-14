@@ -85,6 +85,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private ImageButton mGps;
     private ImageButton slideBttn;
+    private Button mMenuButton;
     private RelativeLayout mDestinationInfoBox;
     private RelativeLayout mRouteInfoBox;
     private TextView mAddress1;
@@ -98,24 +99,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Boolean mLocationPermissionGranted;
     private PlacesAutocompleteTextView mAutocomplete;
     private Marker mMarker;
-    public static LatLng mDeviceLocation;
     private DrawerLayout mDrawer;
     private Button refresh;
     private Button switchButton;
     private SlidingUpPanelLayout slidePanel;
-
+    private LinearLayout mSlideView;
     private LocationManager mLocationManager;
     private LocationListener mGPSListener;
     private LocationListener mNetListener;
-
     private WifiManager mWifiManager;
-
     private Polyline[] mPolyline;
+    private ArrayList<String> mNames = new ArrayList<>();
+    private ArrayList<String> mImageUrls = new ArrayList<>();
+
+    public RecyclerViewAdapter adapter;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mStepsData;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mRoutesData;
-
-    private boolean isUp;
-
+    public static LatLng mDeviceLocation;
     public static JSONObject jDirections;
     public static String mUnits = "metric";
     private static final String TAG = "MapsActivity";
@@ -124,28 +124,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int LOCATION_PERMISSION_REQUEST = 1;
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
-    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
-            new LatLng(-40, -168), new LatLng(71, 136));
-
-    private ArrayList<String> mNames = new ArrayList<>();
-    private ArrayList<String> mImageUrls = new ArrayList<>();
-
-    public RecyclerViewAdapter adapter;
+    private static final String SHARED_PREFS = "sharedPreferences";
+    private static final String key = "mapTheme";
+    private static int mTheme;
+    private static boolean isUp = false;
 
 
-    public static final String SHARED_PREFS = "sharedPreferences";
-    public static final String key = "mapTheme";
-
-    private int theme;
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Toast.makeText(getAppContext(), "Connection with Google API failed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         if (isGoogleServicesUpdated()) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_drawer);
@@ -164,55 +156,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             switchButton = findViewById(R.id.switcher);
             slidePanel = findViewById(R.id.sliding_layout);
             refresh = findViewById(R.id.refresh);
-
+            mDrawer = findViewById(R.id.drawer_layout);
+            mMenuButton = findViewById(R.id.bttn_menu);
+            mSlideView = findViewById(R.id.bottom_view);
             getLocationPermission();
             init();
 
         }
 
         setNavigationViewListner();
-
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
         slidePanel.setEnabled(false);
-
         initImageBitmaps();
-
-        mDrawer = findViewById(R.id.drawer_layout);
         mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
-        Button menuBttn = findViewById(R.id.bttn_menu);
-
-        menuBttn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               // DrawerLayout navDrawer = findViewById(R.id.drawer_layout);
-                // If the navigation drawer is not open then open it, if its already open then close it.
-                if(!mDrawer.isDrawerOpen(GravityCompat.START)) mDrawer.openDrawer(Gravity.START);
-                else mDrawer.closeDrawer(Gravity.END);
-
-
-            }
-        });
-
-        LinearLayout slideView = findViewById(R.id.bottom_view);
-        slideView.setVisibility(View.INVISIBLE);
-
-        isUp = false;
-
-        slideBttn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isUp) {
-                    slideDown(slideView);
-
-                } else {
-                    slideUp(slideView);
-                }
-                isUp = !isUp;
-                slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-            }
-        });
 
         mLocationManager = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         mGPSListener = new LocationListener() {
@@ -239,7 +195,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (mDeviceLocation == null) {
                     mDeviceLocation = new LatLng(location.getLatitude(), location.getLongitude());
                     mLocationManager.removeUpdates(this);
-
                     moveCamera(new LatLng(location.getLatitude(), location.getLongitude()),
                             DEFAULT_ZOOM, "My Location");
                 }
@@ -253,10 +208,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.d(TAG, provider + " Provider disabled");
             }
         };
-
         mWifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
-
         refresh.setOnClickListener(v -> {
             for(List<LocationDetail> d : WipGlobals.details) {
                 for (LocationDetail ld : d) {
@@ -266,29 +218,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 adapter.notifyDataSetChanged();
             }
         });
-
-
         loadData();
     }
 
     private void initImageBitmaps(){
-
               mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
         mNames.add("Description 1");
-
-
         mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
         mNames.add("Description 2");
-
         mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
         mNames.add("Description 3");
-
         mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
         mNames.add("Description 4");
-
         mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
         mNames.add("Description 5");
-
         initRecyclerView();
     }
 
@@ -333,8 +276,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
-    }
 
+        mMenuButton.setOnClickListener(v -> {
+            // DrawerLayout navDrawer = findViewById(R.id.drawer_layout);
+            // If the navigation drawer is not open then open it, if its already open then close it.
+            if(!mDrawer.isDrawerOpen(GravityCompat.START)) mDrawer.openDrawer(Gravity.START);
+            else mDrawer.closeDrawer(Gravity.END);
+        });
+    }
 
     private void getRoute() {
         if (mMarker != null && mPolyline != null) {
@@ -593,6 +542,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
             slideBttn.setVisibility(View.VISIBLE);
+            slideBttn.setOnClickListener(v -> {
+                if (isUp) {
+                    slideDown(mSlideView);
+                } else {
+                    slideUp(mSlideView);
+                }
+                isUp = !isUp;
+                slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+            });
             mRouteInfoBox.setVisibility(View.VISIBLE);
             startNavigation();
         } else {
@@ -712,9 +670,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void onBackPressed() {
 
-    }
 
 
 
@@ -725,7 +681,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d(TAG, "onMapReady: map ready");
         mMap = googleMap;
 
-        if(theme ==1)
+        if(mTheme ==1)
         {
             mMap.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
@@ -847,14 +803,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        if(theme ==0) {
+        if(mTheme ==0) {
             editor.putInt(key, 1);
             editor.commit();
             return;
         }
 
 
-        if(theme ==1) {
+        if(mTheme ==1) {
             editor.putInt(key, 0);
             editor.commit();
             return;
@@ -864,7 +820,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void loadData() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        theme = sharedPreferences.getInt(key, 0);
+        mTheme = sharedPreferences.getInt(key, 0);
     }
 
 
