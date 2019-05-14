@@ -1,8 +1,6 @@
 package com.codineasy.wip;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,11 +18,8 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>
 {
-    private Context mContext;
 
-
-    public RecyclerViewAdapter(Context mContext) {
-        this.mContext = mContext;
+    public RecyclerViewAdapter() {
     }
 
     @NonNull
@@ -148,18 +143,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder
-    {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView column1;
         TextView column2;
         TextView column3;
         ImageView imageView;
-
         RelativeLayout parentLayout;
 
-
-        public ViewHolder(@NonNull View itemView)
-        {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image);
             column1 = itemView.findViewById(R.id.temperature);
