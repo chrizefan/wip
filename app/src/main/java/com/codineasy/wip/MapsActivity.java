@@ -714,37 +714,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    @SuppressLint("NewApi")
-    public void slideUp(View view){
-        long time = SystemClock.uptimeMillis();
-        for(LocationDetail detail : WipGlobals.details.get(WipGlobals.detailsIndex.get())) {
-            while(Double.isNaN(detail.getWeather().temperature())) {
-                if(SystemClock.uptimeMillis() - time >= 2000)
-                    break;
-            }
-        }
-        adapter.notifyDataSetChanged();
-        WipGlobals.details.get(0).forEach(ld -> Log.d(TAG, "getWeather(): "+ ld.getWeather()));
-
-        view.setVisibility(View.INVISIBLE);
-
-
-
-    }
-
-
-    public void slideDown(View view){
-        TranslateAnimation animate = new TranslateAnimation(
-                0,                 // fromXDelta
-                0,                 // toXDelta
-                0,                 // fromYDelta
-                view.getHeight()); // toYDelta
-        animate.setDuration(500);
-        animate.setFillAfter(true);
-        view.startAnimation(animate);
-        view.setVisibility(View.INVISIBLE);
-    }
-
     public void nextView(View v) {
         WipGlobals.isShowingDirection = !WipGlobals.isShowingDirection;
         adapter.notifyDataSetChanged();
