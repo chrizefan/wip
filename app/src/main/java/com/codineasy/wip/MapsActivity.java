@@ -84,7 +84,7 @@ import static com.codineasy.wip.GlobalApplication.getAppContext;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener{
 
     private ImageButton mGps;
-    private ImageButton slideButton;
+    private ImageButton mSlideUp;
     private Button mMenuButton;
     private RelativeLayout mDestinationInfoBox;
     private RelativeLayout mRouteInfoBox;
@@ -100,8 +100,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private PlacesAutocompleteTextView mAutocomplete;
     private Marker mMarker;
     private DrawerLayout mDrawer;
-    private Button refresh;
-    private Button switchButton;
+    private Button mRefresh;
+    private Button mSwitchData;
     private SlidingUpPanelLayout slidePanel;
     private LinearLayout mSlideView;
     private LocationManager mLocationManager;
@@ -150,10 +150,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mDistance = findViewById(R.id.info_box_distance);
             mStart = findViewById(R.id.start);
             mCancel = findViewById(R.id.cancel_action);
-            slideButton = findViewById(R.id.slideUp);
-            switchButton = findViewById(R.id.switcher);
+            mSlideUp = findViewById(R.id.slideUp);
+            mSwitchData = findViewById(R.id.switcher);
             slidePanel = findViewById(R.id.sliding_layout);
-            refresh = findViewById(R.id.refresh);
+            mRefresh = findViewById(R.id.refresh);
             mDrawer = findViewById(R.id.drawer_layout);
             mMenuButton = findViewById(R.id.bttn_menu);
             mSlideView = findViewById(R.id.bottom_view);
@@ -207,7 +207,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         };
         mWifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        refresh.setOnClickListener(v -> {
+        mRefresh.setOnClickListener(v -> {
             for(List<LocationDetail> d : WipGlobals.details) {
                 for (LocationDetail ld : d) {
                     ld.fetchDarkSky();
@@ -478,7 +478,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void setMarker(LatLng latLng, String title) {
-        slideButton.setVisibility(View.INVISIBLE);
+        mSlideUp.setVisibility(View.INVISIBLE);
         mMap.clear();
         if(!title.equals("My Location") && mMarker == null){
             mMarker = mMap.addMarker(new MarkerOptions()
@@ -497,7 +497,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void displayRouteInfoBox() {
         if(!mRoutesData.isEmpty()) {
             mDestinationInfoBox.setVisibility(View.INVISIBLE);
-            slideButton.setVisibility(View.INVISIBLE);
+            mSlideUp.setVisibility(View.INVISIBLE);
             slidePanel.setEnabled(true);
             for (int i = 0; i < mPolyline.length; i++) {
                 if (mPolyline[i].getZIndex() == 1) {
@@ -539,8 +539,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
             }
-            slideButton.setVisibility(View.VISIBLE);
-            slideButton.setOnClickListener(v -> {
+            mSlideUp.setVisibility(View.VISIBLE);
+            mSlideUp.setOnClickListener(v -> {
                 if (isUp) {
                     slideDown(mSlideView);
                 } else {
@@ -777,12 +777,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if(!WipGlobals.isShowingDirection )
         {
-            switchButton.setText("Weather");
+            mSwitchData.setText("Weather");
         }
 
         if(WipGlobals.isShowingDirection )
         {
-            switchButton.setText("Directions");
+            mSwitchData.setText("Directions");
         }
 
     }
