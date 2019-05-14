@@ -85,7 +85,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private ImageButton mGps;
     private ImageButton mSlideUp;
-    private Button mMenuButton;
+    private Button mSettingsMenu;
     private RelativeLayout mDestinationInfoBox;
     private RelativeLayout mRouteInfoBox;
     private TextView mAddress1;
@@ -155,7 +155,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             slidePanel = findViewById(R.id.sliding_layout);
             mRefresh = findViewById(R.id.refresh);
             mDrawer = findViewById(R.id.drawer_layout);
-            mMenuButton = findViewById(R.id.bttn_menu);
+            mSettingsMenu = findViewById(R.id.bttn_menu);
             mSlideView = findViewById(R.id.bottom_view);
             getLocationPermission();
             init();
@@ -275,7 +275,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        mMenuButton.setOnClickListener(v -> {
+        mSettingsMenu.setOnClickListener(v -> {
             // DrawerLayout navDrawer = findViewById(R.id.drawer_layout);
             // If the navigation drawer is not open then open it, if its already open then close it.
             if(!mDrawer.isDrawerOpen(GravityCompat.START)) mDrawer.openDrawer(Gravity.START);
