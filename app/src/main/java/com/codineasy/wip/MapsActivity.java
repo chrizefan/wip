@@ -38,7 +38,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -85,6 +84,7 @@ import static com.codineasy.wip.GlobalApplication.getAppContext;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener{
 
     private ImageButton mGps;
+    private ImageButton slideBttn;
     private RelativeLayout mDestinationInfoBox;
     private RelativeLayout mRouteInfoBox;
     private TextView mAddress1;
@@ -96,10 +96,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ImageButton mCancel;
     private GoogleMap mMap;
     private Boolean mLocationPermissionGranted;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
     private PlacesAutocompleteTextView mAutocomplete;
     private Marker mMarker;
     public static LatLng mDeviceLocation;
+    private DrawerLayout mDrawer;
+    private Button refresh;
+    private Button switchButton;
+    private SlidingUpPanelLayout slidePanel;
 
     private LocationManager mLocationManager;
     private LocationListener mGPSListener;
@@ -111,9 +114,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mStepsData;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mRoutesData;
 
-    private ImageButton slideBttn;
-    private Button switchBttn;
-    private boolean isup;
+    private boolean isUp;
 
     public static JSONObject jDirections;
     public static String mUnits = "metric";
@@ -129,17 +130,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<String> mImageUrls = new ArrayList<>();
 
-    public static RecyclerViewAdapter adapter;
+    public RecyclerViewAdapter adapter;
 
-    private SlidingUpPanelLayout slidePanel;
-    private Button refresh;
 
-    public static final String SHARED_PREFS = "sharedPrefs";
-    public static final String yeye = "yeye";
+    public static final String SHARED_PREFS = "sharedPreferences";
+    public static final String key = "mapTheme";
 
-    private int test;
-
-    private DrawerLayout mDrawer;
+    private int theme;
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -164,7 +161,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mStart = findViewById(R.id.start);
             mCancel = findViewById(R.id.cancel_action);
             slideBttn = findViewById(R.id.slideUp);
-            switchBttn = findViewById(R.id.switcher);
+            switchButton = findViewById(R.id.switcher);
             slidePanel = findViewById(R.id.sliding_layout);
             refresh = findViewById(R.id.refresh);
 
@@ -201,18 +198,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         LinearLayout slideView = findViewById(R.id.bottom_view);
         slideView.setVisibility(View.INVISIBLE);
 
-        isup = false;
+        isUp = false;
 
         slideBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isup) {
+                if (isUp) {
                     slideDown(slideView);
 
                 } else {
                     slideUp(slideView);
                 }
-                isup = !isup;
+                isUp = !isUp;
                 slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             }
         });
@@ -477,7 +474,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void getDeviceLocation() {
         Log.d(TAG, "getDeviceLocation: get device location");
 
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        FusedLocationProviderClient mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         try {
             if (mLocationPermissionGranted) {
@@ -519,19 +516,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Log.d(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
         }
 
-    }
-
-    public boolean isChecked()
-    {
-        if(test == 0)
-        {
-            return false;
-        }
-
-        else
-        {
-            return true;
-        }
     }
 
     public void moveCamera(LatLng latLng, float zoom, String title) {
@@ -737,11 +721,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @SuppressLint("NewApi")
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Toast.makeText(this, "map is ready" + "test value: " + test, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "map is ready", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onMapReady: map ready");
         mMap = googleMap;
 
-        if(test==1)
+        if(theme ==1)
         {
             mMap.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
@@ -833,19 +817,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         view.setVisibility(View.INVISIBLE);
     }
 
-    public void nextView(View v)
-    {
+    public void nextView(View v) {
         WipGlobals.isShowingDirection = !WipGlobals.isShowingDirection;
         adapter.notifyDataSetChanged();
 
         if(!WipGlobals.isShowingDirection )
         {
-            switchBttn.setText("Weather");
+            switchButton.setText("Weather");
         }
 
         if(WipGlobals.isShowingDirection )
         {
-            switchBttn.setText("Directions");
+            switchButton.setText("Directions");
         }
 
     }
@@ -864,25 +847,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        if(test ==0) {
-            editor.putInt(yeye, 1);
+        if(theme ==0) {
+            editor.putInt(key, 1);
             editor.commit();
             return;
         }
 
 
-        if(test==1) {
-            editor.putInt(yeye, 0);
+        if(theme ==1) {
+            editor.putInt(key, 0);
             editor.commit();
             return;
         }
-
 
     }
 
     public void loadData() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        test = sharedPreferences.getInt(yeye, 0);
+        theme = sharedPreferences.getInt(key, 0);
     }
 
 
@@ -944,7 +926,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void setNavigationViewListner() {
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
 }
