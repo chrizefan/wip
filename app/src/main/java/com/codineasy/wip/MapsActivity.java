@@ -84,7 +84,7 @@ import static com.codineasy.wip.GlobalApplication.getAppContext;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener{
 
     private ImageButton mGps;
-    private ImageButton slideBttn;
+    private ImageButton slideButton;
     private Button mMenuButton;
     private RelativeLayout mDestinationInfoBox;
     private RelativeLayout mRouteInfoBox;
@@ -150,7 +150,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mDistance = findViewById(R.id.info_box_distance);
             mStart = findViewById(R.id.start);
             mCancel = findViewById(R.id.cancel_action);
-            slideBttn = findViewById(R.id.slideUp);
+            slideButton = findViewById(R.id.slideUp);
             switchButton = findViewById(R.id.switcher);
             slidePanel = findViewById(R.id.sliding_layout);
             refresh = findViewById(R.id.refresh);
@@ -478,7 +478,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void setMarker(LatLng latLng, String title) {
-        slideBttn.setVisibility(View.INVISIBLE);
+        slideButton.setVisibility(View.INVISIBLE);
         mMap.clear();
         if(!title.equals("My Location") && mMarker == null){
             mMarker = mMap.addMarker(new MarkerOptions()
@@ -497,7 +497,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void displayRouteInfoBox() {
         if(!mRoutesData.isEmpty()) {
             mDestinationInfoBox.setVisibility(View.INVISIBLE);
-            slideBttn.setVisibility(View.INVISIBLE);
+            slideButton.setVisibility(View.INVISIBLE);
             slidePanel.setEnabled(true);
             for (int i = 0; i < mPolyline.length; i++) {
                 if (mPolyline[i].getZIndex() == 1) {
@@ -539,8 +539,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
             }
-            slideBttn.setVisibility(View.VISIBLE);
-            slideBttn.setOnClickListener(v -> {
+            slideButton.setVisibility(View.VISIBLE);
+            slideButton.setOnClickListener(v -> {
                 if (isUp) {
                     slideDown(mSlideView);
                 } else {
