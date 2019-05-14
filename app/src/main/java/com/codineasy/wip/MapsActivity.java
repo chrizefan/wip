@@ -38,7 +38,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -108,8 +107,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LocationListener mNetListener;
     private WifiManager mWifiManager;
     private Polyline[] mPolyline;
-    private ArrayList<String> mNames = new ArrayList<>();
-    private ArrayList<String> mImageUrls = new ArrayList<>();
+    private RecyclerView mRecyclerView;
 
     public RecyclerViewAdapter adapter;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mStepsData;
@@ -162,7 +160,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setNavigationViewListner();
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         slidePanel.setEnabled(false);
-        initImageBitmaps();
         mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         mLocationManager = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
@@ -171,7 +168,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void onLocationChanged(Location location) {
                     mDeviceLocation = new LatLng(location.getLatitude(), location.getLongitude());
                     mLocationManager.removeUpdates(this);
-
                     moveCamera(new LatLng(location.getLatitude(), location.getLongitude()),
                             DEFAULT_ZOOM, "My Location");
                 }
@@ -216,25 +212,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         loadData();
     }
 
-    private void initImageBitmaps(){
-              mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
-        mNames.add("Description 1");
-        mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
-        mNames.add("Description 2");
-        mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
-        mNames.add("Description 3");
-        mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
-        mNames.add("Description 4");
-        mImageUrls.add("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1920px-Flag_of_Canada_%28Pantone%29.svg.png");
-        mNames.add("Description 5");
-        initRecyclerView();
-    }
-
     private void initRecyclerView() {
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        adapter = new RecyclerViewAdapter(this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView = findViewById(R.id.recyclerview);
+        adapter = new RecyclerViewAdapter();
+        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void init() {
@@ -260,7 +242,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Log.d(TAG, "onClick: gps icon clicked");
             getDeviceLocation();
         });
-        hideSoftKeyboard();
 
         WipGlobals.detailsIndex.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
@@ -278,6 +259,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if(!mDrawer.isDrawerOpen(GravityCompat.START)) mDrawer.openDrawer(Gravity.START);
             else mDrawer.closeDrawer(Gravity.END);
         });
+
+        initRecyclerView();
     }
 
     private void getRoute() {
