@@ -84,7 +84,7 @@ import static com.codineasy.wip.GlobalApplication.getAppContext;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, GoogleApiClient.OnConnectionFailedListener, NavigationView.OnNavigationItemSelectedListener{
 
-    private ImageView mGps;
+    private ImageButton mGps;
     private RelativeLayout mDestinationInfoBox;
     private RelativeLayout mRouteInfoBox;
     private TextView mAddress1;
