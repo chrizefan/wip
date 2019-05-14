@@ -103,7 +103,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button mRefresh;
     private Button mSwitchData;
     private SlidingUpPanelLayout slidePanel;
-    private LinearLayout mSlideView;
     private LocationManager mLocationManager;
     private LocationListener mGPSListener;
     private LocationListener mNetListener;
@@ -127,7 +126,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String SHARED_PREFS = "sharedPreferences";
     private static final String key = "mapTheme";
     private static int mTheme;
-    private static boolean isUp = false;
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -156,7 +154,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mRefresh = findViewById(R.id.refresh);
             mDrawer = findViewById(R.id.drawer_layout);
             mSettingsMenu = findViewById(R.id.bttn_menu);
-            mSlideView = findViewById(R.id.bottom_view);
             getLocationPermission();
             init();
 
@@ -541,12 +538,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             mSlideUp.setVisibility(View.VISIBLE);
             mSlideUp.setOnClickListener(v -> {
-                if (isUp) {
-                    slideDown(mSlideView);
-                } else {
-                    slideUp(mSlideView);
-                }
-                isUp = !isUp;
                 slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             });
             mRouteInfoBox.setVisibility(View.VISIBLE);
