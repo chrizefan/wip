@@ -309,23 +309,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             focusRoute(mPolyline[0].getPoints());
         }
         displayRouteInfoBox();
-
-        WipGlobals.detailsIndex.set(0);
-        WipGlobals.detailsIndex.notifyChange();
-
-        for(List<LocationDetail> lds : WipGlobals.details) {
-            for(LocationDetail ld : lds) {
-                ld.getWeather().clearWeather();
-            }
-        }
         adapter.notifyDataSetChanged();
     }
 
     private void geoLocate(){
         Log.d(TAG, "geoLocate: geolocating");
-
         String searchString = mAutocomplete.getText().toString();
-
         Geocoder geocoder = new Geocoder(MapsActivity.this);
         List<Address> list = new ArrayList<>();
         try{
@@ -337,11 +326,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Address address = list.get(0);
             Log.d(TAG, "geoLocate: found location: " + address.toString());
             //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
-
-            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()),
-                    DEFAULT_ZOOM, address.getAddressLine(0));
-        }
-        else {
+            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM, address.getAddressLine(0));
+        } else {
             if (mWifiManager.isWifiEnabled()){
                 Toast.makeText(MapsActivity.this, "Address not found... Try again?", Toast.LENGTH_SHORT).show();
             } else {
