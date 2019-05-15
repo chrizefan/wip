@@ -106,6 +106,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private WifiManager mWifiManager;
     private Polyline[] mPolyline;
     private RecyclerView mRecyclerView;
+    private NavigationView mNavigationView;
 
     public RecyclerViewAdapter adapter;
     public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> mStepsData;
@@ -150,62 +151,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mRefresh = findViewById(R.id.refresh);
             mDrawer = findViewById(R.id.drawer_layout);
             mSettingsMenu = findViewById(R.id.bttn_menu);
+            mRecyclerView = findViewById(R.id.recyclerview);
+            mNavigationView = findViewById(R.id.nav_view);
             getLocationPermission();
+            loadData();
             init();
-
         }
 
-        setNavigationViewListner();
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        slidePanel.setEnabled(false);
-        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
-        mLocationManager = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        mGPSListener = new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    mDeviceLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                    mLocationManager.removeUpdates(this);
-                    moveCamera(new LatLng(location.getLatitude(), location.getLongitude()),
-                            DEFAULT_ZOOM, "My Location");
-                }
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {}
-                @Override
-                public void onProviderEnabled(String provider) {}
-                @Override
-                public void onProviderDisabled(String provider) {
-                    Toast.makeText(getApplicationContext(), "GPS location retrieval failed", Toast.LENGTH_SHORT).show();
-                }
-        };
-        mNetListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                if (mDeviceLocation == null) {
-                    mDeviceLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                    mLocationManager.removeUpdates(this);
-                    moveCamera(new LatLng(location.getLatitude(), location.getLongitude()),
-                            DEFAULT_ZOOM, "My Location");
-                }
-            }
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-            @Override
-            public void onProviderEnabled(String provider) {}
-            @Override
-            public void onProviderDisabled(String provider) {
-                Toast.makeText(getApplicationContext(), "Net location retrieval failed", Toast.LENGTH_SHORT).show();
-            }
-        };
-        mWifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        loadData();
-    }
-
-    private void initRecyclerView() {
-        mRecyclerView = findViewById(R.id.recyclerview);
-        adapter = new RecyclerViewAdapter();
-        mRecyclerView.setAdapter(adapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void init() {
@@ -248,8 +200,52 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if(!mDrawer.isDrawerOpen(GravityCompat.START)) mDrawer.openDrawer(Gravity.START);
             else mDrawer.closeDrawer(Gravity.END);
         });
+        mNavigationView.setNavigationItemSelectedListener(this);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        slidePanel.setEnabled(false);
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        initRecyclerView();
+        mLocationManager = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        mGPSListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                mDeviceLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                mLocationManager.removeUpdates(this);
+                moveCamera(new LatLng(location.getLatitude(), location.getLongitude()),
+                        DEFAULT_ZOOM, "My Location");
+            }
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            @Override
+            public void onProviderEnabled(String provider) {}
+            @Override
+            public void onProviderDisabled(String provider) {
+                Toast.makeText(getApplicationContext(), "GPS location retrieval failed", Toast.LENGTH_SHORT).show();
+            }
+        };
+        mNetListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                if (mDeviceLocation == null) {
+                    mDeviceLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                    mLocationManager.removeUpdates(this);
+                    moveCamera(new LatLng(location.getLatitude(), location.getLongitude()),
+                            DEFAULT_ZOOM, "My Location");
+                }
+            }
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            @Override
+            public void onProviderEnabled(String provider) {}
+            @Override
+            public void onProviderDisabled(String provider) {
+                Toast.makeText(getApplicationContext(), "Net location retrieval failed", Toast.LENGTH_SHORT).show();
+            }
+        };
+        mWifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        adapter = new RecyclerViewAdapter();
+        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void getRoute() {
@@ -819,8 +815,4 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
-    private void setNavigationViewListner() {
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-    }
 }
