@@ -119,7 +119,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int LOCATION_PERMISSION_REQUEST = 1;
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
-    private static final String SHARED_PREFS = "sharedPreferences";
+    private static final String SHARED_PREFERENCES = "sharedPreferences";
     private static final String key = "mapTheme";
     private static int mTheme;
 
@@ -587,8 +587,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void getLocationPermission() {
         Log.d(TAG, "getLocationPermission: getting location permissions");
-        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION};
+        String[] permissions = {FINE_LOCATION, COARSE_LOCATION};
 
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -739,26 +738,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void saveData() {
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         if(mTheme ==0) {
             editor.putInt(key, 1);
-            editor.commit();
+            editor.apply();
             return;
         }
 
 
         if(mTheme ==1) {
             editor.putInt(key, 0);
-            editor.commit();
+            editor.apply();
             return;
         }
 
     }
 
     public void loadData() {
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
         mTheme = sharedPreferences.getInt(key, 0);
     }
 
