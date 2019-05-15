@@ -113,6 +113,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static LatLng mDeviceLocation;
     public static JSONObject jDirections;
     public static String mUnits = "metric";
+    public static int mTheme;
     private static final String TAG = "MapsActivity";
     private static final float DEFAULT_ZOOM = 15f;
     private static final int GOOGLE_PLAY_SERVICE_UPDATED_ERROR_REQUEST = 0;
@@ -121,7 +122,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final String SHARED_PREFERENCES = "mapTheme";
     private static final String KEY = "mapTheme";
-    private static int mTheme;
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
