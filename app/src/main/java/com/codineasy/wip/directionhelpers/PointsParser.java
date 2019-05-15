@@ -5,7 +5,6 @@ import android.databinding.ObservableArrayList;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.codineasy.wip.DarkSkyJSONHandler;
 import com.codineasy.wip.LocationDetail;
@@ -257,7 +256,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
         // Output format
         String output = "json";
         // Building the url to the web service
-        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&alternatives=false" + "&units=" + units + "&key=" + getAppContext().getString(R.string.google_maps_key2);
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&alternatives=false" + "&units=" + units + "&key=" + getAppContext().getString(R.string.google_maps_key);
     }
 
 }

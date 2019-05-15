@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.databinding.Observable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -24,7 +23,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -299,7 +297,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //Units
         String units = mUnits;
         // Building the url to the web service
-        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&alternatives=true"+ "&units=" + units + "&key=" + getString(R.string.google_maps_key2);
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&alternatives=true"+ "&units=" + units + "&key=" + getString(R.string.google_maps_key);
     }
 
     @Override

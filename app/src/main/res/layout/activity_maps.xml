@@ -36,7 +36,7 @@
             android:inputType="text"
             android:textColor="#000"
             android:textSize="15sp"
-            app:pacv_googleMapsApiKey="@string/google_maps_key2" />
+            app:pacv_googleMapsApiKey="@string/google_maps_key" />
 
         <Button
             android:id="@+id/bttn_menu"
