@@ -119,7 +119,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int LOCATION_PERMISSION_REQUEST = 1;
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
-    private static final String SHARED_PREFERENCES = "sharedPreferences";
+    private static final String SHARED_PREFERENCES = "mapTheme";
     private static final String KEY = "mapTheme";
     private static int mTheme;
 
