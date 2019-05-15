@@ -194,19 +194,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onProviderEnabled(String provider) {}
             @Override
             public void onProviderDisabled(String provider) {
-                Log.d(TAG, provider + " Provider disabled");
+                Toast.makeText(getApplicationContext(), "Net location retrieval failed", Toast.LENGTH_SHORT).show();
             }
         };
         mWifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        mRefresh.setOnClickListener(v -> {
-            for(List<LocationDetail> d : WipGlobals.details) {
-                for (LocationDetail ld : d) {
-                    ld.fetchDarkSky();
-                    Log.d(TAG, "fetching DarkSky");
-                }
-                adapter.notifyDataSetChanged();
-            }
-        });
         loadData();
     }
 
@@ -521,6 +512,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mSlideUp.setOnClickListener(v -> {
                 slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             });
+            mRefresh.setOnClickListener(v -> {
+                for(List<LocationDetail> d : WipGlobals.details) {
+                    for (LocationDetail ld : d) {
+                        ld.fetchDarkSky();
+                        Log.d(TAG, "Refreshing data");
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            });
             mRouteInfoBox.setVisibility(View.VISIBLE);
             startNavigation();
         } else {
@@ -778,7 +778,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case R.id.toggle_units: {
                 if(mUnits == "metric") mUnits = "imperial";
                 else if(mUnits == "imperial") mUnits = "metric";
-                if(!(jDirections == null)) {
+                if(mDistance.isShown()) {
                     for (int i = 0; i < mPolyline.length; i++) {
                         if (mPolyline[i].getZIndex() == 1) {
                             if (mUnits == "metric") {
