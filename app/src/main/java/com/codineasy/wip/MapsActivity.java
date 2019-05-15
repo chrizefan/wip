@@ -99,7 +99,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout mDrawer;
     private Button mRefresh;
     private Button mSwitchData;
-    private SlidingUpPanelLayout slidePanel;
+    private SlidingUpPanelLayout mSlidePanel;
     private LocationManager mLocationManager;
     private LocationListener mGPSListener;
     private LocationListener mNetListener;
@@ -147,7 +147,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mCancel = findViewById(R.id.cancel_action);
             mSlideUp = findViewById(R.id.slideUp);
             mSwitchData = findViewById(R.id.switcher);
-            slidePanel = findViewById(R.id.sliding_layout);
+            mSlidePanel = findViewById(R.id.sliding_layout);
             mRefresh = findViewById(R.id.refresh);
             mDrawer = findViewById(R.id.drawer_layout);
             mSettingsMenu = findViewById(R.id.bttn_menu);
@@ -157,12 +157,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             loadData();
             init();
         }
-
     }
 
     private void init() {
         Log.d(TAG, "init: initializing");
-
         mAutocomplete.setHistoryManager(null);
         mAutocomplete.showClearButton(true);
         mAutocomplete.setOnPlaceSelectedListener(
@@ -173,46 +171,33 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             || actionId == EditorInfo.IME_ACTION_DONE
                             || event.getAction() == KeyEvent.ACTION_DOWN
                             || event.getAction() == KeyEvent.KEYCODE_ENTER) {
-
                         geoLocate();
                     }
                     return false;
                 });
-
         mGps.setOnClickListener(v -> {
             Log.d(TAG, "onClick: gps icon clicked");
             getDeviceLocation();
         });
-
-        WipGlobals.detailsIndex.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
-            @Override
-            public void onPropertyChanged(Observable sender, int propertyId) {
-                WipGlobals.currentWeathers.clear();
-                for (LocationDetail ld : WipGlobals.details.get(WipGlobals.detailsIndex.get())) {
-                    WipGlobals.currentWeathers.add(ld.getWeather());
-                }
-            }
-        });
-
         mSettingsMenu.setOnClickListener(v -> {
             // DrawerLayout navDrawer = findViewById(R.id.drawer_layout);
             // If the navigation drawer is not open then open it, if its already open then close it.
-            if(!mDrawer.isDrawerOpen(GravityCompat.START)) mDrawer.openDrawer(Gravity.START);
+            if(!mDrawer.isDrawerOpen(GravityCompat.START)) {
+                mDrawer.openDrawer(Gravity.START);
+                mNavigationView.setNavigationItemSelectedListener(this);
+            }
             else mDrawer.closeDrawer(Gravity.END);
         });
-        mNavigationView.setNavigationItemSelectedListener(this);
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        slidePanel.setEnabled(false);
         mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
+        mSlidePanel.setEnabled(false);
         mLocationManager = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        mWifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         mGPSListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 mDeviceLocation = new LatLng(location.getLatitude(), location.getLongitude());
                 mLocationManager.removeUpdates(this);
-                moveCamera(new LatLng(location.getLatitude(), location.getLongitude()),
-                        DEFAULT_ZOOM, "My Location");
+                moveCamera(new LatLng(location.getLatitude(), location.getLongitude()), DEFAULT_ZOOM, "My Location");
             }
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -229,8 +214,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (mDeviceLocation == null) {
                     mDeviceLocation = new LatLng(location.getLatitude(), location.getLongitude());
                     mLocationManager.removeUpdates(this);
-                    moveCamera(new LatLng(location.getLatitude(), location.getLongitude()),
-                            DEFAULT_ZOOM, "My Location");
+                    moveCamera(new LatLng(location.getLatitude(), location.getLongitude()), DEFAULT_ZOOM, "My Location");
                 }
             }
             @Override
@@ -242,7 +226,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Toast.makeText(getApplicationContext(), "Net location retrieval failed", Toast.LENGTH_SHORT).show();
             }
         };
-        mWifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         adapter = new RecyclerViewAdapter();
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -250,8 +233,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void getRoute() {
         if (mMarker != null && mPolyline != null) {
-            for (Polyline aMPolyline : mPolyline) {
-                aMPolyline.remove();
+            for (Polyline polyline : mPolyline) {
+                polyline.remove();
             }
         }
         mDirections.setVisibility(View.VISIBLE);
@@ -279,7 +262,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             } else {
                 LocationBuilder locationBuilder = new LocationBuilder();
                 mStart.setOnClickListener(v -> {
-
                     CameraPosition camPos = new CameraPosition.Builder()
                             .target(mDeviceLocation)
                             .tilt(45)
@@ -463,7 +445,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(!mRoutesData.isEmpty()) {
             mDestinationInfoBox.setVisibility(View.INVISIBLE);
             mSlideUp.setVisibility(View.INVISIBLE);
-            slidePanel.setEnabled(true);
+            mSlidePanel.setEnabled(true);
             for (int i = 0; i < mPolyline.length; i++) {
                 if (mPolyline[i].getZIndex() == 1) {
                     int duration = new DataParser().parseTotalDuration(jDirections)[i];
@@ -506,7 +488,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             mSlideUp.setVisibility(View.VISIBLE);
             mSlideUp.setOnClickListener(v -> {
-                slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                mSlidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             });
             mRefresh.setOnClickListener(v -> {
                 for(List<LocationDetail> d : WipGlobals.details) {
@@ -710,17 +692,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void nextView(View v) {
         WipGlobals.isShowingDirection = !WipGlobals.isShowingDirection;
         adapter.notifyDataSetChanged();
-
         if(!WipGlobals.isShowingDirection )
         {
             mSwitchData.setText("Weather");
         }
-
         if(WipGlobals.isShowingDirection )
         {
             mSwitchData.setText("Directions");
         }
-
     }
 
     public void changeStyle(View v) {
@@ -736,27 +715,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void saveData() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-
         if(mTheme ==0) {
             editor.putInt(KEY, 1);
             editor.apply();
             return;
         }
-
-
         if(mTheme ==1) {
             editor.putInt(KEY, 0);
             editor.apply();
             return;
         }
-
     }
 
     public void loadData() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
         mTheme = sharedPreferences.getInt(KEY, 0);
     }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
