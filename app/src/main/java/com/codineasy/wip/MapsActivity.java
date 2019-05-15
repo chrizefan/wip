@@ -120,7 +120,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final String SHARED_PREFERENCES = "sharedPreferences";
-    private static final String key = "mapTheme";
+    private static final String KEY = "mapTheme";
     private static int mTheme;
 
     @Override
@@ -742,14 +742,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         if(mTheme ==0) {
-            editor.putInt(key, 1);
+            editor.putInt(KEY, 1);
             editor.apply();
             return;
         }
 
 
         if(mTheme ==1) {
-            editor.putInt(key, 0);
+            editor.putInt(KEY, 0);
             editor.apply();
             return;
         }
@@ -758,7 +758,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void loadData() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
-        mTheme = sharedPreferences.getInt(key, 0);
+        mTheme = sharedPreferences.getInt(KEY, 0);
     }
 
 
