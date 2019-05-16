@@ -15,7 +15,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.model.EncodedPolyline;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,11 +34,6 @@ import static com.codineasy.wip.MapsActivity.jDirections;
 import static com.codineasy.wip.MapsActivity.mRoutesData;
 import static com.codineasy.wip.MapsActivity.mStepsData;
 
-
-/**
- * Created by Vishal on 10/20/2018.
- */
-
 public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
     private TaskLoadedCallback taskCallback;
     private String directionMode;
@@ -53,24 +47,18 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
     // Parsing the data in non-ui thread
     @Override
     protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
-
         JSONObject jObject;
         List<List<HashMap<String, String>>> routes = null;
-
         try {
             jObject = new JSONObject(jsonData[0]);
             jDirections = jObject;
             Log.d(TAG, jsonData[0]);
-            DataParser parser = new DataParser();
-            Log.d(TAG, parser.toString());
-
-            // Starts parsing data
-            routes = parser.parseJObjectLatLng(jObject);
+            // Starts parsing datas
+            routes = DataParser.parseJObjectLatLng(jObject);
             mRoutesData = getJObjectData(jObject);
             mStepsData = getJObjectStepsData(jObject);
             Log.d(TAG, "Executing routes");
             Log.d(TAG, routes.toString());
-
         } catch (Exception e) {
             Log.d(TAG, e.toString());
             e.printStackTrace();
@@ -84,14 +72,9 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
         if(result != null && mRoutesData != null) {
             DarkSkyJSONHandler.allowAllUpdate(getAppContext());
             WipGlobals.startTime = Calendar.getInstance().getTimeInMillis()/1000;
-
             WipGlobals.details.clear();
-
-            // iterate through a list of list of HashMap where each top level list represent one
-            // route from point A to B
             for (List<HashMap<HashMap<String, String>, HashMap<String, String>>> listMapMap : mRoutesData) {
                 ObservableArrayList<LocationDetail> tmpList = new ObservableArrayList<>();
-
                 //iterate through  list of HashMap, containing points for one route from point
                 // A to B
                 for (HashMap<HashMap<String, String>, HashMap<String, String>> mapMap : listMapMap)
@@ -101,11 +84,8 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
                         LocationDetail detail = new LocationDetail(latlng, mapMap.get(latlng));
                         tmpList.add(detail);
                     }
-
                 WipGlobals.details.add(tmpList);
             }
-
-
             ArrayList<LatLng> points;
             PolylineOptions[] lineOptions = new PolylineOptions[result.size()];
             // Traversing through all the routes
@@ -133,16 +113,13 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
                     lineOptions[i].color(ContextCompat.getColor(getAppContext(), R.color.colorBlueTransparent));
                     lineOptions[i].zIndex(0);
                 }
-                }
-                Log.d(TAG, "onPostExecute lineoptions decoded");
-                Log.d(TAG, "RoutesData:" + mRoutesData.toString());
-                Log.d(TAG, "StepsData:" + mStepsData.toString());
-                // Drawing polyline in the Google Map for the i-th route
-                //mMap.addPolyline(lineOptions);
-
-                taskCallback.onTaskDone((Object[]) lineOptions);
             }
+            Log.d(TAG, "onPostExecute lineoptions decoded");
+            Log.d(TAG, "RoutesData:" + mRoutesData.toString());
+            Log.d(TAG, "StepsData:" + mStepsData.toString());
+            taskCallback.onTaskDone((Object[]) lineOptions);
         }
+    }
 
     private List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> getJObjectData(JSONObject jObject){
         List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> routesData  = new ArrayList<>();
@@ -210,10 +187,8 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
     private String getUrl(com.google.maps.model.LatLng origin, com.google.maps.model.LatLng destination, List<com.google.maps.model.LatLng> latLngs, String directionMode) {
         // Origin of route
         String str_origin = "origin=" + origin.lat + "," + origin.lng;
-        Log.d(TAG, "origin:" + origin);
         // Destination of route
         String str_dest = "destination=" + destination.lat + "," + destination.lng;
-        Log.d(TAG, "destination:" + destination);
         // Mode
         String mode = "mode=" + directionMode;
         // WayPoints
@@ -227,5 +202,4 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
         // Building the url to the web service
         return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&alternatives=false" + "&units=" + units + "&key=" + getAppContext().getString(R.string.google_maps_key);
     }
-
 }
