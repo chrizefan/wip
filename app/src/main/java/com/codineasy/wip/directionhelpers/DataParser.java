@@ -11,10 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by Vishal on 10/20/2018.
- */
-
 public class DataParser {
 
     private static final String TAG = "DataParser";
@@ -65,7 +61,6 @@ public class DataParser {
         return null;
     }
 
-
     public List<HashMap<HashMap<String, String>, HashMap<String, String>>> parseJObjectData(JSONObject jObject) {
         List routeData  = new ArrayList<>();
         JSONArray jRoutes;
@@ -94,14 +89,12 @@ public class DataParser {
                 for (int k = 0; k < jSteps.length(); k++) {
 
                 }
-
             }
         } catch (JSONException e1) {
             e1.printStackTrace();
         }
         return routeData;
     }
-
 
     public static List<List<HashMap<String, String>>> parseJObjectLatLng(JSONObject jObject) {
         List<List<HashMap<String, String>>> routes = new ArrayList<>();
@@ -114,16 +107,13 @@ public class DataParser {
             for (int i = 0; i < jRoutes.length(); i++) {
                 jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
                 List path = new ArrayList<>();
-
                 /** Traversing all legs */
                 for (int j = 0; j < jLegs.length(); j++) {
                     jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
-
                     /** Traversing all steps */
                     for (int k = 0; k < jSteps.length(); k++) {
                         String polyline = (String) ((JSONObject) ((JSONObject) jSteps.get(k)).get("polyline")).get("points");
                         List<LatLng> list = new EncodedPolyline(polyline).decodePath();
-
                         /** Traversing all points */
                         for (int l = 0; l < list.size(); l++) {
                             HashMap<String, String> hm = new HashMap<>();
@@ -135,12 +125,10 @@ public class DataParser {
                     routes.add(path);
                 }
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (Exception e) {
         }
         return routes;
     }
-
 }
