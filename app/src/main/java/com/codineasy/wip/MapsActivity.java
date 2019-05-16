@@ -161,15 +161,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d(TAG, "init: initializing");
         mAutocomplete.setHistoryManager(null);
         mAutocomplete.showClearButton(true);
-        mAutocomplete.setOnPlaceSelectedListener(
-                place -> geoLocate());
-        mAutocomplete.setOnEditorActionListener(
-                (v, actionId, event) -> {
+        mAutocomplete.setOnPlaceSelectedListener(place -> {
+            geoLocate();
+            hideSoftKeyboard();
+        });
+        mAutocomplete.setOnEditorActionListener((v, actionId, event) -> {
                     if (actionId == EditorInfo.IME_ACTION_SEARCH
                             || actionId == EditorInfo.IME_ACTION_DONE
                             || event.getAction() == KeyEvent.ACTION_DOWN
                             || event.getAction() == KeyEvent.KEYCODE_ENTER) {
                         geoLocate();
+                        hideSoftKeyboard();
                     }
                     return false;
                 });
@@ -327,15 +329,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Log.d(TAG, "geoLocate: found location: " + address.toString());
             //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
             moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM, address.getAddressLine(0));
-        } else {
-            if (mWifiManager.isWifiEnabled()){
-                Toast.makeText(MapsActivity.this, "Address not found... Try again?", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(MapsActivity.this, "Please enable wifi", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(WifiManager.ACTION_PICK_WIFI_NETWORK));
-            }
         }
-        hideSoftKeyboard();
     }
 
     private void initMap() {
@@ -344,8 +338,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        hideSoftKeyboard();
     }
 
 
@@ -405,7 +397,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .zoom(zoom)
                 .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
-        hideSoftKeyboard();
     }
 
     public void setMarker(LatLng latLng, String title) {
