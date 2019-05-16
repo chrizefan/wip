@@ -341,9 +341,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void getDeviceLocation() {
         Log.d(TAG, "getDeviceLocation: get device location");
-        FusedLocationProviderClient mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         try {
             if (mLocationPermissionGranted) {
+                FusedLocationProviderClient mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
                 Task location = mFusedLocationProviderClient.getLastLocation();
                 location.addOnCompleteListener(task -> {
                     try {
@@ -369,7 +369,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             }
                         } else {
                             Log.d(TAG, "onComplete: location null");
-                            Toast.makeText(MapsActivity.this, "Address not found... Try again?", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MapsActivity.this, "Device location not found", Toast.LENGTH_SHORT).show();
                         }
                     } catch (NullPointerException e) {
                         Log.d(TAG, "getDeviceLocation: NullPointerException: " + e.getMessage());
@@ -394,19 +394,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void setMarker(LatLng latLng, String title) {
         mSlideUp.setVisibility(View.INVISIBLE);
+        mRouteInfoBox.setVisibility(View.INVISIBLE);
         mMap.clear();
         if(!title.equals("My Location") && mMarker == null){
             mMarker = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .title(title));
-                    displayDestinationInfoBox();
         } else if(!title.equals("My Location")){
             mMarker = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .title(title));
             mMarker.hideInfoWindow();
-            displayDestinationInfoBox();
         }
+        displayDestinationInfoBox();
     }
 
     public void displayRouteInfoBox() {
@@ -571,26 +571,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-
-
-
-
     @SuppressLint("NewApi")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Toast.makeText(this, "map is ready", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onMapReady: map ready");
         mMap = googleMap;
-
-        if(mTheme ==1)
-        {
-            mMap.setMapStyle(
-                MapStyleOptions.loadRawResourceStyle(
-                        this, R.raw.style_json));
+        if(mTheme ==1) {
+            mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
         }
         if (mLocationPermissionGranted) {
             getDeviceLocation();
-
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -600,7 +591,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
         }
-
         mMap.setOnMapLongClickListener(latLng -> {
             Geocoder geocoder =
                     new Geocoder(MapsActivity.this);
@@ -621,26 +611,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
         mMap.setOnPolylineClickListener(polyline -> {
             int index = 0;
-            for (Polyline aMPolyline : mPolyline) {
-                if (polyline.getId().equals(aMPolyline.getId())) {
-                    aMPolyline.setColor(ContextCompat.getColor(getAppContext(), R.color.colorBlue));
-                    aMPolyline.setZIndex(1);
+            for (Polyline polyline1 : mPolyline) {
+                if (polyline.getId().equals(polyline1.getId())) {
+                    polyline1.setColor(ContextCompat.getColor(getAppContext(), R.color.colorBlue));
+                    polyline1.setZIndex(1);
                     focusRoute(polyline.getPoints());
-
                     Log.d(TAG, "current index: " + index);
                     WipGlobals.detailsIndex.set(index);
                     WipGlobals.detailsIndex.notifyChange();
-                    adapter.notifyDataSetChanged();
                     WipGlobals.details.get(index).forEach(ld -> Log.d(TAG, "getWeather(): "+ ld.getWeather().toString()));
+                    adapter.notifyDataSetChanged();
                 } else {
-                    aMPolyline.setColor(ContextCompat.getColor(getAppContext(), R.color.colorBlueTransparent));
-                    aMPolyline.setZIndex(0);
+                    polyline1.setColor(ContextCompat.getColor(getAppContext(), R.color.colorBlueTransparent));
+                    polyline1.setZIndex(0);
                     ++index;
                 }
             }
             displayRouteInfoBox();
         });
-
     }
 
     public void nextView(View v) {
@@ -690,7 +678,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         switch (item.getItemId()) {
-
             case R.id.dark_mode: {
                 final Dialog dialog = new Dialog(this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -698,7 +685,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 dialog.show();
                 break;
             }
-
             case R.id.toggle_units: {
                 if(mUnits == "metric") mUnits = "imperial";
                 else if(mUnits == "imperial") mUnits = "metric";
@@ -742,5 +728,4 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 }
