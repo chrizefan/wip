@@ -15,7 +15,7 @@ public class DataParser {
 
     private static final String TAG = "DataParser";
 
-    public int[] parseTotalDistance(JSONObject jObject) {
+    public static int[] parseTotalDistance(JSONObject jObject) {
         JSONArray jRoutes;
         JSONArray jLegs;
         try {
@@ -38,7 +38,7 @@ public class DataParser {
         return null;
     }
 
-    public int[] parseTotalDuration(JSONObject jObject) {
+    public static int[] parseTotalDuration(JSONObject jObject) {
         JSONArray jRoutes;
         JSONArray jLegs;
         try {
@@ -61,7 +61,7 @@ public class DataParser {
         return null;
     }
 
-    public List<HashMap<HashMap<String, String>, HashMap<String, String>>> parseJObjectData(JSONObject jObject) {
+    public static List<HashMap<HashMap<String, String>, HashMap<String, String>>> parseJObjectRouteData(JSONObject jObject) {
         List routeData  = new ArrayList<>();
         JSONArray jRoutes;
         JSONArray jLegs;
@@ -94,6 +94,41 @@ public class DataParser {
             e1.printStackTrace();
         }
         return routeData;
+    }
+
+    public static List<List<HashMap<HashMap<String, String>, HashMap<String, String>>>> parseJObjectStepsData(JSONObject jObject) {
+        List stepsData  = new ArrayList<>();
+        JSONArray jRoutes;
+        JSONArray jLegs;
+        JSONArray jSteps;
+        try {
+            jRoutes = jObject.getJSONArray("routes");
+            /** Traversing all routes */
+            for (int i = 0; i < jRoutes.length(); i++) {
+                jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
+                List path = new ArrayList<>();
+                /** Traversing all legs */
+                for (int j = 0; j < jLegs.length(); j++) {
+                    jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
+                    /** Traversing all steps */
+                    for (int k = 0; k < jSteps.length(); k++) {
+                        HashMap<HashMap, HashMap> data = new HashMap<>();
+                        HashMap<String, String> instructions = new HashMap<>();
+                        instructions.put("html_instructions", jSteps.getJSONObject(k).optString("html_instructions"));
+                        instructions.put("maneuver", jSteps.getJSONObject(k).optString("maneuver"));
+                        HashMap<String, String> distanceDuration = new HashMap<>();
+                        distanceDuration.put("distance", Integer.toString(jSteps.getJSONObject(k).getJSONObject("distance").optInt("value")));
+                        distanceDuration.put("duration", jSteps.getJSONObject(k).getJSONObject("duration").optString("text"));
+                        data.put(instructions, distanceDuration);
+                        path.add(data);
+                    }
+                }
+                stepsData.add(path);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return stepsData;
     }
 
     public static List<List<HashMap<String, String>>> parseJObjectLatLng(JSONObject jObject) {
