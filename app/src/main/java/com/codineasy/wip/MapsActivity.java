@@ -166,15 +166,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             hideSoftKeyboard();
         });
         mAutocomplete.setOnEditorActionListener((v, actionId, event) -> {
-                    if (actionId == EditorInfo.IME_ACTION_SEARCH
-                            || actionId == EditorInfo.IME_ACTION_DONE
-                            || event.getAction() == KeyEvent.ACTION_DOWN
-                            || event.getAction() == KeyEvent.KEYCODE_ENTER) {
-                        geoLocate();
-                        hideSoftKeyboard();
-                    }
-                    return false;
-                });
+            if (actionId == EditorInfo.IME_ACTION_SEARCH
+                    || actionId == EditorInfo.IME_ACTION_DONE
+                    || event.getAction() == KeyEvent.ACTION_DOWN
+                    || event.getAction() == KeyEvent.KEYCODE_ENTER) {
+                geoLocate();
+                hideSoftKeyboard();
+            }
+            return false;
+        });
         mGps.setOnClickListener(v -> {
             Log.d(TAG, "onClick: gps icon clicked");
             getDeviceLocation();
@@ -335,26 +335,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initMap() {
         Log.d(TAG, "initMap: initializing map");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
 
-
     private void getDeviceLocation() {
         Log.d(TAG, "getDeviceLocation: get device location");
-
         FusedLocationProviderClient mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
         try {
             if (mLocationPermissionGranted) {
-                final Task location = mFusedLocationProviderClient.getLastLocation();
+                Task location = mFusedLocationProviderClient.getLastLocation();
                 location.addOnCompleteListener(task -> {
                     try {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "onComplete: location found");
                             Location currentLocation = (Location) task.getResult();
-
                             if(currentLocation == null) {
                                 if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                                     Toast.makeText(this, "Please enable GPS", Toast.LENGTH_SHORT).show();
@@ -372,7 +367,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         .build();
                                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
                             }
-
                         } else {
                             Log.d(TAG, "onComplete: location null");
                             Toast.makeText(MapsActivity.this, "Address not found... Try again?", Toast.LENGTH_SHORT).show();
@@ -385,7 +379,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (SecurityException e) {
             Log.d(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
         }
-
     }
 
     public void moveCamera(LatLng latLng, float zoom, String title) {
@@ -482,33 +475,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void displayDestinationInfoBox() {
+        mRouteInfoBox.setVisibility(View.INVISIBLE);
+        String[] address = mMarker.getTitle().split(", ");
+        mAddress1.setText(address[0]);
+        StringBuilder address2 = new StringBuilder(address[1]);
         try {
-            mRouteInfoBox.setVisibility(View.INVISIBLE);
-            String[] address = mMarker.getTitle().split(", ");
-            mAddress1.setText(address[0]);
-            StringBuilder address2 = new StringBuilder(address[1]);
             for (int i = 2; i < address.length; i++) {
                 address2.append(", ").append(address[i]);
             }
-            mAddress2.setText(address2.toString());
-            mDestinationInfoBox.setVisibility(View.VISIBLE);
-            getRoute();
         } catch (ArrayIndexOutOfBoundsException e) {
             Toast.makeText(this, "address not available", Toast.LENGTH_SHORT).show();
         }
+        mAddress2.setText(address2.toString());
+        mDestinationInfoBox.setVisibility(View.VISIBLE);
+        getRoute();
     }
 
     public void focusRoute(List<LatLng> lstLatLngRoute) {
-
         if (mMap == null || lstLatLngRoute == null || lstLatLngRoute.isEmpty()) return;
-
         LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
         for (LatLng latLngPoint : lstLatLngRoute)
             boundsBuilder.include(latLngPoint);
-
         int routePadding = 200;
         LatLngBounds latLngBounds = boundsBuilder.build();
-
         mMap.animateCamera(
                 CameraUpdateFactory.newLatLngBounds(latLngBounds, routePadding),
                 600,
@@ -518,9 +507,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public boolean isGoogleServicesUpdated() {
         Log.d("Update", "isGoogleServicesUpdated: checking Google Play Services");
-
         int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MapsActivity.this);
-
         if (available == ConnectionResult.SUCCESS) {
             //Google Play Services is up to date
             Log.d("Update", "isGoogleServicesUpdated: Google Play Services updated");
@@ -541,22 +528,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void getLocationPermission() {
         Log.d(TAG, "getLocationPermission: getting location permissions");
         String[] permissions = {FINE_LOCATION, COARSE_LOCATION};
-
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                    COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this.getApplicationContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mLocationPermissionGranted = true;
                 initMap();
             } else {
-                ActivityCompat.requestPermissions(this,
-                        permissions,
-                        LOCATION_PERMISSION_REQUEST);
+                ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_REQUEST);
             }
         } else {
-            ActivityCompat.requestPermissions(this,
-                    permissions,
-                    LOCATION_PERMISSION_REQUEST);
+            ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_REQUEST);
         }
     }
 
@@ -564,7 +544,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.d(TAG, "onRequestPermissionsResult: called");
         mLocationPermissionGranted = false;
-
         switch (requestCode) {
             case LOCATION_PERMISSION_REQUEST: {
                 if (grantResults.length > 0) {
